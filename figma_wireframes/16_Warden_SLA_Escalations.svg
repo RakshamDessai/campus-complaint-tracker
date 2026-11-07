@@ -1,0 +1,114 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="#F4F7FA"/>
+  <!-- Sidebar Navigation -->
+  <g id="Sidebar">
+    <rect x="0" y="0" width="240" height="900" fill="#0F2537"/>
+    <!-- Brand / Logo -->
+    <rect x="24" y="24" width="36" height="36" rx="8" fill="#1F4E79"/>
+    <path d="M34 42L42 34M42 34L50 42M42 34V48" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="68" y="38" fill="#FFFFFF" font-size="15" font-weight="700">CAMPUS TRACKER</text>
+    <text x="68" y="52" fill="#7E92A2" font-size="11" font-weight="500">HOSTEL WARDEN</text>
+    <line x1="20" y1="72" x2="220" y2="72" stroke="#1E384D" stroke-width="1"/>
+    <!-- Nav Item -->
+    <text x="36" y="120" fill="#A0B0BF" font-size="13.5" font-weight="500">Hostel Grievances</text>
+    <!-- Nav Item -->
+    <text x="36" y="168" fill="#A0B0BF" font-size="13.5" font-weight="500">Assign Staff</text>
+    <!-- Active Nav Item -->
+    <rect x="12" y="191" width="216" height="40" rx="6" fill="#1F4E79"/>
+    <rect x="12" y="191" width="4" height="40" rx="2" fill="#60A5FA"/>
+    <text x="36" y="216" fill="#FFFFFF" font-size="13.5" font-weight="600">SLA Escalations</text>
+    <!-- Nav Item -->
+    <text x="36" y="264" fill="#A0B0BF" font-size="13.5" font-weight="500">Hostel Rooms</text>
+    <!-- Nav Item -->
+    <text x="36" y="312" fill="#A0B0BF" font-size="13.5" font-weight="500">Reports</text>
+    <!-- Bottom Session / Database Info -->
+    <rect x="16" y="820" width="208" height="60" rx="8" fill="#183348"/>
+    <circle cx="36" cy="850" r="6" fill="#10B981"/>
+    <text x="50" y="846" fill="#FFFFFF" font-size="11.5" font-weight="600">DB State Machine</text>
+    <text x="50" y="862" fill="#8EA3B5" font-size="10.5">Enforcing 14 FRs &amp; SLAs</text>
+  </g>
+  <!-- Top Navigation Bar -->
+  <g id="TopBar">
+    <rect x="240" y="0" width="1200" height="70" fill="#FFFFFF"/>
+    <line x1="240" y1="70" x2="1440" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="272" y="32" fill="#64748B" font-size="11.5" font-weight="500">Home / Portal</text>
+    <text x="272" y="52" fill="#0F172A" font-size="18" font-weight="700">Overdue SLA Escalations (FR10)</text>
+    
+    <!-- Search Bar -->
+    <rect x="720" y="16" width="300" height="38" rx="6" fill="#F1F5F9" stroke="#E2E8F0"/>
+    <circle cx="740" cy="35" r="5" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="744" y1="39" x2="750" y2="45" stroke="#94A3B8" stroke-width="1.5"/>
+    <text x="758" y="39" fill="#94A3B8" font-size="12">Search complaints, tickets, IDs...</text>
+    
+    <!-- Notification Bell -->
+    <circle cx="1060" cy="35" r="16" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <path d="M1057 32C1057 30 1059 28 1060 28C1061 28 1063 30 1063 32V36L1065 38H1055L1057 36V32Z" stroke="#475569" stroke-width="1.5"/>
+    <circle cx="1066" cy="27" r="4" fill="#EF4444"/>
+    
+    <!-- User Profile Badge -->
+    <circle cx="1120" cy="35" r="18" fill="#1F4E79"/>
+    <text x="1120" y="40" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">DR</text>
+    <text x="1148" y="33" fill="#0F172A" font-size="13" font-weight="600">Dr. Ramesh Sharma</text>
+    <rect x="1148" y="40" width="70" height="18" rx="4" fill="#E2E8F0"/>
+    <text x="1183" y="53" fill="#334155" font-size="9.5" font-weight="600" text-anchor="middle">WARDEN (Nilkanth Hostel)</text>
+  </g>
+
+  <!-- Critical Alert Header Card -->
+  <rect x="270" y="95" width="1115" height="90" rx="8" fill="#FEF2F2" stroke="#FECACA"/>
+  <circle cx="315" cy="140" r="22" fill="#EF4444"/>
+  <text x="315" y="147" fill="#FFFFFF" font-size="20" font-weight="800" text-anchor="middle">!</text>
+  <text x="355" y="130" fill="#991B1B" font-size="17" font-weight="800">1 Complaint Has Breached SLA Threshold (Autonomous Escalation)</text>
+  <text x="355" y="152" fill="#B91C1C" font-size="13">Database scheduled event <tspan font-family="monospace">evt_check_sla</tspan> updated ticket to 'Escalated' because <tspan font-family="monospace">DATEDIFF(NOW(), Created_At) &gt; SLA_Days</tspan>.</text>
+
+  <!-- Escalated Ticket Deep-Dive Card -->
+  <rect x="270" y="210" width="1115" height="635" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+  
+  <rect x="300" y="235" width="1055" height="150" rx="8" fill="#FFF5F5" stroke="#FCA5A5"/>
+  <text x="325" y="270" fill="#B91C1C" font-size="14" font-weight="800" font-family="monospace">CRITICAL ESCALATION: TICKET #CMP-099</text>
+  <text x="325" y="295" fill="#0F172A" font-size="18" font-weight="800">Water cooler compressor tripping main breaker on Ground Floor</text>
+  <text x="325" y="318" fill="#475569" font-size="13">Nilkanth Hostel • Common Utility Area • Category: Hostel (SLA: 3 Days)</text>
+  
+  <text x="325" y="355" fill="#7F1D1D" font-size="12.5" font-weight="700">Elapsed Time: 4 Days 4 Hours • Overdue by 28 Hours</text>
+<rect x="1220" y="255" width="82" height="24" rx="12" fill="#FEF2F2" stroke="#FECACA"/>
+<text x="1261.0" y="271" fill="#B91C1C" font-size="11" font-weight="600" text-anchor="middle">Escalated</text>
+  <!-- Root-Cause &amp; Historical Failure Log -->
+  <text x="300" y="420" fill="#0F172A" font-size="15" font-weight="700">Audit Trail Analysis (Why did SLA breach occur?)</text>
+  
+  <rect x="300" y="435" width="1055" height="180" rx="6" fill="#F8FAFC" stroke="#E2E8F0"/>
+  
+  <!-- Step 1 -->
+  <circle cx="330" cy="465" r="8" fill="#10B981"/>
+  <text x="350" y="470" fill="#0F172A" font-size="13" font-weight="600">Filed by student on Oct 11, 08:00 AM</text>
+  <text x="800" y="470" fill="#64748B" font-size="12">Initial Status: Open</text>
+
+  <!-- Step 2 -->
+  <circle cx="330" cy="510" r="8" fill="#10B981"/>
+  <text x="350" y="515" fill="#0F172A" font-size="13" font-weight="600">Assigned to Electrician Kumar on Oct 11, 10:30 AM</text>
+  <text x="800" y="515" fill="#64748B" font-size="12">Assigned_At recorded</text>
+
+  <!-- Step 3 Inactivity -->
+  <circle cx="330" cy="555" r="8" fill="#EF4444"/>
+  <text x="350" y="560" fill="#B91C1C" font-size="13" font-weight="700">Zero technician updates logged for 72+ hours</text>
+  <text x="800" y="560" fill="#B91C1C" font-size="12" font-weight="600">Technician on medical leave</text>
+
+  <!-- Step 4 Autonomous Escalation -->
+  <circle cx="330" cy="595" r="8" fill="#B91C1C"/>
+  <text x="350" y="600" fill="#B91C1C" font-size="13" font-weight="700">Autonomous Trigger Escalation on Oct 14, 08:00 AM</text>
+  <text x="800" y="600" fill="#B91C1C" font-size="12" font-weight="600">Updated to 'Escalated' in DB</text>
+
+  <!-- Warden Emergency Actions -->
+  <text x="300" y="645" fill="#0F172A" font-size="15" font-weight="700">Warden Interventions Available:</text>
+  
+  <rect x="300" y="660" width="310" height="44" rx="8" fill="#B91C1C"/>
+  <text x="455" y="687" fill="#FFFFFF" font-size="13.5" font-weight="700" text-anchor="middle">Emergency Reassignment →</text>
+  
+  <rect x="630" y="660" width="310" height="44" rx="8" fill="#1F4E79"/>
+  <text x="785" y="687" fill="#FFFFFF" font-size="13.5" font-weight="700" text-anchor="middle">Notify Estate Dept Head</text>
+
+</svg>

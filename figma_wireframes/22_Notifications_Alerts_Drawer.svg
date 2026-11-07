@@ -1,0 +1,113 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="#F4F7FA"/>
+  <!-- Sidebar Navigation -->
+  <g id="Sidebar">
+    <rect x="0" y="0" width="240" height="900" fill="#0F2537"/>
+    <!-- Brand / Logo -->
+    <rect x="24" y="24" width="36" height="36" rx="8" fill="#1F4E79"/>
+    <path d="M34 42L42 34M42 34L50 42M42 34V48" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="68" y="38" fill="#FFFFFF" font-size="15" font-weight="700">CAMPUS TRACKER</text>
+    <text x="68" y="52" fill="#7E92A2" font-size="11" font-weight="500">STUDENT PORTAL</text>
+    <line x1="20" y1="72" x2="220" y2="72" stroke="#1E384D" stroke-width="1"/>
+    <!-- Active Nav Item -->
+    <rect x="12" y="95" width="216" height="40" rx="6" fill="#1F4E79"/>
+    <rect x="12" y="95" width="4" height="40" rx="2" fill="#60A5FA"/>
+    <text x="36" y="120" fill="#FFFFFF" font-size="13.5" font-weight="600">Dashboard</text>
+    <!-- Nav Item -->
+    <text x="36" y="168" fill="#A0B0BF" font-size="13.5" font-weight="500">File Complaint</text>
+    <!-- Nav Item -->
+    <text x="36" y="216" fill="#A0B0BF" font-size="13.5" font-weight="500">My Complaints</text>
+    <!-- Nav Item -->
+    <text x="36" y="264" fill="#A0B0BF" font-size="13.5" font-weight="500">Live Timeline</text>
+    <!-- Nav Item -->
+    <text x="36" y="312" fill="#A0B0BF" font-size="13.5" font-weight="500">My Profile</text>
+    <!-- Bottom Session / Database Info -->
+    <rect x="16" y="820" width="208" height="60" rx="8" fill="#183348"/>
+    <circle cx="36" cy="850" r="6" fill="#10B981"/>
+    <text x="50" y="846" fill="#FFFFFF" font-size="11.5" font-weight="600">DB State Machine</text>
+    <text x="50" y="862" fill="#8EA3B5" font-size="10.5">Enforcing 14 FRs &amp; SLAs</text>
+  </g>
+  <!-- Top Navigation Bar -->
+  <g id="TopBar">
+    <rect x="240" y="0" width="1200" height="70" fill="#FFFFFF"/>
+    <line x1="240" y1="70" x2="1440" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="272" y="32" fill="#64748B" font-size="11.5" font-weight="500">Home / Portal</text>
+    <text x="272" y="52" fill="#0F172A" font-size="18" font-weight="700">Grievance Dashboard</text>
+    
+    <!-- Search Bar -->
+    <rect x="720" y="16" width="300" height="38" rx="6" fill="#F1F5F9" stroke="#E2E8F0"/>
+    <circle cx="740" cy="35" r="5" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="744" y1="39" x2="750" y2="45" stroke="#94A3B8" stroke-width="1.5"/>
+    <text x="758" y="39" fill="#94A3B8" font-size="12">Search complaints, tickets, IDs...</text>
+    
+    <!-- Notification Bell -->
+    <circle cx="1060" cy="35" r="16" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <path d="M1057 32C1057 30 1059 28 1060 28C1061 28 1063 30 1063 32V36L1065 38H1055L1057 36V32Z" stroke="#475569" stroke-width="1.5"/>
+    <circle cx="1066" cy="27" r="4" fill="#EF4444"/>
+    
+    <!-- User Profile Badge -->
+    <circle cx="1120" cy="35" r="18" fill="#1F4E79"/>
+    <text x="1120" y="40" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">RA</text>
+    <text x="1148" y="33" fill="#0F172A" font-size="13" font-weight="600">Raksham Dessai</text>
+    <rect x="1148" y="40" width="70" height="18" rx="4" fill="#E2E8F0"/>
+    <text x="1183" y="53" fill="#334155" font-size="9.5" font-weight="600" text-anchor="middle">STUDENT (24B-CO-019)</text>
+  </g>
+
+  <!-- Dimmed Background Overlay -->
+  <rect x="240" y="70" width="1200" height="830" fill="#000000" opacity="0.4"/>
+
+  <!-- Slide-out Side Drawer on Right (420px wide) -->
+  <rect x="1020" y="70" width="420" height="830" fill="#FFFFFF" stroke="#CBD5E1"/>
+  
+  <text x="1050" y="115" fill="#0F172A" font-size="18" font-weight="800">System &amp; Trigger Alerts</text>
+  <text x="1050" y="135" fill="#64748B" font-size="12">Autonomous events emitted by database engine</text>
+  <text x="1400" y="115" fill="#64748B" font-size="18" text-anchor="middle">✕</text>
+  <line x1="1020" y1="150" x2="1440" y2="150" stroke="#E2E8F0"/>
+
+  <!-- Alert 1: Autonomous Escalation (Red) -->
+  <rect x="1040" y="170" width="380" height="120" rx="8" fill="#FEF2F2" stroke="#FECACA"/>
+  <circle cx="1065" cy="195" r="10" fill="#EF4444"/>
+  <text x="1065" y="199" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">!</text>
+  <text x="1085" y="195" fill="#991B1B" font-size="13" font-weight="700">SLA Breach Auto-Escalation</text>
+  <text x="1400" y="195" fill="#B91C1C" font-size="11" text-anchor="end">10m ago</text>
+  <text x="1085" y="218" fill="#7F1D1D" font-size="12">Ticket #CMP-099 auto-escalated to 'Escalated' state by DB event evt_sla_check. Category SLA (3 days) expired.</text>
+  <text x="1085" y="265" fill="#1F4E79" font-size="11.5" font-weight="700">Warden Dr. Sharma notified →</text>
+
+  <!-- Alert 2: Staff Assignment (Blue) -->
+  <rect x="1040" y="305" width="380" height="110" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <circle cx="1065" cy="330" r="10" fill="#3B82F6"/>
+  <text x="1065" y="334" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">i</text>
+  <text x="1085" y="330" fill="#1E40AF" font-size="13" font-weight="700">Staff Assigned to Ticket #CMP-104</text>
+  <text x="1400" y="330" fill="#64748B" font-size="11" text-anchor="end">25m ago</text>
+  <text x="1085" y="353" fill="#1E293B" font-size="12">Technician Alex Green (Carpenter) assigned to your broken study chair complaint in Room 204.</text>
+  <text x="1085" y="395" fill="#1D4ED8" font-size="11.5" font-weight="700">View Assignment Details →</text>
+
+  <!-- Alert 3: Trigger Constraint Invariant Rejection (Amber) -->
+  <rect x="1040" y="430" width="380" height="125" rx="8" fill="#FFFBEB" stroke="#FDE68A"/>
+  <circle cx="1065" cy="455" r="10" fill="#F59E0B"/>
+  <text x="1065" y="459" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">⚠</text>
+  <text x="1085" y="455" fill="#92400E" font-size="13" font-weight="700">Invalid State Transition Rejection</text>
+  <text x="1400" y="455" fill="#78350F" font-size="11" text-anchor="end">1h ago</text>
+  <text x="1085" y="478" fill="#78350F" font-size="12">Trigger trg_enforce_state_machine blocked illegal transition: attempted jump from 'Open' directly to 'Resolved'.</text>
+  <text x="1085" y="530" fill="#92400E" font-size="11.5" font-family="monospace">SIGNAL SQLSTATE '45000' EXCEPTION</text>
+
+  <!-- Alert 4: Ticket Resolved (Green) -->
+  <rect x="1040" y="570" width="380" height="110" rx="8" fill="#ECFDF5" stroke="#A7F3D0"/>
+  <circle cx="1065" cy="595" r="10" fill="#10B981"/>
+  <text x="1065" y="599" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">✓</text>
+  <text x="1085" y="595" fill="#065F46" font-size="13" font-weight="700">Ticket #CMP-101 Marked Resolved</text>
+  <text x="1400" y="595" fill="#64748B" font-size="11" text-anchor="end">2h ago</text>
+  <text x="1085" y="618" fill="#064E3B" font-size="12">Ceiling fan in Room 204 successfully repaired by John Doe. Replacement bearing installed.</text>
+  <text x="1085" y="660" fill="#047857" font-size="11.5" font-weight="700">Provide Student Feedback ★★★★★</text>
+
+  <!-- Clear All -->
+  <rect x="1040" y="740" width="380" height="42" rx="6" fill="#F1F5F9" stroke="#E2E8F0"/>
+  <text x="1230" y="766" fill="#64748B" font-size="12.5" font-weight="600" text-anchor="middle">Clear All Read Notifications</text>
+
+</svg>

@@ -1,0 +1,96 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="#F4F7FA"/>
+
+  <!-- Split Screen Layout -->
+  <!-- Left Side Branding Column (540px) -->
+  <rect x="0" y="0" width="520" height="900" fill="#0F2537"/>
+  <rect x="60" y="60" width="40" height="40" rx="8" fill="#1F4E79"/>
+  <path d="M72 80L80 72M80 72L88 80M80 72V86" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <text x="115" y="78" fill="#FFFFFF" font-size="18" font-weight="700">CAMPUS TRACKER</text>
+  <text x="115" y="94" fill="#94A3B8" font-size="12">Student Access Portal</text>
+  
+  <text x="60" y="240" fill="#FFFFFF" font-size="28" font-weight="800">Your Campus Grievances,</text>
+  <text x="60" y="275" fill="#60A5FA" font-size="28" font-weight="800">Systematically Tracked.</text>
+  <text x="60" y="320" fill="#CBD5E1" font-size="14.5" line-height="1.5">No more lost complaints on WhatsApp or unrecorded requests. Every issue is logged into a BCNF normalized relational database with guaranteed SLA turnaround.</text>
+  
+  <!-- Info Card in Left Pane -->
+  <rect x="60" y="420" width="400" height="200" rx="10" fill="#183348" stroke="#1E4466"/>
+  <text x="85" y="455" fill="#93C5FD" font-size="13" font-weight="700">STUDENT IDENTITY VALIDATION</text>
+  <text x="85" y="485" fill="#FFFFFF" font-size="13">• Unique enrollment: <tspan fill="#60A5FA" font-family="monospace">Student_ID</tspan> (e.g. 24B-CO-019)</text>
+  <text x="85" y="515" fill="#FFFFFF" font-size="13">• Automatic hostel &amp; room mapping</text>
+  <text x="85" y="545" fill="#FFFFFF" font-size="13">• Multivalued contact numbers: <tspan fill="#60A5FA" font-family="monospace">Student_Phone</tspan></text>
+  <text x="85" y="575" fill="#FFFFFF" font-size="13">• Zero duplicate active filings</text>
+
+  <!-- Right Side Form (920px) -->
+  <rect x="620" y="60" width="720" height="780" rx="12" fill="#FFFFFF" stroke="#E2E8F0"/>
+  
+  <!-- Form Tabs -->
+  <rect x="660" y="95" width="310" height="42" rx="8" fill="#F1F5F9"/>
+  <rect x="664" y="99" width="150" height="34" rx="6" fill="#FFFFFF" stroke="#CBD5E1"/>
+  <text x="739" y="121" fill="#0F172A" font-size="13" font-weight="700" text-anchor="middle">Student Registration</text>
+  <text x="894" y="121" fill="#64748B" font-size="13" font-weight="600" text-anchor="middle">Existing Login</text>
+  
+  <text x="660" y="175" fill="#0F172A" font-size="22" font-weight="800">Register Student Profile (FR1)</text>
+  <text x="660" y="198" fill="#64748B" font-size="13">Provide your academic and hostel details to establish your student record.</text>
+  
+  <!-- Form Fields Grid -->
+  <!-- Name Composite Fields -->
+  <text x="660" y="240" fill="#334155" font-size="12" font-weight="600">FIRST NAME *</text>
+  <rect x="660" y="248" width="310" height="42" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <text x="675" y="274" fill="#0F172A" font-size="13">Raksham</text>
+  
+  <text x="1000" y="240" fill="#334155" font-size="12" font-weight="600">LAST NAME *</text>
+  <rect x="1000" y="248" width="300" height="42" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <text x="1015" y="274" fill="#0F172A" font-size="13">Dessai</text>
+
+  <!-- Roll No & Email -->
+  <text x="660" y="325" fill="#334155" font-size="12" font-weight="600">STUDENT ENROLLMENT ID (PK) *</text>
+  <rect x="660" y="333" width="310" height="42" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <text x="675" y="359" fill="#0F172A" font-size="13" font-family="monospace">24B-CO-019</text>
+  
+  <text x="1000" y="325" fill="#334155" font-size="12" font-weight="600">INSTITUTE EMAIL *</text>
+  <rect x="1000" y="333" width="300" height="42" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <text x="1015" y="359" fill="#0F172A" font-size="13">rakshamdessai2006@gmail.com</text>
+
+  <!-- Hostel & Room -->
+  <text x="660" y="410" fill="#334155" font-size="12" font-weight="600">ALLOCATED HOSTEL (FK) *</text>
+  <rect x="660" y="418" width="310" height="42" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <text x="675" y="444" fill="#0F172A" font-size="13">Nilkanth Hostel (Hostel_ID: H-01)</text>
+  <path d="M945 436L952 443L959 436" stroke="#64748B" stroke-width="1.8"/>
+
+  <text x="1000" y="410" fill="#334155" font-size="12" font-weight="600">ROOM NUMBER *</text>
+  <rect x="1000" y="418" width="300" height="42" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <text x="1015" y="444" fill="#0F172A" font-size="13">Room 204</text>
+
+  <!-- Phone Multivalued -->
+  <text x="660" y="495" fill="#334155" font-size="12" font-weight="600">PRIMARY CONTACT PHONE (Student_Phone) *</text>
+  <rect x="660" y="503" width="310" height="42" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <text x="675" y="529" fill="#0F172A" font-size="13">+91 9822110011</text>
+  
+  <text x="1000" y="495" fill="#334155" font-size="12" font-weight="600">SECONDARY PHONE (MULTIVALUED) [OPTIONAL]</text>
+  <rect x="1000" y="503" width="300" height="42" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <text x="1015" y="529" fill="#64748B" font-size="13">+91 9422003344</text>
+
+  <!-- Password -->
+  <text x="660" y="580" fill="#334155" font-size="12" font-weight="600">PORTAL PASSWORD *</text>
+  <rect x="660" y="588" width="640" height="42" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <text x="675" y="614" fill="#0F172A" font-size="13">••••••••••••••••</text>
+  <text x="660" y="645" fill="#64748B" font-size="11">Secured via cryptographic hashing before database insert.</text>
+
+  <!-- Checkbox & Terms -->
+  <rect x="660" y="670" width="18" height="18" rx="4" fill="#1F4E79"/>
+  <path d="M664 679L668 683L674 675" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="690" y="684" fill="#334155" font-size="12.5">I confirm my student details are accurate for institutional complaint notifications.</text>
+
+  <!-- Submit CTA -->
+  <rect x="660" y="715" width="640" height="48" rx="8" fill="#1F4E79"/>
+  <text x="980" y="745" fill="#FFFFFF" font-size="14.5" font-weight="700" text-anchor="middle">Create Student Record (Insert into Student) →</text>
+  
+  <text x="980" y="795" fill="#64748B" font-size="12" text-anchor="middle">Already registered? <tspan fill="#1F4E79" font-weight="700">Sign in with Roll Number</tspan></text>
+
+</svg>

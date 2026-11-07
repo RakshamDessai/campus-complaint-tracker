@@ -1,0 +1,160 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="#F4F7FA"/>
+  <!-- Sidebar Navigation -->
+  <g id="Sidebar">
+    <rect x="0" y="0" width="240" height="900" fill="#0F2537"/>
+    <!-- Brand / Logo -->
+    <rect x="24" y="24" width="36" height="36" rx="8" fill="#1F4E79"/>
+    <path d="M34 42L42 34M42 34L50 42M42 34V48" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="68" y="38" fill="#FFFFFF" font-size="15" font-weight="700">CAMPUS TRACKER</text>
+    <text x="68" y="52" fill="#7E92A2" font-size="11" font-weight="500">STUDENT PORTAL</text>
+    <line x1="20" y1="72" x2="220" y2="72" stroke="#1E384D" stroke-width="1"/>
+    <!-- Nav Item -->
+    <text x="36" y="120" fill="#A0B0BF" font-size="13.5" font-weight="500">Dashboard</text>
+    <!-- Nav Item -->
+    <text x="36" y="168" fill="#A0B0BF" font-size="13.5" font-weight="500">File Complaint</text>
+    <!-- Active Nav Item -->
+    <rect x="12" y="191" width="216" height="40" rx="6" fill="#1F4E79"/>
+    <rect x="12" y="191" width="4" height="40" rx="2" fill="#60A5FA"/>
+    <text x="36" y="216" fill="#FFFFFF" font-size="13.5" font-weight="600">My Complaints</text>
+    <!-- Nav Item -->
+    <text x="36" y="264" fill="#A0B0BF" font-size="13.5" font-weight="500">Live Timeline</text>
+    <!-- Nav Item -->
+    <text x="36" y="312" fill="#A0B0BF" font-size="13.5" font-weight="500">My Profile</text>
+    <!-- Bottom Session / Database Info -->
+    <rect x="16" y="820" width="208" height="60" rx="8" fill="#183348"/>
+    <circle cx="36" cy="850" r="6" fill="#10B981"/>
+    <text x="50" y="846" fill="#FFFFFF" font-size="11.5" font-weight="600">DB State Machine</text>
+    <text x="50" y="862" fill="#8EA3B5" font-size="10.5">Enforcing 14 FRs &amp; SLAs</text>
+  </g>
+  <!-- Top Navigation Bar -->
+  <g id="TopBar">
+    <rect x="240" y="0" width="1200" height="70" fill="#FFFFFF"/>
+    <line x1="240" y1="70" x2="1440" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="272" y="32" fill="#64748B" font-size="11.5" font-weight="500">Home / Portal</text>
+    <text x="272" y="52" fill="#0F172A" font-size="18" font-weight="700">Grievance Details #CMP-101</text>
+    
+    <!-- Search Bar -->
+    <rect x="720" y="16" width="300" height="38" rx="6" fill="#F1F5F9" stroke="#E2E8F0"/>
+    <circle cx="740" cy="35" r="5" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="744" y1="39" x2="750" y2="45" stroke="#94A3B8" stroke-width="1.5"/>
+    <text x="758" y="39" fill="#94A3B8" font-size="12">Search complaints, tickets, IDs...</text>
+    
+    <!-- Notification Bell -->
+    <circle cx="1060" cy="35" r="16" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <path d="M1057 32C1057 30 1059 28 1060 28C1061 28 1063 30 1063 32V36L1065 38H1055L1057 36V32Z" stroke="#475569" stroke-width="1.5"/>
+    <circle cx="1066" cy="27" r="4" fill="#EF4444"/>
+    
+    <!-- User Profile Badge -->
+    <circle cx="1120" cy="35" r="18" fill="#1F4E79"/>
+    <text x="1120" y="40" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">RA</text>
+    <text x="1148" y="33" fill="#0F172A" font-size="13" font-weight="600">Raksham Dessai</text>
+    <rect x="1148" y="40" width="70" height="18" rx="4" fill="#E2E8F0"/>
+    <text x="1183" y="53" fill="#334155" font-size="9.5" font-weight="600" text-anchor="middle">STUDENT (24B-CO-019)</text>
+  </g>
+
+  <!-- Back Button &amp; Breadcrumbs -->
+  <text x="270" y="105" fill="#1F4E79" font-size="13" font-weight="600">← Back to Complaints List</text>
+  
+  <!-- Left Column: Detailed Info Card (740px) -->
+  <rect x="270" y="125" width="730" height="720" rx="10" fill="#FFFFFF" stroke="#E2E8F0"/>
+  
+  <!-- Header inside card -->
+  <text x="300" y="170" fill="#1F4E79" font-size="14" font-weight="700" font-family="monospace">TICKET #CMP-101</text>
+  <text x="300" y="200" fill="#0F172A" font-size="20" font-weight="800">Ceiling fan in room 204 making loud grinding noise</text>
+  
+  <!-- Status and Category Badges -->
+<rect x="300" y="220" width="82" height="24" rx="12" fill="#FEF3C7" stroke="#FDE68A"/>
+<text x="341.0" y="236" fill="#B45309" font-size="11" font-weight="600" text-anchor="middle">In-Progress</text>
+  <rect x="395" y="220" width="130" height="24" rx="12" fill="#F1F5F9" stroke="#E2E8F0"/>
+  <text x="460" y="236" fill="#334155" font-size="11" font-weight="600" text-anchor="middle">Hostel Maintenance</text>
+  
+  <text x="540" y="236" fill="#64748B" font-size="12">Filed: Oct 14, 2026, 09:30 AM</text>
+  
+  <line x1="300" y1="260" x2="970" y2="260" stroke="#E2E8F0"/>
+
+  <!-- Grievance Description -->
+  <text x="300" y="290" fill="#334155" font-size="12" font-weight="700">DESCRIPTION (Description TEXT)</text>
+  <rect x="300" y="300" width="670" height="95" rx="6" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="315" y="325" fill="#1E293B" font-size="13">The ceiling fan bearing started making severe metal grinding noise yesterday night. At regulator speed 3 or higher, the whole mounting rod shakes noticeably. Needs immediate bearing replacement before it falls.</text>
+
+  <!-- Location Details Grid -->
+  <text x="300" y="425" fill="#334155" font-size="12" font-weight="700">LOCATION &amp; RESIDENCE METADATA</text>
+  <rect x="300" y="435" width="325" height="75" rx="6" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="315" y="460" fill="#64748B" font-size="11">HOSTEL BUILDING</text>
+  <text x="315" y="482" fill="#0F172A" font-size="14" font-weight="700">Nilkanth Hostel (H-01)</text>
+
+  <rect x="645" y="435" width="325" height="75" rx="6" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="660" y="460" fill="#64748B" font-size="11">ROOM &amp; FIXTURE</text>
+  <text x="660" y="482" fill="#0F172A" font-size="14" font-weight="700">Room 204 • Left Ceiling Fan</text>
+
+  <!-- Assigned Technician Card -->
+  <text x="300" y="545" fill="#334155" font-size="12" font-weight="700">ACTIVE ASSIGNMENT (FROM Staff_Assignment)</text>
+  <rect x="300" y="555" width="670" height="85" rx="6" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <circle cx="340" cy="597" r="22" fill="#1F4E79"/>
+  <text x="340" y="603" fill="#FFFFFF" font-size="14" font-weight="700" text-anchor="middle">JD</text>
+  <text x="375" y="585" fill="#0F172A" font-size="14" font-weight="700">John Doe (Staff_ID: STF-04)</text>
+  <text x="375" y="603" fill="#475569" font-size="12">Electrician • Estate &amp; Maintenance Department</text>
+  <text x="375" y="621" fill="#1E40AF" font-size="11.5">Assigned by Warden Dr. Sharma on Oct 14, 11:15 AM</text>
+
+  <!-- Attachment Card -->
+  <text x="300" y="670" fill="#334155" font-size="12" font-weight="700">EVIDENCE ATTACHMENT</text>
+  <rect x="300" y="680" width="220" height="60" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <rect x="310" y="690" width="40" height="40" rx="4" fill="#E2E8F0"/>
+  <text x="330" y="715" fill="#64748B" font-size="14" text-anchor="middle">📷</text>
+  <text x="360" y="705" fill="#0F172A" font-size="12" font-weight="600">fan_wobble.jpg</text>
+  <text x="360" y="722" fill="#64748B" font-size="11">2.4 MB • JPG</text>
+
+  <!-- Right Column: SLA Health &amp; Mini Stepper (360px) -->
+  <rect x="1025" y="125" width="360" height="720" rx="10" fill="#FFFFFF" stroke="#E2E8F0"/>
+  
+  <text x="1050" y="165" fill="#0F172A" font-size="16" font-weight="700">SLA Resolution Timer</text>
+  <text x="1050" y="185" fill="#64748B" font-size="12">Calculated from Category.SLA_Days = 3</text>
+  
+  <!-- SLA Dial / Countdown -->
+  <rect x="1050" y="205" width="310" height="110" rx="8" fill="#FEF3C7" stroke="#FDE68A"/>
+  <text x="1070" y="235" fill="#92400E" font-size="12" font-weight="700">TIME REMAINING BEFORE AUTO-ESCALATION</text>
+  <text x="1070" y="275" fill="#B45309" font-size="30" font-weight="800">18h : 15m</text>
+  <text x="1070" y="298" fill="#78350F" font-size="11.5">Deadline: Oct 17, 2026, 09:30 AM</text>
+
+  <!-- State Machine Stepper -->
+  <text x="1050" y="350" fill="#0F172A" font-size="15" font-weight="700">State Machine Steps</text>
+  <text x="1050" y="370" fill="#64748B" font-size="11.5">No step can be skipped by application</text>
+  
+  <!-- Step 1 Done -->
+  <circle cx="1065" cy="405" r="10" fill="#10B981"/>
+  <text x="1065" y="409" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">✓</text>
+  <text x="1085" y="410" fill="#0F172A" font-size="13" font-weight="600">Open</text>
+  <text x="1275" y="410" fill="#64748B" font-size="11">Oct 14, 09:30</text>
+  <line x1="1065" y1="417" x2="1065" y2="455" stroke="#10B981" stroke-width="2"/>
+
+  <!-- Step 2 Done -->
+  <circle cx="1065" cy="465" r="10" fill="#10B981"/>
+  <text x="1065" y="469" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">✓</text>
+  <text x="1085" y="470" fill="#0F172A" font-size="13" font-weight="600">Assigned</text>
+  <text x="1275" y="470" fill="#64748B" font-size="11">Oct 14, 11:15</text>
+  <line x1="1065" y1="477" x2="1065" y2="515" stroke="#3B82F6" stroke-width="2"/>
+
+  <!-- Step 3 Active -->
+  <circle cx="1065" cy="525" r="10" fill="#3B82F6"/>
+  <circle cx="1065" cy="525" r="4" fill="#FFFFFF"/>
+  <text x="1085" y="530" fill="#1D4ED8" font-size="13" font-weight="700">In-Progress</text>
+  <text x="1275" y="530" fill="#1D4ED8" font-size="11" font-weight="600">Active Now</text>
+  <line x1="1065" y1="537" x2="1065" y2="575" stroke="#CBD5E1" stroke-width="2"/>
+
+  <!-- Step 4 Pending -->
+  <circle cx="1065" cy="585" r="10" fill="#E2E8F0"/>
+  <text x="1085" y="590" fill="#94A3B8" font-size="13">Resolved</text>
+  <text x="1275" y="590" fill="#94A3B8" font-size="11">Pending</text>
+
+  <!-- CTA -->
+  <rect x="1050" y="650" width="310" height="44" rx="8" fill="#1F4E79"/>
+  <text x="1205" y="677" fill="#FFFFFF" font-size="13" font-weight="700" text-anchor="middle">View Full Audit Trail Logs →</text>
+
+</svg>

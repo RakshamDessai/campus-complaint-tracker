@@ -1,0 +1,97 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="#F4F7FA"/>
+
+  <!-- Background Header Gradient Banner -->
+  <rect x="0" y="0" width="1440" height="380" fill="#0F2537"/>
+  <circle cx="1300" cy="80" r="180" fill="#183852" opacity="0.4"/>
+  <circle cx="100" cy="300" r="140" fill="#183852" opacity="0.3"/>
+  
+  <!-- Top Campus Brand Bar -->
+  <rect x="120" y="30" width="40" height="40" rx="8" fill="#1F4E79"/>
+  <path d="M132 50L140 42M140 42L148 50M140 42V56" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <text x="175" y="48" fill="#FFFFFF" font-size="18" font-weight="700">CAMPUS COMPLAINT &amp; GRIEVANCE TRACKER</text>
+  <text x="175" y="64" fill="#94A3B8" font-size="12">Database Management System • Computer Engineering Department</text>
+  
+  <!-- Hero Section -->
+  <text x="120" y="150" fill="#60A5FA" font-size="13" font-weight="700" letter-spacing="1">CENTRALIZED RELATIONAL PLATFORM</text>
+  <text x="120" y="195" fill="#FFFFFF" font-size="34" font-weight="800">Resolve Campus Grievances Faster.</text>
+  <text x="120" y="235" fill="#E2E8F0" font-size="17" font-weight="400">Database-enforced complaint lifecycle, automated SLA escalations, and dedicated role portals.</text>
+  
+  <!-- System Architecture Chips -->
+  <rect x="120" y="270" width="180" height="32" rx="16" fill="#1E3A52"/>
+  <text x="210" y="291" fill="#93C5FD" font-size="12" font-weight="600" text-anchor="middle">✔ State-Machine Lifecycle</text>
+  
+  <rect x="315" y="270" width="165" height="32" rx="16" fill="#1E3A52"/>
+  <text x="397" y="291" fill="#93C5FD" font-size="12" font-weight="600" text-anchor="middle">⚡ Auto SLA Escalation</text>
+  
+  <rect x="495" y="270" width="160" height="32" rx="16" fill="#1E3A52"/>
+  <text x="575" y="291" fill="#93C5FD" font-size="12" font-weight="600" text-anchor="middle">🔒 Immutable Audit Log</text>
+
+  <!-- 4 User Role Cards -->
+  <g id="RoleCards">
+    <!-- Student Portal Card -->
+    <rect x="120" y="360" width="270" height="420" rx="12" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="120" y="360" width="270" height="8" rx="4" fill="#3B82F6"/>
+    <rect x="145" y="395" width="50" height="50" rx="10" fill="#EFF6FF"/>
+    <text x="170" y="426" fill="#1D4ED8" font-size="20" font-weight="700" text-anchor="middle">🎓</text>
+    <text x="145" y="475" fill="#0F172A" font-size="19" font-weight="700">Student Portal</text>
+    <text x="145" y="500" fill="#64748B" font-size="12.5" line-height="1.4">File hostel, mess, academic, or maintenance grievances and inspect live audit progress.</text>
+    <line x1="145" y1="560" x2="365" y2="560" stroke="#F1F5F9"/>
+    <text x="145" y="590" fill="#475569" font-size="12">• Multi-category grievance filing</text>
+    <text x="145" y="615" fill="#475569" font-size="12">• Real-time SLA target tracking</text>
+    <text x="145" y="640" fill="#475569" font-size="12">• StatusHistory step visibility</text>
+    <rect x="145" y="700" width="220" height="44" rx="8" fill="#1F4E79"/>
+    <text x="255" y="727" fill="#FFFFFF" font-size="13" font-weight="600" text-anchor="middle">Enter Student Portal →</text>
+
+    <!-- Staff Portal Card -->
+    <rect x="420" y="360" width="270" height="420" rx="12" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="420" y="360" width="270" height="8" rx="4" fill="#10B981"/>
+    <rect x="445" y="395" width="50" height="50" rx="10" fill="#ECFDF5"/>
+    <text x="470" y="426" fill="#047857" font-size="20" font-weight="700" text-anchor="middle">🔧</text>
+    <text x="445" y="475" fill="#0F172A" font-size="19" font-weight="700">Staff &amp; Tech</text>
+    <text x="445" y="500" fill="#64748B" font-size="12.5">Technicians view assigned work queues, transition ticket states, and submit closure remarks.</text>
+    <line x1="445" y1="560" x2="665" y2="560" stroke="#F1F5F9"/>
+    <text x="445" y="590" fill="#475569" font-size="12">• Filtered queue by Staff_ID</text>
+    <text x="445" y="615" fill="#475569" font-size="12">• State machine validation</text>
+    <text x="445" y="640" fill="#475569" font-size="12">• Mandatory resolution notes</text>
+    <rect x="445" y="700" width="220" height="44" rx="8" fill="#0F2537"/>
+    <text x="555" y="727" fill="#FFFFFF" font-size="13" font-weight="600" text-anchor="middle">Staff Work Queue →</text>
+
+    <!-- Warden Portal Card -->
+    <rect x="720" y="360" width="270" height="420" rx="12" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="720" y="360" width="270" height="8" rx="4" fill="#F59E0B"/>
+    <rect x="745" y="395" width="50" height="50" rx="10" fill="#FFFBEB"/>
+    <text x="770" y="426" fill="#B45309" font-size="20" font-weight="700" text-anchor="middle">🏢</text>
+    <text x="745" y="475" fill="#0F172A" font-size="19" font-weight="700">Hostel Warden</text>
+    <text x="745" y="500" fill="#64748B" font-size="12.5">Supervise all residential complaints in your designated hostel and assign staff specialists.</text>
+    <line x1="745" y1="560" x2="965" y2="560" stroke="#F1F5F9"/>
+    <text x="745" y="590" fill="#475569" font-size="12">• Scoped hostel-wide visibility</text>
+    <text x="745" y="615" fill="#475569" font-size="12">• Dynamic technician assignment</text>
+    <text x="745" y="640" fill="#475569" font-size="12">• Urgent escalation handling</text>
+    <rect x="745" y="700" width="220" height="44" rx="8" fill="#0F2537"/>
+    <text x="855" y="727" fill="#FFFFFF" font-size="13" font-weight="600" text-anchor="middle">Warden Dashboard →</text>
+
+    <!-- Admin Portal Card -->
+    <rect x="1020" y="360" width="300" height="420" rx="12" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="1020" y="360" width="300" height="8" rx="4" fill="#8B5CF6"/>
+    <rect x="1045" y="395" width="50" height="50" rx="10" fill="#F5F3FF"/>
+    <text x="1070" y="426" fill="#6D28D9" font-size="20" font-weight="700" text-anchor="middle">📊</text>
+    <text x="1045" y="475" fill="#0F172A" font-size="19" font-weight="700">System Admin</text>
+    <text x="1045" y="500" fill="#64748B" font-size="12.5">Campus-wide analytics, department configuration, category SLA definitions, and master logs.</text>
+    <line x1="1045" y1="560" x2="1295" y2="560" stroke="#F1F5F9"/>
+    <text x="1045" y="590" fill="#475569" font-size="12">• Complete cross-dept database</text>
+    <text x="1045" y="615" fill="#475569" font-size="12">• SLA turnaround analytics</text>
+    <text x="1045" y="640" fill="#475569" font-size="12">• Master category management</text>
+    <rect x="1045" y="700" width="250" height="44" rx="8" fill="#0F2537"/>
+    <text x="1170" y="727" fill="#FFFFFF" font-size="13" font-weight="600" text-anchor="middle">Administrator Console →</text>
+  </g>
+
+  <!-- Footer Info -->
+  <text x="720" y="845" fill="#94A3B8" font-size="12" text-anchor="middle">DBMS Mini Project • Chirag Nikant Simepurushkar (24B-CO-015) • Raksham R Dessai (24B-CO-019) • Aayushi Rajesh Prabhu (24B-CO-001)</text>
+
+</svg>

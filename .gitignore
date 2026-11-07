@@ -1,0 +1,33 @@
+# Dependencies & build outputs
+node_modules/
+dist/
+build/
+.cache/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Temporary / intermediate build files & scratch images from PDF generation
+*dump.txt
+backup_doc_*.png
+clean_flow_*.png
+exact_*.png
+final_*.png
+flow_*.png
+natural_flow_*.png
+opt_*.png
+page_*_test.png
+perfection_*.png
+test_*.png
+test_*.html
+test_*.pdf
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini

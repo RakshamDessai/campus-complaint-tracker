@@ -1,0 +1,112 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="#F4F7FA"/>
+  <!-- Sidebar Navigation -->
+  <g id="Sidebar">
+    <rect x="0" y="0" width="240" height="900" fill="#0F2537"/>
+    <!-- Brand / Logo -->
+    <rect x="24" y="24" width="36" height="36" rx="8" fill="#1F4E79"/>
+    <path d="M34 42L42 34M42 34L50 42M42 34V48" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="68" y="38" fill="#FFFFFF" font-size="15" font-weight="700">CAMPUS TRACKER</text>
+    <text x="68" y="52" fill="#7E92A2" font-size="11" font-weight="500">STAFF PORTAL</text>
+    <line x1="20" y1="72" x2="220" y2="72" stroke="#1E384D" stroke-width="1"/>
+    <!-- Nav Item -->
+    <text x="36" y="120" fill="#A0B0BF" font-size="13.5" font-weight="500">Work Queue</text>
+    <!-- Active Nav Item -->
+    <rect x="12" y="143" width="216" height="40" rx="6" fill="#1F4E79"/>
+    <rect x="12" y="143" width="4" height="40" rx="2" fill="#60A5FA"/>
+    <text x="36" y="168" fill="#FFFFFF" font-size="13.5" font-weight="600">Ticket Action</text>
+    <!-- Nav Item -->
+    <text x="36" y="216" fill="#A0B0BF" font-size="13.5" font-weight="500">Resolution Log</text>
+    <!-- Nav Item -->
+    <text x="36" y="264" fill="#A0B0BF" font-size="13.5" font-weight="500">My Performance</text>
+    <!-- Nav Item -->
+    <text x="36" y="312" fill="#A0B0BF" font-size="13.5" font-weight="500">Profile</text>
+    <!-- Bottom Session / Database Info -->
+    <rect x="16" y="820" width="208" height="60" rx="8" fill="#183348"/>
+    <circle cx="36" cy="850" r="6" fill="#10B981"/>
+    <text x="50" y="846" fill="#FFFFFF" font-size="11.5" font-weight="600">DB State Machine</text>
+    <text x="50" y="862" fill="#8EA3B5" font-size="10.5">Enforcing 14 FRs &amp; SLAs</text>
+  </g>
+  <!-- Top Navigation Bar -->
+  <g id="TopBar">
+    <rect x="240" y="0" width="1200" height="70" fill="#FFFFFF"/>
+    <line x1="240" y1="70" x2="1440" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="272" y="32" fill="#64748B" font-size="11.5" font-weight="500">Home / Portal</text>
+    <text x="272" y="52" fill="#0F172A" font-size="18" font-weight="700">Ticket Action &amp; Transition Verification (FR5)</text>
+    
+    <!-- Search Bar -->
+    <rect x="720" y="16" width="300" height="38" rx="6" fill="#F1F5F9" stroke="#E2E8F0"/>
+    <circle cx="740" cy="35" r="5" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="744" y1="39" x2="750" y2="45" stroke="#94A3B8" stroke-width="1.5"/>
+    <text x="758" y="39" fill="#94A3B8" font-size="12">Search complaints, tickets, IDs...</text>
+    
+    <!-- Notification Bell -->
+    <circle cx="1060" cy="35" r="16" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <path d="M1057 32C1057 30 1059 28 1060 28C1061 28 1063 30 1063 32V36L1065 38H1055L1057 36V32Z" stroke="#475569" stroke-width="1.5"/>
+    <circle cx="1066" cy="27" r="4" fill="#EF4444"/>
+    
+    <!-- User Profile Badge -->
+    <circle cx="1120" cy="35" r="18" fill="#1F4E79"/>
+    <text x="1120" y="40" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">JO</text>
+    <text x="1148" y="33" fill="#0F172A" font-size="13" font-weight="600">John Doe</text>
+    <rect x="1148" y="40" width="70" height="18" rx="4" fill="#E2E8F0"/>
+    <text x="1183" y="53" fill="#334155" font-size="9.5" font-weight="600" text-anchor="middle">STAFF / ELECTRICIAN (STF-04)</text>
+  </g>
+
+  <!-- Main Work Card -->
+  <rect x="270" y="95" width="1115" height="750" rx="10" fill="#FFFFFF" stroke="#E2E8F0"/>
+  
+  <text x="300" y="140" fill="#0F172A" font-size="20" font-weight="800">Operational Ticket #CMP-102</text>
+  <text x="300" y="162" fill="#64748B" font-size="13">State machine validation ensures sequential progression (<tspan font-family="monospace">Assigned → In-Progress → Resolved</tspan>).</text>
+  <line x1="300" y1="180" x2="1340" y2="180" stroke="#E2E8F0"/>
+
+  <!-- Ticket Overview Box -->
+  <rect x="300" y="200" width="1040" height="150" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  
+  <text x="325" y="235" fill="#64748B" font-size="12" font-weight="600">STUDENT FILING DETAILS</text>
+  <text x="325" y="260" fill="#0F172A" font-size="15" font-weight="700">Chirag Nikant Simepurushkar (24B-CO-015)</text>
+  <text x="325" y="280" fill="#475569" font-size="12.5">Nilkanth Hostel • Room 205 • Phone: +91 9822110022</text>
+
+  <text x="750" y="235" fill="#64748B" font-size="12" font-weight="600">ISSUE REPORTED</text>
+  <text x="750" y="260" fill="#0F172A" font-size="14" font-weight="600">Bathroom tap leaking constantly on 2nd floor</text>
+  <text x="750" y="280" fill="#64748B" font-size="12">Filed: Oct 15, 2026, 14:10 PM • Category: Maintenance</text>
+
+  <text x="325" y="325" fill="#64748B" font-size="12" font-weight="600">CURRENT STATUS:</text>
+<rect x="440" y="310" width="82" height="24" rx="12" fill="#F5F3FF" stroke="#DDD6FE"/>
+<text x="481.0" y="326" fill="#6D28D9" font-size="11" font-weight="600" text-anchor="middle">Assigned</text>
+  <!-- State Transition Action Control Box -->
+  <rect x="300" y="375" width="1040" height="230" rx="8" fill="#FFFFFF" stroke="#1F4E79" stroke-width="1.5"/>
+  <rect x="300" y="375" width="1040" height="40" rx="8" fill="#1F4E79"/>
+  <text x="325" y="401" fill="#FFFFFF" font-size="14" font-weight="700">EXECUTE DATABASE STATE TRANSITION</text>
+
+  <text x="325" y="445" fill="#0F172A" font-size="14" font-weight="700">Permitted Next Transition for this Ticket:</text>
+  <text x="325" y="468" fill="#475569" font-size="13">The ticket is currently <tspan font-weight="700">'Assigned'</tspan>. Under business rule <tspan font-family="monospace">BR1</tspan>, you must acknowledge commencement of physical inspection before resolving.</text>
+
+  <!-- Transition Button 1: Allowed -->
+  <rect x="325" y="495" width="310" height="50" rx="8" fill="#10B981"/>
+  <text x="480" y="526" fill="#FFFFFF" font-size="14" font-weight="700" text-anchor="middle">✔ Transition to 'In-Progress' →</text>
+  <text x="325" y="565" fill="#047857" font-size="11">Logs transition into StatusHistory(History_Num = 3)</text>
+
+  <!-- Transition Button 2: Blocked by Database -->
+  <rect x="665" y="495" width="310" height="50" rx="8" fill="#F1F5F9" stroke="#CBD5E1"/>
+  <text x="820" y="526" fill="#94A3B8" font-size="14" font-weight="600" text-anchor="middle">🚫 Mark 'Resolved' (Blocked)</text>
+  <text x="665" y="565" fill="#B91C1C" font-size="11">Blocked by DB: Cannot jump straight from Assigned to Resolved</text>
+
+  <!-- Technical Checkbox Checklist -->
+  <rect x="300" y="630" width="1040" height="150" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="325" y="660" fill="#334155" font-size="13" font-weight="700">PRE-WORK VERIFICATION CHECKLIST</text>
+  <rect x="325" y="678" width="16" height="16" rx="4" fill="#1F4E79"/>
+  <path d="M328 686L332 690L338 682" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="350" y="691" fill="#334155" font-size="12.5">Student contacted and physical access to room 205 confirmed</text>
+
+  <rect x="325" y="708" width="16" height="16" rx="4" fill="#1F4E79"/>
+  <path d="M328 716L332 720L338 712" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="350" y="721" fill="#334155" font-size="12.5">Required plumbing tools and spare washers acquired from Estate inventory</text>
+
+</svg>

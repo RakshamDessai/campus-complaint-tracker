@@ -1,0 +1,173 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="#F4F7FA"/>
+  <!-- Sidebar Navigation -->
+  <g id="Sidebar">
+    <rect x="0" y="0" width="240" height="900" fill="#0F2537"/>
+    <!-- Brand / Logo -->
+    <rect x="24" y="24" width="36" height="36" rx="8" fill="#1F4E79"/>
+    <path d="M34 42L42 34M42 34L50 42M42 34V48" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="68" y="38" fill="#FFFFFF" font-size="15" font-weight="700">CAMPUS TRACKER</text>
+    <text x="68" y="52" fill="#7E92A2" font-size="11" font-weight="500">SYSTEM ADMIN</text>
+    <line x1="20" y1="72" x2="220" y2="72" stroke="#1E384D" stroke-width="1"/>
+    <!-- Active Nav Item -->
+    <rect x="12" y="95" width="216" height="40" rx="6" fill="#1F4E79"/>
+    <rect x="12" y="95" width="4" height="40" rx="2" fill="#60A5FA"/>
+    <text x="36" y="120" fill="#FFFFFF" font-size="13.5" font-weight="600">Executive Dashboard</text>
+    <!-- Nav Item -->
+    <text x="36" y="168" fill="#A0B0BF" font-size="13.5" font-weight="500">Dept &amp; SLA Config</text>
+    <!-- Nav Item -->
+    <text x="36" y="216" fill="#A0B0BF" font-size="13.5" font-weight="500">Staff Roster</text>
+    <!-- Nav Item -->
+    <text x="36" y="264" fill="#A0B0BF" font-size="13.5" font-weight="500">Analytics Reports</text>
+    <!-- Nav Item -->
+    <text x="36" y="312" fill="#A0B0BF" font-size="13.5" font-weight="500">Audit Logs</text>
+    <!-- Bottom Session / Database Info -->
+    <rect x="16" y="820" width="208" height="60" rx="8" fill="#183348"/>
+    <circle cx="36" cy="850" r="6" fill="#10B981"/>
+    <text x="50" y="846" fill="#FFFFFF" font-size="11.5" font-weight="600">DB State Machine</text>
+    <text x="50" y="862" fill="#8EA3B5" font-size="10.5">Enforcing 14 FRs &amp; SLAs</text>
+  </g>
+  <!-- Top Navigation Bar -->
+  <g id="TopBar">
+    <rect x="240" y="0" width="1200" height="70" fill="#FFFFFF"/>
+    <line x1="240" y1="70" x2="1440" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="272" y="32" fill="#64748B" font-size="11.5" font-weight="500">Home / Portal</text>
+    <text x="272" y="52" fill="#0F172A" font-size="18" font-weight="700">Campus-Wide Grievance Overview (FR9)</text>
+    
+    <!-- Search Bar -->
+    <rect x="720" y="16" width="300" height="38" rx="6" fill="#F1F5F9" stroke="#E2E8F0"/>
+    <circle cx="740" cy="35" r="5" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="744" y1="39" x2="750" y2="45" stroke="#94A3B8" stroke-width="1.5"/>
+    <text x="758" y="39" fill="#94A3B8" font-size="12">Search complaints, tickets, IDs...</text>
+    
+    <!-- Notification Bell -->
+    <circle cx="1060" cy="35" r="16" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <path d="M1057 32C1057 30 1059 28 1060 28C1061 28 1063 30 1063 32V36L1065 38H1055L1057 36V32Z" stroke="#475569" stroke-width="1.5"/>
+    <circle cx="1066" cy="27" r="4" fill="#EF4444"/>
+    
+    <!-- User Profile Badge -->
+    <circle cx="1120" cy="35" r="18" fill="#1F4E79"/>
+    <text x="1120" y="40" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">CA</text>
+    <text x="1148" y="33" fill="#0F172A" font-size="13" font-weight="600">Campus Administrator</text>
+    <rect x="1148" y="40" width="70" height="18" rx="4" fill="#E2E8F0"/>
+    <text x="1183" y="53" fill="#334155" font-size="9.5" font-weight="600" text-anchor="middle">SYS-ADMIN</text>
+  </g>
+
+  <!-- KPI Metrics Row for Admin -->
+  <g id="AdminKPIs">
+  <g>
+    <rect x="270" y="95" width="260" height="105" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="270" y="95" width="4" height="105" rx="2" fill="#1F4E79"/>
+    <text x="288" y="121" fill="#64748B" font-size="12" font-weight="600">CAMPUS TOTAL FILINGS</text>
+    <text x="288" y="157" fill="#0F172A" font-size="28" font-weight="700">142</text>
+    <text x="288" y="181" fill="#94A3B8" font-size="11.5">All campus departments</text>
+    <rect x="455" y="111" width="60" height="22" rx="4" fill="#EFF6FF"/>
+    <text x="485" y="126" fill="#1E40AF" font-size="10.5" font-weight="600" text-anchor="middle">INSTITUTION</text>
+  </g>  <g>
+    <rect x="555" y="95" width="260" height="105" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="555" y="95" width="4" height="105" rx="2" fill="#1F4E79"/>
+    <text x="573" y="121" fill="#64748B" font-size="12" font-weight="600">OVERALL SLA COMPLIANCE</text>
+    <text x="573" y="157" fill="#0F172A" font-size="28" font-weight="700">89.4%</text>
+    <text x="573" y="181" fill="#94A3B8" font-size="11.5">127 resolved in SLA</text>
+    <rect x="740" y="111" width="60" height="22" rx="4" fill="#EFF6FF"/>
+    <text x="770" y="126" fill="#1E40AF" font-size="10.5" font-weight="600" text-anchor="middle">HEALTHY</text>
+  </g>  <g>
+    <rect x="840" y="95" width="260" height="105" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="840" y="95" width="4" height="105" rx="2" fill="#1F4E79"/>
+    <text x="858" y="121" fill="#64748B" font-size="12" font-weight="600">ACTIVE WORKLOAD</text>
+    <text x="858" y="157" fill="#0F172A" font-size="28" font-weight="700">24</text>
+    <text x="858" y="181" fill="#94A3B8" font-size="11.5">Currently open/in-progress</text>
+    <rect x="1025" y="111" width="60" height="22" rx="4" fill="#EFF6FF"/>
+    <text x="1055" y="126" fill="#1E40AF" font-size="10.5" font-weight="600" text-anchor="middle">IN QUEUE</text>
+  </g>  <g>
+    <rect x="1125" y="95" width="260" height="105" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="1125" y="95" width="4" height="105" rx="2" fill="#EF4444"/>
+    <text x="1143" y="121" fill="#64748B" font-size="12" font-weight="600">ACTIVE ESCALATIONS</text>
+    <text x="1143" y="157" fill="#0F172A" font-size="28" font-weight="700">3</text>
+    <text x="1143" y="181" fill="#94A3B8" font-size="11.5">Overdue tickets campus-wide</text>
+    <rect x="1310" y="111" width="60" height="22" rx="4" fill="#FEE2E2"/>
+    <text x="1340" y="126" fill="#991B1B" font-size="10.5" font-weight="600" text-anchor="middle">3 BREACHES</text>
+  </g>
+  </g>
+
+  <!-- Two Analytical Cards -->
+  <!-- Left Chart: Department-wise Volume Breakdown (540px) -->
+  <rect x="270" y="225" width="545" height="340" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="295" y="260" fill="#0F172A" font-size="16" font-weight="700">Complaint Distribution by Department</text>
+  <text x="295" y="280" fill="#64748B" font-size="12">SQL: <tspan font-family="monospace">SELECT d.Dept_Name, COUNT(*) FROM Complaint c ... GROUP BY d.Dept_ID</tspan></text>
+  
+  <!-- Bar 1: Hostel -->
+  <text x="295" y="325" fill="#334155" font-size="12" font-weight="600">Hostel Office (H-01 to H-04)</text>
+  <text x="770" y="325" fill="#0F172A" font-size="12" font-weight="700" text-anchor="end">48 Tickets (34%)</text>
+  <rect x="295" y="333" width="480" height="12" rx="6" fill="#F1F5F9"/>
+  <rect x="295" y="333" width="163" height="12" rx="6" fill="#1F4E79"/>
+
+  <!-- Bar 2: Mess &amp; Dining -->
+  <text x="295" y="375" fill="#334155" font-size="12" font-weight="600">Mess &amp; Catering Department</text>
+  <text x="770" y="375" fill="#0F172A" font-size="12" font-weight="700" text-anchor="end">35 Tickets (25%)</text>
+  <rect x="295" y="383" width="480" height="12" rx="6" fill="#F1F5F9"/>
+  <rect x="295" y="383" width="120" height="12" rx="6" fill="#2E74B5"/>
+
+  <!-- Bar 3: Estate &amp; Maintenance -->
+  <text x="295" y="425" fill="#334155" font-size="12" font-weight="600">Estate &amp; Maintenance Works</text>
+  <text x="770" y="425" fill="#0F172A" font-size="12" font-weight="700" text-anchor="end">28 Tickets (20%)</text>
+  <rect x="295" y="433" width="480" height="12" rx="6" fill="#F1F5F9"/>
+  <rect x="295" y="433" width="96" height="12" rx="6" fill="#3B82F6"/>
+
+  <!-- Bar 4: Academics -->
+  <text x="295" y="475" fill="#334155" font-size="12" font-weight="600">Academic &amp; Exam Cell</text>
+  <text x="770" y="475" fill="#0F172A" font-size="12" font-weight="700" text-anchor="end">18 Tickets (13%)</text>
+  <rect x="295" y="483" width="480" height="12" rx="6" fill="#F1F5F9"/>
+  <rect x="295" y="483" width="62" height="12" rx="6" fill="#60A5FA"/>
+
+  <!-- Bar 5: IT &amp; Network -->
+  <text x="295" y="525" fill="#334155" font-size="12" font-weight="600">IT Infrastructure &amp; Labs</text>
+  <text x="770" y="525" fill="#0F172A" font-size="12" font-weight="700" text-anchor="end">13 Tickets (8%)</text>
+  <rect x="295" y="533" width="480" height="12" rx="6" fill="#F1F5F9"/>
+  <rect x="295" y="533" width="38" height="12" rx="6" fill="#93C5FD"/>
+
+  <!-- Right Chart: Status Distribution Ring / Cards (540px) -->
+  <rect x="840" y="225" width="545" height="340" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="865" y="260" fill="#0F172A" font-size="16" font-weight="700">Lifecycle State Machine Breakdown</text>
+  <text x="865" y="280" fill="#64748B" font-size="12">Verified against valid CHECK constraint status enum</text>
+  
+  <rect x="865" y="310" width="240" height="90" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="885" y="335" fill="#64748B" font-size="11" font-weight="700">RESOLVED TICKETS</text>
+  <text x="885" y="370" fill="#047857" font-size="28" font-weight="800">115</text>
+  <text x="885" y="390" fill="#059669" font-size="11.5">81.0% completion rate</text>
+
+  <rect x="1120" y="310" width="240" height="90" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="1140" y="335" fill="#64748B" font-size="11" font-weight="700">IN-PROGRESS JOBS</text>
+  <text x="1140" y="370" fill="#B45309" font-size="28" font-weight="800">16</text>
+  <text x="1140" y="390" fill="#D97706" font-size="11.5">11.3% active repairs</text>
+
+  <rect x="865" y="420" width="240" height="90" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="885" y="445" fill="#64748B" font-size="11" font-weight="700">TRIAGE / OPEN</text>
+  <text x="885" y="480" fill="#1D4ED8" font-size="28" font-weight="800">8</text>
+  <text x="885" y="500" fill="#2563EB" font-size="11.5">5.6% awaiting warden</text>
+
+  <rect x="1120" y="420" width="240" height="90" rx="8" fill="#F8FAFC" stroke="#FECACA"/>
+  <text x="1140" y="445" fill="#B91C1C" font-size="11" font-weight="700">SLA ESCALATED</text>
+  <text x="1140" y="480" fill="#B91C1C" font-size="28" font-weight="800">3</text>
+  <text x="1140" y="500" fill="#DC2626" font-size="11.5">2.1% requiring intervention</text>
+
+  <!-- Bottom Table: Recent Campus Activity -->
+  <rect x="270" y="585" width="1115" height="260" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="295" y="620" fill="#0F172A" font-size="15" font-weight="700">Real-Time Grievance Events Stream</text>
+  
+  <text x="295" y="655" fill="#1F4E79" font-size="12" font-family="monospace">11:30 AM</text>
+  <text x="375" y="655" fill="#0F172A" font-size="12.5">Ticket <tspan font-weight="700">#CMP-101</tspan> marked 'Resolved' by John Doe (Electrician) • Ceiling fan bearing replaced</text>
+
+  <text x="295" y="695" fill="#1F4E79" font-size="12" font-family="monospace">10:15 AM</text>
+  <text x="375" y="695" fill="#0F172A" font-size="12.5">Ticket <tspan font-weight="700">#CMP-104</tspan> assigned to Alex Green (Carpenter) by Warden Dr. Sharma</text>
+
+  <text x="295" y="735" fill="#B91C1C" font-size="12" font-family="monospace">08:00 AM</text>
+  <text x="375" y="735" fill="#B91C1C" font-size="12.5">Autonomous Escalation: Ticket <tspan font-weight="700">#CMP-099</tspan> auto-escalated by trigger after 72 hours SLA breach</text>
+
+</svg>

@@ -1,0 +1,115 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect width="1440" height="900" fill="#F4F7FA"/>
+  <!-- Sidebar Navigation -->
+  <g id="Sidebar">
+    <rect x="0" y="0" width="240" height="900" fill="#0F2537"/>
+    <!-- Brand / Logo -->
+    <rect x="24" y="24" width="36" height="36" rx="8" fill="#1F4E79"/>
+    <path d="M34 42L42 34M42 34L50 42M42 34V48" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="68" y="38" fill="#FFFFFF" font-size="15" font-weight="700">CAMPUS TRACKER</text>
+    <text x="68" y="52" fill="#7E92A2" font-size="11" font-weight="500">STUDENT PORTAL</text>
+    <line x1="20" y1="72" x2="220" y2="72" stroke="#1E384D" stroke-width="1"/>
+    <!-- Nav Item -->
+    <text x="36" y="120" fill="#A0B0BF" font-size="13.5" font-weight="500">Dashboard</text>
+    <!-- Nav Item -->
+    <text x="36" y="168" fill="#A0B0BF" font-size="13.5" font-weight="500">File Complaint</text>
+    <!-- Nav Item -->
+    <text x="36" y="216" fill="#A0B0BF" font-size="13.5" font-weight="500">My Complaints</text>
+    <!-- Active Nav Item -->
+    <rect x="12" y="239" width="216" height="40" rx="6" fill="#1F4E79"/>
+    <rect x="12" y="239" width="4" height="40" rx="2" fill="#60A5FA"/>
+    <text x="36" y="264" fill="#FFFFFF" font-size="13.5" font-weight="600">Live Timeline</text>
+    <!-- Nav Item -->
+    <text x="36" y="312" fill="#A0B0BF" font-size="13.5" font-weight="500">My Profile</text>
+    <!-- Bottom Session / Database Info -->
+    <rect x="16" y="820" width="208" height="60" rx="8" fill="#183348"/>
+    <circle cx="36" cy="850" r="6" fill="#10B981"/>
+    <text x="50" y="846" fill="#FFFFFF" font-size="11.5" font-weight="600">DB State Machine</text>
+    <text x="50" y="862" fill="#8EA3B5" font-size="10.5">Enforcing 14 FRs &amp; SLAs</text>
+  </g>
+  <!-- Top Navigation Bar -->
+  <g id="TopBar">
+    <rect x="240" y="0" width="1200" height="70" fill="#FFFFFF"/>
+    <line x1="240" y1="70" x2="1440" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="272" y="32" fill="#64748B" font-size="11.5" font-weight="500">Home / Portal</text>
+    <text x="272" y="52" fill="#0F172A" font-size="18" font-weight="700">Live Audit Stepper &amp; Transition Log</text>
+    
+    <!-- Search Bar -->
+    <rect x="720" y="16" width="300" height="38" rx="6" fill="#F1F5F9" stroke="#E2E8F0"/>
+    <circle cx="740" cy="35" r="5" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="744" y1="39" x2="750" y2="45" stroke="#94A3B8" stroke-width="1.5"/>
+    <text x="758" y="39" fill="#94A3B8" font-size="12">Search complaints, tickets, IDs...</text>
+    
+    <!-- Notification Bell -->
+    <circle cx="1060" cy="35" r="16" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <path d="M1057 32C1057 30 1059 28 1060 28C1061 28 1063 30 1063 32V36L1065 38H1055L1057 36V32Z" stroke="#475569" stroke-width="1.5"/>
+    <circle cx="1066" cy="27" r="4" fill="#EF4444"/>
+    
+    <!-- User Profile Badge -->
+    <circle cx="1120" cy="35" r="18" fill="#1F4E79"/>
+    <text x="1120" y="40" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">RA</text>
+    <text x="1148" y="33" fill="#0F172A" font-size="13" font-weight="600">Raksham Dessai</text>
+    <rect x="1148" y="40" width="70" height="18" rx="4" fill="#E2E8F0"/>
+    <text x="1183" y="53" fill="#334155" font-size="9.5" font-weight="600" text-anchor="middle">STUDENT (24B-CO-019)</text>
+  </g>
+
+  <!-- Card Container -->
+  <rect x="270" y="95" width="1115" height="750" rx="10" fill="#FFFFFF" stroke="#E2E8F0"/>
+  
+  <text x="310" y="140" fill="#0F172A" font-size="20" font-weight="800">StatusHistory Audit Trail: Ticket #CMP-101</text>
+  <text x="310" y="162" fill="#64748B" font-size="13">Weak entity table <tspan font-family="monospace">StatusHistory(Complaint_ID, History_Num)</tspan> populated automatically by database trigger <tspan font-family="monospace">trg_after_complaint_status_change</tspan>.</text>
+  <line x1="310" y1="180" x2="1340" y2="180" stroke="#E2E8F0"/>
+
+  <!-- Vertical Timeline Stepper -->
+  <!-- Step 1: Open -->
+  <circle cx="340" cy="240" r="16" fill="#10B981"/>
+  <text x="340" y="245" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">1</text>
+  <line x1="340" y1="260" x2="340" y2="360" stroke="#10B981" stroke-width="2.5"/>
+  
+  <rect x="380" y="215" width="930" height="95" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="405" y="242" fill="#0F172A" font-size="15" font-weight="700">Complaint Initialized (Status: 'Open')</text>
+  <text x="1290" y="242" fill="#64748B" font-size="12" text-anchor="end">Oct 14, 2026 • 09:30:15 AM</text>
+  <text x="405" y="265" fill="#475569" font-size="13">Triggered upon record creation by student Raksham Dessai (24B-CO-019). Ticket entered Warden triage queue.</text>
+  <text x="405" y="290" fill="#1F4E79" font-size="11.5" font-family="monospace">History_Num: 1 • Old_Status: NULL • New_Status: 'Open'</text>
+
+  <!-- Step 2: Assigned -->
+  <circle cx="340" cy="380" r="16" fill="#10B981"/>
+  <text x="340" y="385" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">2</text>
+  <line x1="340" y1="400" x2="340" y2="500" stroke="#3B82F6" stroke-width="2.5"/>
+  
+  <rect x="380" y="355" width="930" height="95" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="405" y="382" fill="#0F172A" font-size="15" font-weight="700">Staff Assigned: John Doe (Status: 'Assigned')</text>
+  <text x="1290" y="382" fill="#64748B" font-size="12" text-anchor="end">Oct 14, 2026 • 11:15:42 AM</text>
+  <text x="405" y="405" fill="#475569" font-size="13">Hostel Warden Dr. Ramesh Sharma assigned work to technician John Doe (STF-04). Assigned_At timestamp recorded.</text>
+  <text x="405" y="430" fill="#1F4E79" font-size="11.5" font-family="monospace">History_Num: 2 • Old_Status: 'Open' • New_Status: 'Assigned'</text>
+
+  <!-- Step 3: In-Progress -->
+  <circle cx="340" cy="520" r="16" fill="#3B82F6"/>
+  <text x="340" y="525" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">3</text>
+  <line x1="340" y1="540" x2="340" y2="640" stroke="#CBD5E1" stroke-width="2.5" stroke-dasharray="4 4"/>
+  
+  <rect x="380" y="495" width="930" height="95" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <text x="405" y="522" fill="#1D4ED8" font-size="15" font-weight="700">Work Commenced (Status: 'In-Progress')</text>
+  <text x="1290" y="522" fill="#1D4ED8" font-size="12" font-weight="600" text-anchor="end">Oct 15, 2026 • 10:00:00 AM</text>
+  <text x="405" y="545" fill="#1E293B" font-size="13">Technician acknowledged task and requisitioned replacement bearing from Estate Store. Work currently underway.</text>
+  <text x="405" y="570" fill="#1F4E79" font-size="11.5" font-family="monospace">History_Num: 3 • Old_Status: 'Assigned' • New_Status: 'In-Progress'</text>
+
+  <!-- Step 4: Resolved (Pending) -->
+  <circle cx="340" cy="660" r="16" fill="#E2E8F0"/>
+  <text x="340" y="665" fill="#64748B" font-size="12" font-weight="700" text-anchor="middle">4</text>
+  
+  <rect x="380" y="635" width="930" height="75" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-dasharray="4 4"/>
+  <text x="405" y="665" fill="#64748B" font-size="14" font-weight="700">Ticket Resolution &amp; Mandatory Closure (Status: 'Resolved')</text>
+  <text x="405" y="688" fill="#94A3B8" font-size="12.5">Awaiting technician physical repair verification and closure remarks entry.</text>
+
+  <!-- Security callout below -->
+  <rect x="310" y="730" width="1000" height="42" rx="6" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="810" y="756" fill="#475569" font-size="12" text-anchor="middle">🔒 <tspan font-weight="700">Database Invariant:</tspan> History rows are append-only. Triggers prevent UPDATE or DELETE operations on StatusHistory.</text>
+
+</svg>
