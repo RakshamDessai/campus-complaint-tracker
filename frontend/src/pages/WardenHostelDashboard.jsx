@@ -6,7 +6,13 @@ import { Link } from 'react-router-dom';
 
 export default function WardenHostelDashboard() {
   const { complaints, staffMembers, assignStaffToTicket } = useComplaints();
-  const [selectedTicket, setSelectedTicket] = useState(null);
+  const searchParams = new URLSearchParams(window.location.search);
+  const [selectedTicket, setSelectedTicket] = useState(() => {
+    if (searchParams.get('modal') === 'assign') {
+      return complaints.find(t => t.Status === 'Open') || complaints[0];
+    }
+    return null;
+  });
   const [assignedStaffId, setAssignedStaffId] = useState('');
   const [activeHostelFilter, setActiveHostelFilter] = useState('All');
 

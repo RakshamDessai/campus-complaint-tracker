@@ -8,7 +8,8 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, setCurrentUser } = useComplaints();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const searchParams = new URLSearchParams(location.search);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(searchParams.get('notifications') === 'open');
 
   const isGateway = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/staff-login';
 

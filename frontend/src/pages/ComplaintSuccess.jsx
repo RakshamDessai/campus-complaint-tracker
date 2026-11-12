@@ -4,11 +4,12 @@ import { CheckCircle, ArrowRight, Home, Clock, MapPin, Tag } from 'lucide-react'
 
 export default function ComplaintSuccess() {
   const location = useLocation();
-  const ticketData = location.state;
-
-  if (!ticketData) {
-    return <Navigate to="/student" replace />;
-  }
+  const ticketData = location.state || {
+    ticketId: 'CMP-2026-104',
+    title: 'Water Leakage in Bathroom',
+    category: 'Plumbing',
+    location: 'Hostel 1, Room 204'
+  };
 
   return (
     <div className="max-w-xl mx-auto py-8">

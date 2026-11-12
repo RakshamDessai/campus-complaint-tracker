@@ -6,13 +6,18 @@ import { Link } from 'react-router-dom';
 
 export default function WardenEscalations() {
   const { complaints, updateStatus, staffMembers, assignStaffToTicket } = useComplaints();
-  const [selectedTicket, setSelectedTicket] = useState(null);
-  const [reassignedStaffId, setReassignedStaffId] = useState('');
-
-  // Escalated or High/Critical priority tickets
   const urgentTickets = complaints.filter(
     t => t.Is_Escalated || t.Status === 'Escalated' || t.Priority === 'Critical' || (t.Priority === 'High' && t.Status !== 'Resolved')
   );
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const [reassignedStaffId, setReassignedStaffId] = useState('');
+  const [selectedTicket, setSelectedTicket] = useState(() => {
+    if (searchParams.get('modal') === 'reassign') {
+      return urgentTickets[0] || complaints[0];
+    }
+    return null;
+  });
 
   const handleEscalatePriority = (ticketId) => {
     updateStatus(ticketId, 'Escalated', 'Warden escalated priority due to SLA threshold breach.', 'Warden Desk');

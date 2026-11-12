@@ -20,7 +20,8 @@ export default function StaffTicketAction() {
   const navigate = useNavigate();
   const { complaints, updateStatus } = useComplaints();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const searchParams = new URLSearchParams(window.location.search);
+  const [isModalOpen, setIsModalOpen] = useState(searchParams.get('modal') === 'resolve');
   const [resolutionNote, setResolutionNote] = useState('');
   const [partsUsed, setPartsUsed] = useState('');
 
