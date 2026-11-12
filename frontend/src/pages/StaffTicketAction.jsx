@@ -59,7 +59,7 @@ export default function StaffTicketAction() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-2">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-              Figma Frame 11: Staff Work Order Action Console
+              Technician Action Console
             </span>
             <h1 className="text-2xl font-bold text-slate-900 mt-1">
               Work Order #{ticket.Complaint_ID}
@@ -142,7 +142,7 @@ export default function StaffTicketAction() {
                 className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-sm transition-all card-hover"
               >
                 <FileCheck className="w-4 h-4" />
-                <span>Complete Resolution (Frame 12 Modal)</span>
+                <span>Complete Resolution</span>
               </button>
             )}
           </div>
@@ -151,7 +151,7 @@ export default function StaffTicketAction() {
             to={`/student/complaints/${ticket.Complaint_ID}/timeline`}
             className="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1"
           >
-            <span>Inspect Live Status Timeline (Frame 09) &rarr;</span>
+            <span>Inspect Live Status Timeline &rarr;</span>
           </Link>
         </div>
       </div>
@@ -176,7 +176,7 @@ export default function StaffTicketAction() {
             >
               <div className="flex justify-between items-center pb-2 border-b border-slate-100">
                 <div>
-                  <span className="text-[10px] font-bold text-emerald-600 uppercase">Figma Frame 12: Resolution Modal</span>
+                  <span className="text-[10px] font-bold text-emerald-600 uppercase">Work Order Sign-Off</span>
                   <h3 className="text-base font-bold text-slate-900">Sign Off Work Order Completion</h3>
                 </div>
                 <button 

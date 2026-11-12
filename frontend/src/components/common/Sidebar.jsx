@@ -92,7 +92,7 @@ export default function Sidebar({ role = 'Student' }) {
       {/* Footer */}
       <div className="pt-4 border-t border-slate-100 text-xs text-slate-500">
         <span className="block text-[11px] font-medium text-slate-400">Campus Complaint Tracker</span>
-        <span className="font-semibold text-slate-700">Team: Chirag, Raksham &amp; Aayushi</span>
+        <span className="font-semibold text-slate-600">Official Campus Portal v1.0</span>
       </div>
     </aside>
   );

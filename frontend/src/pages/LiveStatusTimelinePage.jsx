@@ -35,11 +35,11 @@ export default function LiveStatusTimelinePage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <Link to={`/student/complaints/${complaint.Complaint_ID}`} className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Complaint Detail (Frame 08)
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to Complaint Detail
           </Link>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-              Figma Frame 09: Live Status Timeline View
+              Live Status Timeline &amp; Audit Trail
             </span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mt-1">

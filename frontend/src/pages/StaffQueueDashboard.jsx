@@ -42,7 +42,7 @@ export default function StaffQueueDashboard() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold mb-1">
-            <span>Figma Frame 10: Staff Queue Dashboard</span>
+            <span>Maintenance Operations</span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
             <Wrench className="w-6 h-6 text-blue-600" />
@@ -79,7 +79,7 @@ export default function StaffQueueDashboard() {
         </div>
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm card-hover">
           <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider block mb-1">
-            Resolution History (Frame 13)
+            Completed Archive
           </span>
           <Link to="/staff/history" className="text-2xl font-extrabold text-emerald-600 hover:underline block">
             {complaints.filter(t => t.Status === 'Resolved').length}
@@ -156,7 +156,7 @@ export default function StaffQueueDashboard() {
                     className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-xs px-3.5 py-1.5 rounded-lg border border-blue-200 transition-colors shadow-sm"
                   >
                     <Wrench className="w-3.5 h-3.5" />
-                    <span>Work Order Console (Frame 11) &rarr;</span>
+                    <span>Work Order Console &rarr;</span>
                   </Link>
 
                   {ticket.Status !== 'In-Progress' && (
@@ -173,7 +173,7 @@ export default function StaffQueueDashboard() {
                     className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-3.5 py-1.5 rounded-lg transition-colors shadow-sm"
                   >
                     <Check className="w-3.5 h-3.5" />
-                    <span>Resolve (Frame 12 Modal)</span>
+                    <span>Resolve Work Order</span>
                   </button>
                 </div>
 
@@ -209,7 +209,7 @@ export default function StaffQueueDashboard() {
             >
               <div className="flex justify-between items-center border-b border-slate-100 pb-2">
                 <div>
-                  <span className="text-[10px] font-bold text-emerald-600 uppercase">Figma Frame 12: Resolution Modal</span>
+                  <span className="text-[10px] font-bold text-emerald-600 uppercase">Official Resolution Sign-Off</span>
                   <h3 className="font-bold text-slate-900 text-base">Complete Work Order Resolution</h3>
                 </div>
                 <button 

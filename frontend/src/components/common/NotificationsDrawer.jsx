@@ -188,7 +188,7 @@ export default function NotificationsDrawer({ isOpen, onClose }) {
 
               {/* Drawer Footer */}
               <div className="p-3 bg-slate-50 border-t border-slate-200 text-center text-[11px] text-slate-400 font-medium">
-                Figma Frame 22: Notifications &amp; Alerts Drawer
+                Real-Time Campus Alert &amp; SLA Notification Center
               </div>
 
             </motion.div>

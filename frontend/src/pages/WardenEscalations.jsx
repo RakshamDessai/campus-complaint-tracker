@@ -142,7 +142,7 @@ export default function WardenEscalations() {
             >
               <div className="flex justify-between items-center border-b border-slate-100 pb-2">
                 <div>
-                  <span className="text-[10px] font-bold text-rose-600 uppercase">Figma Frame 17: Reassign Priority</span>
+                  <span className="text-[10px] font-bold text-rose-600 uppercase">Emergency Override</span>
                   <h3 className="font-bold text-slate-900 text-base">Reassign Complaint Technician</h3>
                 </div>
                 <button 

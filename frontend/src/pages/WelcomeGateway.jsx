@@ -57,7 +57,7 @@ export default function WelcomeGateway() {
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-900/60 border border-blue-400/40 text-blue-300 text-xs font-semibold mb-6 shadow-inner"
           >
             <ShieldCheck className="w-4 h-4 text-blue-400 animate-pulse" />
-            <span className="tracking-wide uppercase">CAMPUS GRIEVANCE PORTAL • FIGMA FRAME 01</span>
+            <span className="tracking-wide uppercase">CAMPUS GRIEVANCE PORTAL</span>
           </motion.div>
 
           <motion.h1 
@@ -119,7 +119,7 @@ export default function WelcomeGateway() {
               </div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded">
-                  Figma Frame 02 – 09
+                  Student Services
                 </span>
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-2">Student Portal</h3>
@@ -159,7 +159,7 @@ export default function WelcomeGateway() {
               </div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded">
-                  Figma Frame 10 – 17
+                  Maintenance Operations
                 </span>
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-2">Staff &amp; Warden Desk</h3>
@@ -199,7 +199,7 @@ export default function WelcomeGateway() {
               </div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded">
-                  Figma Frame 18 – 21
+                  Campus Governance
                 </span>
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-2">Campus Administration</h3>
@@ -233,9 +233,9 @@ export default function WelcomeGateway() {
       {/* Footer Info */}
       <footer className="mt-auto border-t border-slate-200 py-6 text-center text-xs text-slate-500">
         <p className="font-semibold text-slate-700 mb-1">
-          Campus Complaint &amp; Grievance Tracker — DBMS Mini-Project
+          Campus Complaint &amp; Grievance Tracker
         </p>
-        <p>Chirag Simepurushkar (24B-CO-015) • Raksham R. Dessai (24B-CO-019) • Aayushi Prabhu (24B-CO-001)</p>
+        <p>&copy; {new Date().getFullYear()} Campus Maintenance &amp; Student Welfare Administration. All rights reserved.</p>
       </footer>
     </div>
   );

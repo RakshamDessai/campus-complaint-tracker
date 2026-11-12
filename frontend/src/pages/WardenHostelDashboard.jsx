@@ -197,7 +197,7 @@ export default function WardenHostelDashboard() {
             >
               <div className="flex justify-between items-center border-b border-slate-100 pb-2">
                 <div>
-                  <span className="text-[10px] font-bold text-indigo-600 uppercase">Figma Frame 15: Staff Assignment</span>
+                  <span className="text-[10px] font-bold text-indigo-600 uppercase">Technician Dispatch</span>
                   <h3 className="font-bold text-slate-900 text-base">Assign Maintenance Staff</h3>
                 </div>
                 <button 

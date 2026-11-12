@@ -39,18 +39,18 @@ export default function ComplaintDetail() {
           </Link>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-              Figma Frame 08: Complaint Detail View
+              Grievance Detail &amp; Inspection
             </span>
           </div>
         </div>
 
-        {/* Shortcut to Frame 09: Live Status Timeline */}
+        {/* Shortcut to Live Status Timeline */}
         <Link
           to={`/student/complaints/${complaint.Complaint_ID}/timeline`}
           className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all card-hover"
         >
           <Clock className="w-3.5 h-3.5" />
-          <span>Open Full Timeline (Frame 09) &rarr;</span>
+          <span>Open Full Timeline &rarr;</span>
         </Link>
       </div>
 
@@ -226,7 +226,7 @@ export default function ComplaintDetail() {
             to={`/student/complaints/${complaint.Complaint_ID}/timeline`}
             className="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1"
           >
-            <span>View Full Timeline (Frame 09) &rarr;</span>
+            <span>View Full Timeline &rarr;</span>
           </Link>
         </div>
 
