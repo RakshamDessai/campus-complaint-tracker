@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useToast } from '../../context/ToastContext';
 import { 
   LayoutDashboard, 
   PlusCircle, 
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react';
 
 export default function Sidebar({ role = 'Student' }) {
+  const { toast } = useToast();
   const getNavItems = () => {
     switch (role) {
       case 'Staff':
@@ -60,6 +62,7 @@ export default function Sidebar({ role = 'Student' }) {
                 <NavLink
                   key={item.to}
                   to={item.to}
+                  onClick={() => toast.info(`Accessing ${item.label} workspace...`, { title: item.label, badge: `${role} Desk` })}
                   end={item.to === '/student' || item.to === '/staff' || item.to === '/warden' || item.to === '/admin'}
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors ${

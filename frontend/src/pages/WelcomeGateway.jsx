@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import CampusLogo from '../components/common/CampusLogo';
+import { useToast } from '../context/ToastContext';
 import { 
   ArrowRight, 
   User, 
@@ -39,6 +40,7 @@ const cardVariants = {
 };
 
 export default function WelcomeGateway() {
+  const { toast } = useToast();
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col overflow-x-hidden">
       
@@ -152,6 +154,7 @@ export default function WelcomeGateway() {
             </div>
             <Link
               to="/student"
+              onClick={() => toast.info('Accessing Student Resident Portal. Lodging, tracking, and feedback desk.', { title: 'Opening Student Portal', badge: 'Student Desk' })}
               className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all shadow-md group-hover:shadow-blue-500/25 active:scale-95"
             >
               <span>Enter Student Portal</span>
@@ -192,6 +195,7 @@ export default function WelcomeGateway() {
             </div>
             <Link
               to="/staff"
+              onClick={() => toast.info('Accessing Maintenance Operations Desk. Diagnostic queues and active work orders.', { title: 'Opening Staff Desk', badge: 'Technician Ops' })}
               className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all shadow-md active:scale-95"
             >
               <span>Enter Staff Desk</span>
@@ -232,6 +236,7 @@ export default function WelcomeGateway() {
             </div>
             <Link
               to="/admin"
+              onClick={() => toast.info('Accessing Central Administration & Executive Analytics Suite.', { title: 'Opening Admin Portal', badge: 'Governance' })}
               className="w-full inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all shadow-md active:scale-95"
             >
               <span>Enter Admin Dashboard</span>

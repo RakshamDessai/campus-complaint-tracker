@@ -1,11 +1,23 @@
 import React from 'react';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
-import { History, CheckCircle2, Clock, Calendar, Star } from 'lucide-react';
+import { History, CheckCircle2, Clock, Calendar, Star, Copy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function StaffHistory() {
   const { complaints, feedbacks } = useComplaints();
+  const { toast } = useToast();
+
+  const handleCopyTicket = (id) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(id);
+    }
+    toast.info(`Completed work order #${id} copied to clipboard.`, {
+      title: 'Reference Copied',
+      badge: 'Archive Docket'
+    });
+  };
 
   // Show complaints resolved or closed
   const resolvedTickets = complaints.filter(t => t.Status === 'Resolved');
@@ -43,7 +55,14 @@ export default function StaffHistory() {
               <div key={ticket.Complaint_ID} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4 hover:border-slate-300 transition-all">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono text-xs font-bold text-blue-600">{ticket.Complaint_ID}</span>
+                    <button
+                      onClick={() => handleCopyTicket(ticket.Complaint_ID)}
+                      title="Click to copy Ticket ID"
+                      className="font-mono text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded border border-blue-200 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>{ticket.Complaint_ID}</span>
+                      <Copy className="w-2.5 h-2.5" />
+                    </button>
                     <StatusBadge status={ticket.Status} />
                     <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
                       {ticket.Category_Name}

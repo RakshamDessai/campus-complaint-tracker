@@ -43,13 +43,25 @@ export default function AdminDashboard() {
 
         {/* Quick Nav Shortcut Buttons */}
         <div className="flex flex-wrap gap-2 text-xs font-semibold">
-          <Link to="/admin/sla" className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5">
+          <Link 
+            to="/admin/sla" 
+            onClick={() => toast.info('Accessing Department SLA Configuration & Turnaround Editor...', { title: 'Department SLAs', badge: 'Admin Nav' })}
+            className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5"
+          >
             <Settings className="w-3.5 h-3.5" /> SLAs
           </Link>
-          <Link to="/admin/roster" className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5">
+          <Link 
+            to="/admin/roster" 
+            onClick={() => toast.info('Accessing Central Personnel Directory & Duty Roster Matrix...', { title: 'Staff Roster', badge: 'Admin Nav' })}
+            className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5"
+          >
             <Users className="w-3.5 h-3.5" /> Staff Roster
           </Link>
-          <Link to="/admin/analytics" className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center gap-1.5">
+          <Link 
+            to="/admin/analytics" 
+            onClick={() => toast.info('Accessing Campus Executive Trend Intelligence & Visualization Charts...', { title: 'Analytical Reports', badge: 'Admin Nav' })}
+            className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center gap-1.5"
+          >
             <BarChart3 className="w-3.5 h-3.5" /> Full Reports
           </Link>
         </div>
@@ -126,7 +138,11 @@ export default function AdminDashboard() {
           const deptPending = deptComplaints.filter(c => c.Status !== 'Resolved');
 
           return (
-            <div key={dept.Dept_ID} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+            <div 
+              key={dept.Dept_ID} 
+              onClick={() => toast.info(`${dept.Dept_Name} oversees ${deptComplaints.length} grievances (${deptPending.length} active, ${deptResolved.length} resolved). Department Head: ${dept.Dept_Head}.`, { title: dept.Dept_Name, badge: dept.Dept_ID })}
+              className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3 hover:border-blue-300 transition-all cursor-pointer"
+            >
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="font-bold text-slate-900 text-sm">{dept.Dept_Name}</h3>

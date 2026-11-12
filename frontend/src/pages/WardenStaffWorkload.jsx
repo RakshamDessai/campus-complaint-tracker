@@ -1,9 +1,23 @@
 import React from 'react';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import { Users, Phone, Mail, CheckCircle2, AlertCircle, Wrench, Building } from 'lucide-react';
 
 export default function WardenStaffWorkload() {
   const { staffMembers, complaints, departments, toggleStaffAvailability } = useComplaints();
+  const { toast } = useToast();
+
+  const handleToggle = (staff, isAvailable) => {
+    toggleStaffAvailability(staff.Staff_ID);
+    const nextState = isAvailable ? 'OFF-DUTY' : 'AVAILABLE (ON-DUTY)';
+    toast.info(
+      `${staff.First_Name} ${staff.Last_Name} (${staff.Designation}) is now marked as ${nextState}. Warden dispatch matrix updated.`,
+      {
+        title: `Roster Updated: ${nextState}`,
+        badge: 'Staff Availability'
+      }
+    );
+  };
 
   // Maintenance staff only
   const technicians = staffMembers.filter(s => s.Role === 'Staff');
@@ -83,7 +97,7 @@ export default function WardenStaffWorkload() {
               {/* Duty Toggle Button */}
               <div className="pt-3 border-t border-slate-100">
                 <button
-                  onClick={() => toggleStaffAvailability(staff.Staff_ID)}
+                  onClick={() => handleToggle(staff, isAvailable)}
                   className={`w-full py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                     isAvailable 
                       ? 'bg-slate-100 hover:bg-slate-200 text-slate-700' 

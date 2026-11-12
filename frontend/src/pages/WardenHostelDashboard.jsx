@@ -110,7 +110,14 @@ export default function WardenHostelDashboard() {
           {['All', 'Mandovi', 'Zuari'].map(h => (
             <button
               key={h}
-              onClick={() => setActiveHostelFilter(h)}
+              onClick={() => {
+                setActiveHostelFilter(h);
+                const count = h === 'All' ? complaints.length : complaints.filter(t => t.Room_No?.includes(h) || (h === 'Mandovi' ? t.Hostel_ID === 'H1' : t.Hostel_ID === 'H2')).length;
+                toast.info(`Filtering grievances for ${h} Hostel block. Showing ${count} record(s).`, {
+                  title: `Hostel Filter: ${h}`,
+                  badge: 'Campus Block'
+                });
+              }}
               className={`px-3 py-1 rounded-md transition-colors ${
                 activeHostelFilter === h ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
