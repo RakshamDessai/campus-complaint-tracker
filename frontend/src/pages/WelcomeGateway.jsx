@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import CampusLogo from '../components/common/CampusLogo';
 import { 
   ArrowRight, 
   User, 
@@ -50,6 +51,17 @@ export default function WelcomeGateway() {
         
         <div className="max-w-5xl mx-auto text-center relative z-10">
           
+          {/* Official Animated Logo Emblem */}
+          <div className="flex justify-center mb-5">
+            <motion.div
+              initial={{ scale: 0, rotate: -15 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", damping: 14, stiffness: 220 }}
+            >
+              <CampusLogo size="xl" showText={false} />
+            </motion.div>
+          </div>
+
           <motion.div 
             initial={{ opacity: 0, scale: 0.9, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}

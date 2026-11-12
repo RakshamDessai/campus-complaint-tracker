@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Bell, User, LogOut } from 'lucide-react';
+import { Bell, User, LogOut } from 'lucide-react';
 import { useComplaints } from '../../context/ComplaintContext';
+import { useToast } from '../../context/ToastContext';
 import NotificationsDrawer from './NotificationsDrawer';
+import CampusLogo from './CampusLogo';
 
 export default function Navbar({ currentRole = 'Student', onRoleChange }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, setCurrentUser } = useComplaints();
+  const { toast } = useToast();
   const searchParams = new URLSearchParams(location.search);
   const [isDrawerOpen, setIsDrawerOpen] = useState(searchParams.get('notifications') === 'open');
 
@@ -31,6 +34,7 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
     if (setCurrentUser) {
       setCurrentUser(prev => ({ ...prev, role: newRole }));
     }
+    toast.info(`Switched active view to ${newRole} portal.`, 'Portal View Changed');
     if (newRole === 'Student') navigate('/student');
     else if (newRole === 'Staff') navigate('/staff');
     else if (newRole === 'Warden') navigate('/warden');
@@ -42,23 +46,11 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
       <header className="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
-          {/* Brand & Title */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <motion.div 
-              whileHover={{ rotate: 10, scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center border border-blue-400/30 group-hover:bg-blue-500 transition-colors shadow-sm"
-            >
-              <ShieldCheck className="w-6 h-6 text-white" />
+          {/* Brand & Title with Official Custom Logo */}
+          <Link to="/" className="group">
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <CampusLogo size="md" showText={true} textVariant="light" />
             </motion.div>
-            <div>
-              <span className="font-bold tracking-tight text-sm sm:text-base text-white block leading-tight">
-                CAMPUS COMPLAINT &amp; GRIEVANCE TRACKER
-              </span>
-              <span className="text-[11px] text-slate-400 font-medium">
-                Student &amp; Campus Maintenance Services
-              </span>
-            </div>
           </Link>
 
           {/* Navigation & Controls */}

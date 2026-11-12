@@ -1,9 +1,16 @@
 import React from 'react';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import { Users, Mail, Phone, Building, CheckCircle2, ShieldCheck } from 'lucide-react';
 
 export default function AdminStaffRoster() {
   const { staffMembers, departments, complaints, toggleStaffAvailability } = useComplaints();
+  const { toast } = useToast();
+
+  const handleToggle = (staff) => {
+    toggleStaffAvailability(staff.Staff_ID);
+    toast.info(`${staff.First_Name} ${staff.Last_Name} duty availability updated.`, 'Roster Status Changed');
+  };
 
   return (
     <div className="space-y-6">
@@ -75,7 +82,7 @@ export default function AdminStaffRoster() {
                     <td className="py-3.5 px-4 text-right">
                       {staff.Role === 'Staff' ? (
                         <button
-                          onClick={() => toggleStaffAvailability(staff.Staff_ID)}
+                          onClick={() => handleToggle(staff)}
                           className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all active:scale-95 shadow-sm ${
                             isAvailable 
                               ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200' 

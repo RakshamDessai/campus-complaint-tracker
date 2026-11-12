@@ -55,7 +55,7 @@ export default function StudentAuth() {
                   <input
                     type="text"
                     required
-                    defaultValue="Raksham"
+                    defaultValue="Aarav"
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                 </div>
@@ -64,7 +64,7 @@ export default function StudentAuth() {
                   <input
                     type="text"
                     required
-                    defaultValue="Dessai"
+                    defaultValue="Deshmukh"
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                 </div>
@@ -75,7 +75,7 @@ export default function StudentAuth() {
                 <input
                   type="text"
                   required
-                  defaultValue="24B-CO-019"
+                  defaultValue="STU-2026-042"
                   className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
@@ -109,7 +109,7 @@ export default function StudentAuth() {
               <input
                 type="email"
                 required
-                defaultValue="rakshamdessai2006@gmail.com"
+                defaultValue="aarav.deshmukh@campus.edu"
                 className="w-full text-xs pl-9 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>

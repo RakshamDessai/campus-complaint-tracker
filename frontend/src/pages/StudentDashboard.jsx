@@ -18,7 +18,7 @@ export default function StudentDashboard() {
   const { complaints, currentUser } = useComplaints();
   
   // Complaints belonging to the active student
-  const studentComplaints = complaints.filter(c => c.Student_ID === (currentUser.rollNo || '24B-CO-019'));
+  const studentComplaints = complaints.filter(c => c.Student_ID === (currentUser.rollNo || 'STU-2026-042'));
   
   const stats = {
     total: studentComplaints.length,
@@ -34,10 +34,10 @@ export default function StudentDashboard() {
       <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold mb-2">
-            <span>Student Resident</span> • <span>Roll No: {currentUser.rollNo || '24B-CO-019'}</span>
+            <span>Student Resident</span> • <span>Student ID: {currentUser.rollNo || 'STU-2026-042'}</span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900">
-            Welcome, {currentUser.name || 'Raksham Dessai'}
+            Welcome, {currentUser.name || 'Aarav Deshmukh'}
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-2">
             <span className="flex items-center gap-1.5">

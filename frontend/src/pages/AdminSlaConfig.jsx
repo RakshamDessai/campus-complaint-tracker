@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import { Settings, Clock, Save, CheckCircle2, ShieldAlert } from 'lucide-react';
 
 export default function AdminSlaConfig() {
   const { categories, departments, updateCategorySla } = useComplaints();
+  const { toast } = useToast();
   const [successMsg, setSuccessMsg] = useState('');
 
   const handleChange = (categoryId, val) => {
     updateCategorySla(categoryId, val);
+    toast.success(`Target resolution updated to ${val} days for ${categoryId}.`, 'SLA Saved');
     setSuccessMsg('SLA configuration saved successfully!');
     setTimeout(() => setSuccessMsg(''), 3000);
   };

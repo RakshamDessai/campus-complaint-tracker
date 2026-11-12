@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { AlertTriangle, Clock, ArrowUpRight, CheckCircle, ShieldAlert, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function WardenEscalations() {
   const { complaints, updateStatus, staffMembers, assignStaffToTicket } = useComplaints();
+  const { toast } = useToast();
   const urgentTickets = complaints.filter(
     t => t.Is_Escalated || t.Status === 'Escalated' || t.Priority === 'Critical' || (t.Priority === 'High' && t.Status !== 'Resolved')
   );
@@ -22,11 +24,14 @@ export default function WardenEscalations() {
 
   const handleEscalatePriority = (ticketId) => {
     updateStatus(ticketId, 'Escalated', 'Warden escalated priority due to SLA threshold breach.', 'Warden Desk');
+    toast.warning(`Ticket #${ticketId} escalated to Critical priority under Warden authority.`, 'Escalated to Admin');
   };
 
   const handleReassign = () => {
     if (!reassignedStaffId || !selectedTicket) return;
-    assignStaffToTicket(selectedTicket.Complaint_ID, reassignedStaffId, 'Hostel Warden (Emergency Reassignment)');
+    const ticketId = selectedTicket.Complaint_ID;
+    assignStaffToTicket(ticketId, reassignedStaffId, 'Hostel Warden (Emergency Reassignment)');
+    toast.info(`Ticket #${ticketId} reassigned to emergency technician.`, 'Technician Reassigned');
     setSelectedTicket(null);
     setReassignedStaffId('');
   };

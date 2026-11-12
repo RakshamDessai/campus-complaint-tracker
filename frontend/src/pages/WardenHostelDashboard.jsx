@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { Building, Users, AlertTriangle, UserPlus, Clock, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function WardenHostelDashboard() {
   const { complaints, staffMembers, assignStaffToTicket } = useComplaints();
+  const { toast } = useToast();
   const searchParams = new URLSearchParams(window.location.search);
   const [selectedTicket, setSelectedTicket] = useState(() => {
     if (searchParams.get('modal') === 'assign') {
@@ -29,7 +31,9 @@ export default function WardenHostelDashboard() {
 
   const handleAssignSubmit = () => {
     if (!assignedStaffId || !selectedTicket) return;
-    assignStaffToTicket(selectedTicket.Complaint_ID, assignedStaffId, 'Hostel Warden Mahesh Bhandari');
+    const ticketId = selectedTicket.Complaint_ID;
+    assignStaffToTicket(ticketId, assignedStaffId, 'Hostel Warden Mahesh Bhandari');
+    toast.success(`Dispatched technician for ticket #${ticketId}!`, 'Staff Assigned');
     setSelectedTicket(null);
     setAssignedStaffId('');
   };

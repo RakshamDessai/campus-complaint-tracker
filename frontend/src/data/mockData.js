@@ -33,10 +33,10 @@ export const staffMembers = [
 ];
 
 export const currentStudent = {
-  Student_ID: '24B-CO-019',
-  First_Name: 'Raksham',
-  Last_Name: 'Dessai',
-  Email: 'rakshamdessai2006@gmail.com',
+  Student_ID: 'STU-2026-042',
+  First_Name: 'Aarav',
+  Last_Name: 'Deshmukh',
+  Email: 'aarav.deshmukh@campus.edu',
   Hostel_ID: 'H1',
   Hostel_Name: 'Mandovi Hostel (Boys Block A)',
   Room_No: 'B-204',
@@ -52,8 +52,8 @@ export const complaints = [
     Category_ID: 'CAT-03',
     Category_Name: 'Plumbing & Water Sanitation',
     Dept_ID: 'D101',
-    Student_ID: '24B-CO-019',
-    Student_Name: 'Raksham Dessai',
+    Student_ID: 'STU-2026-042',
+    Student_Name: 'Aarav Deshmukh',
     Hostel_ID: 'H1',
     Room_No: 'B-204',
     Status: 'In-Progress',
@@ -72,8 +72,8 @@ export const complaints = [
     Category_ID: 'CAT-02',
     Category_Name: 'Electrical & Power Supply',
     Dept_ID: 'D101',
-    Student_ID: '24B-CO-019',
-    Student_Name: 'Raksham Dessai',
+    Student_ID: 'STU-2026-042',
+    Student_Name: 'Aarav Deshmukh',
     Hostel_ID: 'H1',
     Room_No: 'B-204',
     Status: 'Assigned',
@@ -92,8 +92,8 @@ export const complaints = [
     Category_ID: 'CAT-05',
     Category_Name: 'Campus Wi-Fi & LAN Network',
     Dept_ID: 'D103',
-    Student_ID: '24B-CO-019',
-    Student_Name: 'Raksham Dessai',
+    Student_ID: 'STU-2026-042',
+    Student_Name: 'Aarav Deshmukh',
     Hostel_ID: 'H1',
     Room_No: 'B-204',
     Status: 'Escalated',
@@ -112,8 +112,8 @@ export const complaints = [
     Category_ID: 'CAT-02',
     Category_Name: 'Electrical & Power Supply',
     Dept_ID: 'D101',
-    Student_ID: '24B-CO-019',
-    Student_Name: 'Raksham Dessai',
+    Student_ID: 'STU-2026-042',
+    Student_Name: 'Aarav Deshmukh',
     Hostel_ID: 'H1',
     Room_No: 'B-204',
     Status: 'Resolved',
@@ -133,8 +133,8 @@ export const complaints = [
     Category_ID: 'CAT-04',
     Category_Name: 'Mess Food & Hygiene',
     Dept_ID: 'D104',
-    Student_ID: '24B-CO-015',
-    Student_Name: 'Chirag Simepurushkar',
+    Student_ID: 'STU-2026-088',
+    Student_Name: 'Rohan Mehta',
     Hostel_ID: 'H2',
     Room_No: 'A-108',
     Status: 'Open',
@@ -150,12 +150,12 @@ export const complaints = [
 
 export const complaintTimelines = {
   'CMP-2026-081': [
-    { historyNum: 1, status: 'Open', timestamp: '2026-11-05 09:30 AM', user: 'Raksham Dessai (Student)', note: 'Complaint lodged online through Student Portal.' },
+    { historyNum: 1, status: 'Open', timestamp: '2026-11-05 09:30 AM', user: 'Aarav Deshmukh (Student)', note: 'Complaint lodged online through Student Portal.' },
     { historyNum: 2, status: 'Assigned', timestamp: '2026-11-05 11:15 AM', user: 'Warden Mahesh Bhandari', note: 'Assigned to Estate Plumber Kailash Prasad.' },
     { historyNum: 3, status: 'In-Progress', timestamp: '2026-11-06 02:15 PM', user: 'Kailash Prasad (Plumber)', note: 'Inspected valve; replacement spindle dispatched from warehouse.' }
   ],
   'CMP-2026-072': [
-    { historyNum: 1, status: 'Open', timestamp: '2026-11-01 10:15 AM', user: 'Raksham Dessai (Student)', note: 'Wi-Fi AP disconnections reported.' },
+    { historyNum: 1, status: 'Open', timestamp: '2026-11-01 10:15 AM', user: 'Aarav Deshmukh (Student)', note: 'Wi-Fi AP disconnections reported.' },
     { historyNum: 2, status: 'Assigned', timestamp: '2026-11-02 09:00 AM', user: 'System Auto-Router', note: 'Assigned to Network Engineer Gaurav Nair.' },
     { historyNum: 3, status: 'Escalated', timestamp: '2026-11-05 08:00 AM', user: 'Database Trigger [TRG_SLA_AUTO_ESCALATE]', note: 'SLA deadline exceeded 72 hours without resolution. Auto-escalated to Chief Admin.' }
   ]

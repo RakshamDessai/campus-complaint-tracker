@@ -9,7 +9,7 @@ export default function MyComplaints() {
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
 
-  const myComplaints = complaints.filter(c => c.Student_ID === (currentUser.rollNo || '24B-CO-019'));
+  const myComplaints = complaints.filter(c => c.Student_ID === (currentUser.rollNo || 'STU-2026-042'));
 
   const filtered = myComplaints.filter(c => {
     const matchesFilter = filter === 'All' ? true : c.Status === filter;

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { Wrench, CheckCircle2, Clock, AlertTriangle, Play, Check, ShieldAlert, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function StaffQueueDashboard() {
   const { complaints, updateStatus } = useComplaints();
+  const { toast } = useToast();
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [resolutionNote, setResolutionNote] = useState('');
   const [filterPriority, setFilterPriority] = useState('All');
@@ -21,16 +23,19 @@ export default function StaffQueueDashboard() {
 
   const handleStartWork = (ticketId) => {
     updateStatus(ticketId, 'In-Progress', 'Technician arrived on site and initiated diagnostics.', 'Vinod Sawant (Senior Electrician)');
+    toast.info(`Work order #${ticketId} status updated to In-Progress.`, 'Work Started');
   };
 
   const handleResolve = () => {
     if (!selectedTicket) return;
+    const ticketId = selectedTicket.Complaint_ID;
     updateStatus(
-      selectedTicket.Complaint_ID,
+      ticketId,
       'Resolved',
       resolutionNote.trim() || 'Work inspected and completed according to standard maintenance checklist.',
       'Vinod Sawant (Senior Electrician)'
     );
+    toast.success(`Work order #${ticketId} signed off as Resolved!`, 'Resolution Recorded');
     setSelectedTicket(null);
     setResolutionNote('');
   };

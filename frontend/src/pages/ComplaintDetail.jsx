@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { ArrowLeft, Clock, ShieldCheck, User, Building, AlertTriangle, Star, CheckCircle, ArrowRight } from 'lucide-react';
 
 export default function ComplaintDetail() {
   const { id } = useParams();
   const { complaints, timelines, submitFeedback, feedbacks } = useComplaints();
+  const { toast } = useToast();
 
   const [rating, setRating] = useState(5);
   const [comments, setComments] = useState('');
@@ -26,6 +28,7 @@ export default function ComplaintDetail() {
     e.preventDefault();
     submitFeedback(complaint.Complaint_ID, rating, comments);
     setFeedbackSubmitted(true);
+    toast.success(`Thank you! Your ${rating}-star quality rating has been recorded.`, 'Feedback Saved');
   };
 
   return (

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import { ArrowLeft, Clock, UploadCloud, CheckCircle2 } from 'lucide-react';
 
 export default function FileComplaint() {
   const navigate = useNavigate();
   const { categories, addComplaint, currentUser } = useComplaints();
+  const { toast } = useToast();
   
   const [selectedCat, setSelectedCat] = useState(categories[0] ? categories[0].Category_ID : 'CAT-01');
   const [priority, setPriority] = useState('High');
@@ -31,6 +33,8 @@ export default function FileComplaint() {
       priority,
       attachmentUrl: fileName ? `uploads/${fileName}` : null
     });
+
+    toast.success(`Grievance #${createdTicket.Complaint_ID} successfully registered!`, 'Ticket Filed');
 
     navigate('/student/success', { 
       state: { 

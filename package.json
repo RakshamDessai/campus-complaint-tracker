@@ -1,0 +1,10 @@
+{
+  "name": "campus-complaint-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Campus Complaint & Grievance Redressal System",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "dev": "cd frontend && npm run dev"
+  }
+}

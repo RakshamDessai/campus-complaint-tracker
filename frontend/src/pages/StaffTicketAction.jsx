@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { 
   ArrowLeft, 
@@ -20,6 +21,7 @@ export default function StaffTicketAction() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { complaints, updateStatus } = useComplaints();
+  const { toast } = useToast();
 
   const searchParams = new URLSearchParams(window.location.search);
   const [isModalOpen, setIsModalOpen] = useState(searchParams.get('modal') === 'resolve');
@@ -30,6 +32,7 @@ export default function StaffTicketAction() {
 
   const handleStartWork = () => {
     updateStatus(ticket.Complaint_ID, 'In-Progress', 'Technician arrived on-site and initiated active diagnostics.', 'Vinod Sawant (Senior Electrician)');
+    toast.info(`Work order #${ticket.Complaint_ID} active diagnostics initiated.`, 'Work Started');
   };
 
   const handleCompleteResolution = (e) => {
@@ -44,6 +47,7 @@ export default function StaffTicketAction() {
       finalNote || 'Issue repaired, tested, and verified according to standard maintenance checklist.',
       'Vinod Sawant (Senior Electrician)'
     );
+    toast.success(`Work order #${ticket.Complaint_ID} marked as Resolved!`, 'Resolution Recorded');
     setIsModalOpen(false);
     navigate('/staff/history');
   };

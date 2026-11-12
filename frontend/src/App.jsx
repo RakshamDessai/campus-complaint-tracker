@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ComplaintProvider } from './context/ComplaintContext';
+import { ToastProvider } from './context/ToastContext';
 import Navbar from './components/common/Navbar';
 import Sidebar from './components/common/Sidebar';
 
@@ -30,8 +31,9 @@ export default function App() {
   const [currentRole, setCurrentRole] = useState('Student');
 
   return (
-    <ComplaintProvider>
-      <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
+    <ToastProvider>
+      <ComplaintProvider>
+        <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
         
         {/* Top Header Navbar with Frame 22 Notifications Drawer */}
         <Navbar currentRole={currentRole} onRoleChange={setCurrentRole} />
@@ -48,12 +50,7 @@ export default function App() {
             element={
               <div className="flex flex-1">
                 <Sidebar role="Student" />
-                <motion.main 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full"
-                >
+                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
                   <Routes>
                     <Route path="/" element={<StudentDashboard />} />
                     <Route path="/new" element={<FileComplaint />} />
@@ -63,7 +60,7 @@ export default function App() {
                     <Route path="/complaints/:id/timeline" element={<LiveStatusTimelinePage />} />
                     <Route path="*" element={<Navigate to="/student" replace />} />
                   </Routes>
-                </motion.main>
+                </main>
               </div>
             }
           />
@@ -74,19 +71,14 @@ export default function App() {
             element={
               <div className="flex flex-1">
                 <Sidebar role="Staff" />
-                <motion.main 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full"
-                >
+                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
                   <Routes>
                     <Route path="/" element={<StaffQueueDashboard />} />
                     <Route path="/ticket/:id" element={<StaffTicketAction />} />
                     <Route path="/history" element={<StaffHistory />} />
                     <Route path="*" element={<Navigate to="/staff" replace />} />
                   </Routes>
-                </motion.main>
+                </main>
               </div>
             }
           />
@@ -97,19 +89,14 @@ export default function App() {
             element={
               <div className="flex flex-1">
                 <Sidebar role="Warden" />
-                <motion.main 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full"
-                >
+                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
                   <Routes>
                     <Route path="/" element={<WardenHostelDashboard />} />
                     <Route path="/escalations" element={<WardenEscalations />} />
                     <Route path="/staff" element={<WardenStaffWorkload />} />
                     <Route path="*" element={<Navigate to="/warden" replace />} />
                   </Routes>
-                </motion.main>
+                </main>
               </div>
             }
           />
@@ -120,12 +107,7 @@ export default function App() {
             element={
               <div className="flex flex-1">
                 <Sidebar role="Admin" />
-                <motion.main 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full"
-                >
+                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
                   <Routes>
                     <Route path="/" element={<AdminDashboard />} />
                     <Route path="/sla" element={<AdminSlaConfig />} />
@@ -133,7 +115,7 @@ export default function App() {
                     <Route path="/analytics" element={<AdminAnalytics />} />
                     <Route path="*" element={<Navigate to="/admin" replace />} />
                   </Routes>
-                </motion.main>
+                </main>
               </div>
             }
           />
@@ -142,7 +124,8 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
-      </div>
-    </ComplaintProvider>
+        </div>
+      </ComplaintProvider>
+    </ToastProvider>
   );
 }
