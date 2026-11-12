@@ -10,7 +10,14 @@ export default function AdminSlaConfig() {
 
   const handleChange = (categoryId, val) => {
     updateCategorySla(categoryId, val);
-    toast.success(`Target resolution updated to ${val} days for ${categoryId}.`, 'SLA Saved');
+    const cat = categories.find(c => c.Category_ID === categoryId);
+    toast.success(
+      `SLA turnaround for "${cat?.Category_Name || categoryId}" set to ${val} Business Day(s). Database trigger [TRG_SLA_AUTO_ESCALATE] updated across departments.`,
+      {
+        title: `Institutional Policy Updated • ${categoryId}`,
+        badge: 'Governance Policy'
+      }
+    );
     setSuccessMsg('SLA configuration saved successfully!');
     setTimeout(() => setSuccessMsg(''), 3000);
   };

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
-import { Search, Filter, PlusCircle, ArrowRight, Calendar, User } from 'lucide-react';
+import { Search, Filter, PlusCircle, ArrowRight, Calendar, User, Copy } from 'lucide-react';
 
 export default function MyComplaints() {
   const { complaints, currentUser } = useComplaints();
+  const { toast } = useToast();
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
 
@@ -18,6 +20,25 @@ export default function MyComplaints() {
                           c.Category_Name.toLowerCase().includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
+
+  const handleFilterChange = (status) => {
+    setFilter(status);
+    const count = status === 'All' ? myComplaints.length : myComplaints.filter(c => c.Status === status).length;
+    toast.info(`Displaying ${count} grievance record(s) matching filter "${status}".`, {
+      title: `Filter: ${status}`,
+      badge: 'Filter Active'
+    });
+  };
+
+  const handleCopyId = (id) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(id);
+    }
+    toast.info(`Grievance reference #${id} copied to clipboard.`, {
+      title: 'Copied to Clipboard',
+      badge: 'Clipboard'
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -45,7 +66,7 @@ export default function MyComplaints() {
           {['All', 'Open', 'Assigned', 'In-Progress', 'Resolved', 'Escalated'].map(status => (
             <button
               key={status}
-              onClick={() => setFilter(status)}
+              onClick={() => handleFilterChange(status)}
               className={`px-3 py-1.5 rounded-lg transition-colors ${
                 filter === status 
                   ? 'bg-blue-600 text-white shadow-sm' 
@@ -95,7 +116,14 @@ export default function MyComplaints() {
                 {filtered.map(c => (
                   <tr key={c.Complaint_ID} className="hover:bg-slate-50/70 transition-colors">
                     <td className="py-3.5 px-4 font-mono font-bold text-blue-600">
-                      {c.Complaint_ID}
+                      <button
+                        onClick={() => handleCopyId(c.Complaint_ID)}
+                        title="Click to copy Ticket ID"
+                        className="hover:underline flex items-center gap-1 group/btn"
+                      >
+                        <span>{c.Complaint_ID}</span>
+                        <Copy className="w-3 h-3 text-slate-400 group-hover/btn:text-blue-600 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                      </button>
                     </td>
                     <td className="py-3.5 px-4 font-medium text-slate-900 max-w-xs truncate">
                       {c.Title}

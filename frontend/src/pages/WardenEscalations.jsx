@@ -24,14 +24,27 @@ export default function WardenEscalations() {
 
   const handleEscalatePriority = (ticketId) => {
     updateStatus(ticketId, 'Escalated', 'Warden escalated priority due to SLA threshold breach.', 'Warden Desk');
-    toast.warning(`Ticket #${ticketId} escalated to Critical priority under Warden authority.`, 'Escalated to Admin');
+    toast.warning(
+      `Ticket #${ticketId} escalated to CRITICAL priority due to SLA turnaround overrun. Executive flag dispatched to Campus Administration console.`,
+      {
+        title: `Priority Escalated to Critical • #${ticketId}`,
+        badge: 'SLA Breach Alert'
+      }
+    );
   };
 
   const handleReassign = () => {
     if (!reassignedStaffId || !selectedTicket) return;
     const ticketId = selectedTicket.Complaint_ID;
+    const staff = staffMembers.find(s => s.Staff_ID === reassignedStaffId);
     assignStaffToTicket(ticketId, reassignedStaffId, 'Hostel Warden (Emergency Reassignment)');
-    toast.info(`Ticket #${ticketId} reassigned to emergency technician.`, 'Technician Reassigned');
+    toast.info(
+      `Work order #${ticketId} emergency re-routed to ${staff?.First_Name || 'technician'} ${staff?.Last_Name || ''} (${staff?.Designation || 'Maintenance Lead'}). Work order queue updated.`,
+      {
+        title: `Emergency Reassignment Completed`,
+        badge: 'Workload Rebalance'
+      }
+    );
     setSelectedTicket(null);
     setReassignedStaffId('');
   };

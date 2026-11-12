@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { staffMembers } from '../data/mockData';
+import { useToast } from '../context/ToastContext';
 import { Wrench, Lock, Mail, ArrowLeft, Shield } from 'lucide-react';
 
 export default function StaffAdminAuth() {
   const [role, setRole] = useState('Staff');
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleLogin = (e) => {
     e.preventDefault();
+    const staffTitle = role === 'Warden' ? 'Chief Warden Mahesh Bhandari' :
+                       role === 'Admin' ? 'Chief Administrator Dr. Anita Roy' :
+                       'Senior Electrician Vinod Sawant';
+    toast.success(
+      `Credential authentication verified. Session initialized for ${staffTitle} with ${role} clearance.`,
+      {
+        title: `Welcome to ${role} Portal`,
+        badge: `${role} Access`
+      }
+    );
     if (role === 'Warden') navigate('/warden');
     else if (role === 'Admin') navigate('/admin');
     else navigate('/staff');

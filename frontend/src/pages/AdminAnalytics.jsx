@@ -80,7 +80,13 @@ export default function AdminAnalytics() {
   ];
 
   const handleExportReport = () => {
-    toast.success('Campus Grievance Analytical Report (CSV/PDF) generated successfully!', 'Export Complete');
+    toast.success(
+      'Compiling 6-month resolution trends, SLA turnaround benchmarks, and hostel zone density into an audit-ready executive PDF & CSV digest.',
+      {
+        title: 'Analytical Dossier Generated',
+        badge: 'Executive Export'
+      }
+    );
   };
 
   return (
@@ -105,19 +111,28 @@ export default function AdminAnalytics() {
         <div className="flex flex-wrap items-center gap-2.5">
           <div className="flex bg-slate-800 rounded-xl p-1 border border-slate-700 text-xs font-semibold">
             <button
-              onClick={() => { setTimeRange('month'); toast.info('Displaying last 30 days trends.', 'Timeframe Changed'); }}
+              onClick={() => { 
+                setTimeRange('month'); 
+                toast.info('Recalibrating analytical matrices for the trailing 30-day operating window.', { title: 'Timeframe: 30 Days', badge: 'Telemetry Filter' }); 
+              }}
               className={`px-3 py-1.5 rounded-lg transition-all ${timeRange === 'month' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
             >
               30 Days
             </button>
             <button
-              onClick={() => { setTimeRange('semester'); toast.info('Displaying full academic semester trends.', 'Timeframe Changed'); }}
+              onClick={() => { 
+                setTimeRange('semester'); 
+                toast.info('Aggregating academic semester velocity across all departments and hostel residential blocks.', { title: 'Timeframe: Semester View', badge: 'Telemetry Filter' }); 
+              }}
               className={`px-3 py-1.5 rounded-lg transition-all ${timeRange === 'semester' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
             >
               Semester View
             </button>
             <button
-              onClick={() => { setTimeRange('year'); toast.info('Displaying full academic year benchmark.', 'Timeframe Changed'); }}
+              onClick={() => { 
+                setTimeRange('year'); 
+                toast.info('Synthesizing annual institutional SLA performance and turnaround velocity benchmark.', { title: 'Timeframe: Annual Benchmark', badge: 'Telemetry Filter' }); 
+              }}
               className={`px-3 py-1.5 rounded-lg transition-all ${timeRange === 'year' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
             >
               Annual

@@ -34,7 +34,13 @@ export default function FileComplaint() {
       attachmentUrl: fileName ? `uploads/${fileName}` : null
     });
 
-    toast.success(`Grievance #${createdTicket.Complaint_ID} successfully registered!`, 'Ticket Filed');
+    toast.success(
+      `Your complaint has been submitted to Estate Maintenance under a ${activeCategory?.SLA_Days || 2}-day resolution SLA. An automated tracking timeline has been initialized.`,
+      {
+        title: `Grievance #${createdTicket.Complaint_ID} Lodged`,
+        badge: 'Central Registry'
+      }
+    );
 
     navigate('/student/success', { 
       state: { 
@@ -49,7 +55,12 @@ export default function FileComplaint() {
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFileName(e.target.files[0].name);
+      const selected = e.target.files[0].name;
+      setFileName(selected);
+      toast.info(`Inspection media "${selected}" attached and queued for technician diagnostic review.`, {
+        title: 'Evidence Uploaded',
+        badge: 'File Attached'
+      });
     }
   };
 

@@ -9,7 +9,14 @@ export default function AdminStaffRoster() {
 
   const handleToggle = (staff) => {
     toggleStaffAvailability(staff.Staff_ID);
-    toast.info(`${staff.First_Name} ${staff.Last_Name} duty availability updated.`, 'Roster Status Changed');
+    const newStatus = staff.isAvailable === false ? 'ON-DUTY' : 'OFF-DUTY';
+    toast.info(
+      `${staff.First_Name} ${staff.Last_Name} (${staff.Designation}) marked as ${newStatus}. Central automated dispatch algorithm synchronized.`,
+      {
+        title: `Roster Shift Updated: ${newStatus}`,
+        badge: 'Staff Roster'
+      }
+    );
   };
 
   return (

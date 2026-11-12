@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Bell, AlertTriangle, CheckCircle2, Wrench, Clock, Trash2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useComplaints } from '../../context/ComplaintContext';
+import { useToast } from '../../context/ToastContext';
 
 export default function NotificationsDrawer({ isOpen, onClose }) {
   const { complaints } = useComplaints();
+  const { toast } = useToast();
   const [filter, setFilter] = useState('All');
   const [clearedIds, setClearedIds] = useState([]);
 
@@ -56,7 +58,15 @@ export default function NotificationsDrawer({ isOpen, onClose }) {
   });
 
   const handleClearAll = () => {
+    const count = notifications.length;
     setClearedIds(notifications.map(n => n.id));
+    toast.info(
+      `Marked ${count} active alerts as acknowledged. Your operational inbox is cleared.`,
+      {
+        title: 'Notifications Cleared',
+        badge: 'Inbox Zero'
+      }
+    );
   };
 
   return (

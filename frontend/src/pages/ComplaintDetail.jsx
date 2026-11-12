@@ -28,7 +28,23 @@ export default function ComplaintDetail() {
     e.preventDefault();
     submitFeedback(complaint.Complaint_ID, rating, comments);
     setFeedbackSubmitted(true);
-    toast.success(`Thank you! Your ${rating}-star quality rating has been recorded.`, 'Feedback Saved');
+    toast.success(
+      `Your ${rating}-Star verification rating and remarks have been recorded into the Central Quality Assurance registry.`,
+      {
+        title: 'Feedback Recorded',
+        badge: 'Quality Assurance'
+      }
+    );
+  };
+
+  const handleCopyId = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(complaint.Complaint_ID);
+    }
+    toast.info(`Ticket reference #${complaint.Complaint_ID} copied to your clipboard.`, {
+      title: 'Copied to Clipboard',
+      badge: 'Clipboard'
+    });
   };
 
   return (
@@ -62,7 +78,14 @@ export default function ComplaintDetail() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
           <div>
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span className="font-mono text-sm font-bold text-blue-600">{complaint.Complaint_ID}</span>
+              <button 
+                onClick={handleCopyId}
+                title="Click to copy Ticket ID"
+                className="font-mono text-sm font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-0.5 rounded-lg border border-blue-200 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>{complaint.Complaint_ID}</span>
+                <span className="text-[10px] text-blue-500 font-sans font-semibold">Copy</span>
+              </button>
               <StatusBadge status={complaint.Status} />
               {complaint.Is_Escalated && (
                 <span className="bg-rose-100 text-rose-800 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">

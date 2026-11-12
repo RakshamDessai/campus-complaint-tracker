@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { 
   PlusCircle, 
@@ -11,11 +12,13 @@ import {
   ArrowRight, 
   Building, 
   Phone,
-  FileText
+  FileText,
+  Copy
 } from 'lucide-react';
 
 export default function StudentDashboard() {
   const { complaints, currentUser } = useComplaints();
+  const { toast } = useToast();
   
   // Complaints belonging to the active student
   const studentComplaints = complaints.filter(c => c.Student_ID === (currentUser.rollNo || 'STU-2026-042'));
@@ -25,6 +28,16 @@ export default function StudentDashboard() {
     active: studentComplaints.filter(c => c.Status === 'Open' || c.Status === 'Assigned' || c.Status === 'In-Progress').length,
     resolved: studentComplaints.filter(c => c.Status === 'Resolved').length,
     escalated: studentComplaints.filter(c => c.Is_Escalated || c.Status === 'Escalated').length
+  };
+
+  const handleCopyTicket = (id) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(id);
+    }
+    toast.info(`Ticket reference #${id} copied to clipboard.`, {
+      title: 'Copied to Clipboard',
+      badge: 'Clipboard'
+    });
   };
 
   return (
@@ -68,6 +81,7 @@ export default function StudentDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.05 }}
           whileHover={{ y: -4, scale: 1.02 }}
+          onClick={() => toast.info(`You have filed ${stats.total} total grievances across campus facilities this semester.`, { title: 'Lifetime Summary', badge: 'Resident Dossier' })}
           className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm hover:shadow-md transition-all cursor-pointer"
         >
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
@@ -82,6 +96,7 @@ export default function StudentDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
           whileHover={{ y: -4, scale: 1.02 }}
+          onClick={() => toast.info(`${stats.active} complaint(s) currently being processed by maintenance dispatchers.`, { title: 'Active Work Orders', badge: 'Queue Status' })}
           className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm hover:shadow-md transition-all cursor-pointer"
         >
           <div className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1 flex items-center gap-1.5">
@@ -97,6 +112,7 @@ export default function StudentDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.15 }}
           whileHover={{ y: -4, scale: 1.02 }}
+          onClick={() => toast.success(`${stats.resolved} complaint(s) successfully inspected, verified, and resolved.`, { title: 'Resolved Grievances', badge: 'Completed' })}
           className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm hover:shadow-md transition-all cursor-pointer"
         >
           <div className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mb-1 flex items-center gap-1.5">
@@ -112,6 +128,7 @@ export default function StudentDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
           whileHover={{ y: -4, scale: 1.02 }}
+          onClick={() => toast.warning(`${stats.escalated} complaint(s) elevated to Chief Administration under SLA auto-escalation triggers.`, { title: 'SLA Escalations', badge: 'High Priority' })}
           className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm hover:shadow-md transition-all cursor-pointer"
         >
           <div className="text-xs font-semibold text-rose-600 uppercase tracking-wider mb-1 flex items-center gap-1.5">
@@ -161,7 +178,14 @@ export default function StudentDashboard() {
                 {studentComplaints.slice(0, 5).map((c) => (
                   <tr key={c.Complaint_ID} className="hover:bg-slate-50/70 transition-colors">
                     <td className="py-3.5 px-4 font-mono font-semibold text-blue-600">
-                      {c.Complaint_ID}
+                      <button
+                        onClick={() => handleCopyTicket(c.Complaint_ID)}
+                        title="Click to copy Ticket ID"
+                        className="hover:underline flex items-center gap-1 group/btn"
+                      >
+                        <span>{c.Complaint_ID}</span>
+                        <Copy className="w-3 h-3 text-slate-400 group-hover/btn:text-blue-600 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                      </button>
                     </td>
                     <td className="py-3.5 px-4 font-medium text-slate-700">
                       {c.Category_Name}

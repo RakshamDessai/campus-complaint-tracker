@@ -32,8 +32,15 @@ export default function WardenHostelDashboard() {
   const handleAssignSubmit = () => {
     if (!assignedStaffId || !selectedTicket) return;
     const ticketId = selectedTicket.Complaint_ID;
+    const staff = staffMembers.find(s => s.Staff_ID === assignedStaffId);
     assignStaffToTicket(ticketId, assignedStaffId, 'Hostel Warden Mahesh Bhandari');
-    toast.success(`Dispatched technician for ticket #${ticketId}!`, 'Staff Assigned');
+    toast.success(
+      `Dispatched ${staff?.First_Name || 'technician'} ${staff?.Last_Name || ''} (${staff?.Designation || 'Maintenance'}) to ticket #${ticketId}. Priority dispatch registered on duty roster.`,
+      {
+        title: `Technician Dispatched • #${ticketId}`,
+        badge: 'Roster Dispatch'
+      }
+    );
     setSelectedTicket(null);
     setAssignedStaffId('');
   };

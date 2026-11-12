@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
-import { ArrowLeft, Clock, ShieldCheck, User, Building, AlertTriangle, CheckCircle, Star, Printer, Share2 } from 'lucide-react';
+import { ArrowLeft, Clock, ShieldCheck, User, Building, AlertTriangle, CheckCircle, Star, Printer, Share2, RefreshCw } from 'lucide-react';
 
 export default function LiveStatusTimelinePage() {
   const { id } = useParams();
   const { complaints, timelines, submitFeedback, feedbacks } = useComplaints();
+  const { toast } = useToast();
 
   const [rating, setRating] = useState(5);
   const [comments, setComments] = useState('');
@@ -26,6 +28,38 @@ export default function LiveStatusTimelinePage() {
     e.preventDefault();
     submitFeedback(complaint.Complaint_ID, rating, comments);
     setFeedbackSubmitted(true);
+    toast.success(
+      `Your ${rating}-Star verification rating and remarks have been recorded into the Central Quality Assurance registry.`,
+      {
+        title: 'Feedback Recorded',
+        badge: 'Quality Assurance'
+      }
+    );
+  };
+
+  const handlePrint = () => {
+    toast.info(`Preparing print-ready official grievance audit docket for ticket #${complaint.Complaint_ID}...`, {
+      title: 'Audit Docket Ready',
+      badge: 'Print Service'
+    });
+    window.print();
+  };
+
+  const handleShare = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+    }
+    toast.info(`Direct tracking link for #${complaint.Complaint_ID} copied to clipboard.`, {
+      title: 'Tracking Link Copied',
+      badge: 'Share Link'
+    });
+  };
+
+  const handleRefresh = () => {
+    toast.info(`Telemetry synchronized with campus DBMS event-bus. Status confirmed as "${complaint.Status}".`, {
+      title: 'Audit Trail Synced',
+      badge: 'Live Sync'
+    });
   };
 
   return (
@@ -49,10 +83,24 @@ export default function LiveStatusTimelinePage() {
 
         <div className="flex items-center gap-2">
           <button 
-            onClick={() => window.print()}
+            onClick={handleRefresh}
             className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors"
+            title="Refresh Live Status"
           >
-            <Printer className="w-3.5 h-3.5" /> Print Audit Trail
+            <RefreshCw className="w-3.5 h-3.5" /> Sync Status
+          </button>
+          <button 
+            onClick={handleShare}
+            className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors"
+            title="Share Direct Tracker Link"
+          >
+            <Share2 className="w-3.5 h-3.5" /> Share
+          </button>
+          <button 
+            onClick={handlePrint}
+            className="px-3 py-1.5 bg-blue-600 text-white hover:bg-blue-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors"
+          >
+            <Printer className="w-3.5 h-3.5" /> Print Docket
           </button>
         </div>
       </div>

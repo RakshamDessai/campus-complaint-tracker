@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { hostels } from '../data/mockData';
+import { useToast } from '../context/ToastContext';
 import { User, Lock, Mail, Phone, Home, ArrowLeft } from 'lucide-react';
 
 export default function StudentAuth() {
   const [isRegister, setIsRegister] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    toast.success(
+      isRegister 
+        ? 'Resident registration verified and linked to Mandovi Hostel. Welcome aboard!' 
+        : 'Authenticated as resident Aarav Deshmukh (STU-2026-042). Active session initialized.',
+      {
+        title: isRegister ? 'Registration Completed' : 'Welcome Back, Aarav!',
+        badge: 'Resident Auth'
+      }
+    );
     navigate('/student');
   };
 

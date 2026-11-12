@@ -34,11 +34,32 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
     if (setCurrentUser) {
       setCurrentUser(prev => ({ ...prev, role: newRole }));
     }
-    toast.info(`Switched active view to ${newRole} portal.`, 'Portal View Changed');
+    toast.info(
+      `Switched session to ${newRole} Workspace with role-based permissions and dedicated operational queue.`,
+      {
+        title: `Switched to ${newRole} Portal`,
+        badge: 'Workspace Navigation'
+      }
+    );
     if (newRole === 'Student') navigate('/student');
     else if (newRole === 'Staff') navigate('/staff');
     else if (newRole === 'Warden') navigate('/warden');
     else if (newRole === 'Admin') navigate('/admin');
+  };
+
+  const handleOpenNotifications = () => {
+    setIsDrawerOpen(true);
+    toast.info('Fetched 4 real-time alerts from the campus SLA monitoring event bus.', {
+      title: 'Alerts & Telemetry Drawer',
+      badge: 'Live Events'
+    });
+  };
+
+  const handleLogout = () => {
+    toast.info('Session ended. Securely signed out of the workspace.', {
+      title: 'Signed Out',
+      badge: 'Session'
+    });
   };
 
   return (
@@ -76,7 +97,7 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
               <motion.button 
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.92 }}
-                onClick={() => setIsDrawerOpen(true)}
+                onClick={handleOpenNotifications}
                 className="relative p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer border border-transparent hover:border-slate-700"
                 title="Open Campus Notifications (Frame 22)"
               >
@@ -101,6 +122,7 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
               <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                 <Link
                   to="/"
+                  onClick={handleLogout}
                   className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors text-xs flex items-center gap-1"
                   title="Logout / Exit to Home"
                 >

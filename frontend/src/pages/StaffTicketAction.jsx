@@ -32,7 +32,13 @@ export default function StaffTicketAction() {
 
   const handleStartWork = () => {
     updateStatus(ticket.Complaint_ID, 'In-Progress', 'Technician arrived on-site and initiated active diagnostics.', 'Vinod Sawant (Senior Electrician)');
-    toast.info(`Work order #${ticket.Complaint_ID} active diagnostics initiated.`, 'Work Started');
+    toast.info(
+      `Technician logged at ${ticket.Room_No || 'site'}. Work order #${ticket.Complaint_ID} moved to In-Progress status.`,
+      {
+        title: `On-Site Diagnostics Started`,
+        badge: 'Diagnostic Active'
+      }
+    );
   };
 
   const handleCompleteResolution = (e) => {
@@ -47,7 +53,13 @@ export default function StaffTicketAction() {
       finalNote || 'Issue repaired, tested, and verified according to standard maintenance checklist.',
       'Vinod Sawant (Senior Electrician)'
     );
-    toast.success(`Work order #${ticket.Complaint_ID} marked as Resolved!`, 'Resolution Recorded');
+    toast.success(
+      `Work order #${ticket.Complaint_ID} signed off as Resolved.${partsUsed ? ` Inventory logged: ${partsUsed}.` : ''} Resident notified for feedback.`,
+      {
+        title: `Resolution Completed & Signed Off`,
+        badge: 'Work Order Closed'
+      }
+    );
     setIsModalOpen(false);
     navigate('/staff/history');
   };

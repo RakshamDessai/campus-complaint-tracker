@@ -23,7 +23,13 @@ export default function StaffQueueDashboard() {
 
   const handleStartWork = (ticketId) => {
     updateStatus(ticketId, 'In-Progress', 'Technician arrived on site and initiated diagnostics.', 'Vinod Sawant (Senior Electrician)');
-    toast.info(`Work order #${ticketId} status updated to In-Progress.`, 'Work Started');
+    toast.info(
+      `Work order #${ticketId} is now In-Progress. Diagnostic protocol initiated and resident notified via SMS timeline.`,
+      {
+        title: `Work Order #${ticketId} Activated`,
+        badge: 'On-Site Diagnostic'
+      }
+    );
   };
 
   const handleResolve = () => {
@@ -35,7 +41,13 @@ export default function StaffQueueDashboard() {
       resolutionNote.trim() || 'Work inspected and completed according to standard maintenance checklist.',
       'Vinod Sawant (Senior Electrician)'
     );
-    toast.success(`Work order #${ticketId} signed off as Resolved!`, 'Resolution Recorded');
+    toast.success(
+      `Work order #${ticketId} verified as Resolved. Audit record timestamped and resident prompted for satisfaction rating.`,
+      {
+        title: `Ticket #${ticketId} Resolved & Closed`,
+        badge: 'Resolution Complete'
+      }
+    );
     setSelectedTicket(null);
     setResolutionNote('');
   };

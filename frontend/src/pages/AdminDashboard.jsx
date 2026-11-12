@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { 
   Building2, 
@@ -17,6 +18,7 @@ import { Link } from 'react-router-dom';
 
 export default function AdminDashboard() {
   const { departments, categories, staffMembers, complaints } = useComplaints();
+  const { toast } = useToast();
 
   const total = complaints.length;
   const inProgress = complaints.filter(c => c.Status === 'In-Progress').length;
@@ -60,6 +62,7 @@ export default function AdminDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.05 }}
           whileHover={{ y: -4, scale: 1.02 }}
+          onClick={() => toast.info(`Central DBMS stores ${total} lifetime campus complaints across 4 infrastructure departments.`, { title: 'Institutional Telemetry', badge: 'Database Metrics' })}
           className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
         >
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Campus Complaints</span>
@@ -72,6 +75,7 @@ export default function AdminDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
           whileHover={{ y: -4, scale: 1.02 }}
+          onClick={() => toast.info(`${inProgress} work orders currently active in technician diagnostic pipelines.`, { title: 'Active Repairs', badge: 'Staff Queue' })}
           className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
         >
           <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider block mb-1 flex items-center gap-1.5">
@@ -86,6 +90,7 @@ export default function AdminDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.15 }}
           whileHover={{ y: -4, scale: 1.02 }}
+          onClick={() => toast.success(`${resolved} issues resolved. Campus-wide SLA compliance rate is currently ${total > 0 ? Math.round((resolved / total) * 100) : 0}%.`, { title: 'Resolution Compliance', badge: 'Performance' })}
           className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
         >
           <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider block mb-1 flex items-center gap-1.5">
@@ -102,6 +107,7 @@ export default function AdminDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
           whileHover={{ y: -4, scale: 1.02 }}
+          onClick={() => toast.warning(`${escalated} critical breach tickets requiring administrative review and reallocation.`, { title: 'Critical SLA Overruns', badge: 'Action Required' })}
           className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
         >
           <span className="text-xs font-semibold text-rose-600 uppercase tracking-wider block mb-1 flex items-center gap-1.5">
