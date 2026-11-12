@@ -1,3 +1,6 @@
+# Codebase memory & local agent caches (personal use only)
+.codebase-memory/
+
 # Dependencies & build outputs
 node_modules/
 dist/
@@ -12,6 +15,7 @@ build/
 
 # Temporary / intermediate build files & scratch images from PDF generation
 *dump.txt
+backup_*.txt
 backup_doc_*.png
 clean_flow_*.png
 exact_*.png
@@ -24,6 +28,19 @@ perfection_*.png
 test_*.png
 test_*.html
 test_*.pdf
+*.zip
+
+# Scratch generator scripts & intermediate HTML builds
+build_*.py
+generate_*.py
+clean_*.html
+exact_*.html
+full_*.html
+Phase3_Normalization.html
+phase1again.pdf
+phase1pdf.pdf
+main ER_Document_backup.pdf
+Chen_ER_Diagram_backup.jpg
 
 # Editor & OS files
 .vscode/
