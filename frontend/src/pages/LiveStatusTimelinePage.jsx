@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { ArrowLeft, Clock, ShieldCheck, User, Building, AlertTriangle, CheckCircle, Star, Printer, Share2 } from 'lucide-react';
@@ -124,8 +125,14 @@ export default function LiveStatusTimelinePage() {
                   )}
                 </div>
 
-                {/* Event Card */}
-                <div className="bg-slate-50 hover:bg-white border border-slate-200/80 rounded-xl p-4 transition-all card-hover">
+                {/* Event Card with Motion */}
+                <motion.div 
+                  initial={{ opacity: 0, x: -15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.12, duration: 0.3 }}
+                  whileHover={{ x: 4, transition: { duration: 0.15 } }}
+                  className="bg-slate-50 hover:bg-white border border-slate-200/80 rounded-xl p-4 transition-all shadow-sm hover:shadow-md"
+                >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
                     <div className="flex items-center gap-2">
                       <StatusBadge status={step.status} />
@@ -148,7 +155,7 @@ export default function LiveStatusTimelinePage() {
                       ✓ Logged &amp; Verified
                     </span>
                   </div>
-                </div>
+                </motion.div>
               </div>
             );
           })}

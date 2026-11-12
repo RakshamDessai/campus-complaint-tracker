@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { 
@@ -52,30 +53,63 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Metrics Grid */}
+      {/* Metrics Grid with Staggered Motion */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+          whileHover={{ y: -4, scale: 1.02 }}
+          className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+        >
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Campus Complaints</span>
           <span className="text-2xl font-extrabold text-slate-900">{total}</span>
           <span className="text-[11px] text-slate-400 block mt-1">Total recorded</span>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider block mb-1">Active Repairs</span>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          whileHover={{ y: -4, scale: 1.02 }}
+          className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+        >
+          <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider block mb-1 flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 animate-pulse" /> Active Repairs
+          </span>
           <span className="text-2xl font-extrabold text-blue-600">{inProgress}</span>
           <span className="text-[11px] text-slate-400 block mt-1">Work underway</span>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider block mb-1">Resolved</span>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.15 }}
+          whileHover={{ y: -4, scale: 1.02 }}
+          className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+        >
+          <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider block mb-1 flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5" /> Resolved
+          </span>
           <span className="text-2xl font-extrabold text-emerald-600">{resolved}</span>
           <span className="text-[11px] text-slate-400 block mt-1">
             {total > 0 ? Math.round((resolved / total) * 100) : 0}% compliance rate
           </span>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <span className="text-xs font-semibold text-rose-600 uppercase tracking-wider block mb-1">Breached &amp; Escalated</span>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          whileHover={{ y: -4, scale: 1.02 }}
+          className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+        >
+          <span className="text-xs font-semibold text-rose-600 uppercase tracking-wider block mb-1 flex items-center gap-1.5">
+            <AlertTriangle className="w-3.5 h-3.5 animate-bounce" /> Breached &amp; Escalated
+          </span>
           <span className="text-2xl font-extrabold text-rose-600">{escalated}</span>
           <span className="text-[11px] text-slate-400 block mt-1">Exceeded standard SLA</span>
-        </div>
+        </motion.div>
       </div>
 
       {/* Department Cards Grid */}

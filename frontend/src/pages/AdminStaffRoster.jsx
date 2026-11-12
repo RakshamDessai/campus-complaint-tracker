@@ -76,13 +76,14 @@ export default function AdminStaffRoster() {
                       {staff.Role === 'Staff' ? (
                         <button
                           onClick={() => toggleStaffAvailability(staff.Staff_ID)}
-                          className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all active:scale-95 shadow-sm ${
                             isAvailable 
-                              ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200' 
-                              : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200'
+                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200' 
+                              : 'bg-slate-200 text-slate-700 border border-slate-300 hover:bg-slate-300'
                           }`}
                         >
-                          {isAvailable ? '● Available' : '○ Off-Duty'}
+                          <span className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`}></span>
+                          <span>{isAvailable ? 'On-Duty' : 'Off-Duty'}</span>
                         </button>
                       ) : (
                         <span className="text-slate-400 text-[11px]">Permanent</span>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
   ArrowRight, 
   User, 
@@ -7,126 +8,231 @@ import {
   Wrench, 
   Clock, 
   CheckCircle2, 
-  ShieldCheck 
+  ShieldCheck,
+  Sparkles,
+  Zap
 } from 'lucide-react';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { 
+      type: "spring", 
+      damping: 20, 
+      stiffness: 260 
+    }
+  }
+};
 
 export default function WelcomeGateway() {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Hero Banner */}
-      <section className="bg-slate-900 text-white relative overflow-hidden py-16 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+    <div className="min-h-screen bg-slate-50 flex flex-col overflow-x-hidden">
+      
+      {/* Hero Banner with Ambient Glowing Orbs */}
+      <section className="bg-slate-900 text-white relative overflow-hidden py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+        
+        {/* Animated Background Glow Blobs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none animate-pulse-glow -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-10 right-1/4 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none animate-float-slow" />
+        
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/50 border border-blue-500/30 text-blue-300 text-xs font-semibold mb-6">
-            <ShieldCheck className="w-4 h-4 text-blue-400" />
-            <span>CAMPUS GRIEVANCE PORTAL</span>
-          </div>
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-900/60 border border-blue-400/40 text-blue-300 text-xs font-semibold mb-6 shadow-inner"
+          >
+            <ShieldCheck className="w-4 h-4 text-blue-400 animate-pulse" />
+            <span className="tracking-wide uppercase">CAMPUS GRIEVANCE PORTAL • FIGMA FRAME 01</span>
+          </motion.div>
 
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
-            Campus Complaint &amp; Grievance Tracker
-          </h1>
-          <p className="max-w-2xl mx-auto text-slate-300 text-base sm:text-lg mb-8 leading-relaxed font-normal">
-            A single platform to lodge, track, and resolve campus issues across Hostel, Mess, Infrastructure, IT, and Academics.
-          </p>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-5 leading-tight"
+          >
+            Campus Complaint &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-400">Grievance Tracker</span>
+          </motion.h1>
 
-          <div className="flex flex-wrap justify-center gap-3 text-xs font-medium text-slate-300">
-            <span className="bg-slate-800 px-3.5 py-1.5 rounded-full border border-slate-700 flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Fast Issue Resolution
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="max-w-2xl mx-auto text-slate-300 text-base sm:text-lg mb-8 leading-relaxed font-normal"
+          >
+            A single unified campus system to lodge, monitor, and resolve student complaints across Hostel, Mess, Infrastructure, Electrical, Plumbing, and Wi-Fi.
+          </motion.p>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex flex-wrap justify-center gap-3 text-xs font-medium text-slate-300"
+          >
+            <span className="bg-slate-800/80 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/80 flex items-center gap-2 shadow-sm hover:border-slate-600 transition-colors">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Fast SLA Resolution
             </span>
-            <span className="bg-slate-800 px-3.5 py-1.5 rounded-full border border-slate-700 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-blue-400" /> Real-Time Status Tracking
+            <span className="bg-slate-800/80 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/80 flex items-center gap-2 shadow-sm hover:border-slate-600 transition-colors">
+              <Clock className="w-3.5 h-3.5 text-blue-400" /> Real-Time Live Status Tracking
             </span>
-            <span className="bg-slate-800 px-3.5 py-1.5 rounded-full border border-slate-700 flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" /> Transparent Accountability
+            <span className="bg-slate-800/80 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/80 flex items-center gap-2 shadow-sm hover:border-slate-600 transition-colors">
+              <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" /> Transparent Escalation System
             </span>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* 3 Dedicated Role Cards */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 mb-16 relative z-20 w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* 3 Dedicated Role Cards with Staggered Entrance & Interactive Hover Lift */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 mb-16 relative z-20 w-full">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
 
           {/* Card 1: Student Portal */}
-          <div className="bg-white rounded-xl shadow-md border border-slate-200 p-6 flex flex-col justify-between hover:shadow-lg hover:border-blue-300 transition-all">
+          <motion.div 
+            variants={cardVariants}
+            whileHover={{ y: -8, transition: { duration: 0.2 } }}
+            className="bg-white rounded-2xl shadow-lg border border-slate-200/90 p-7 flex flex-col justify-between hover:shadow-2xl hover:border-blue-300 transition-all group"
+          >
             <div>
-              <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-5 border border-blue-100">
-                <User className="w-6 h-6" />
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-6 border border-blue-100 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                <User className="w-7 h-7" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-2">Student Portal</h3>
-              <p className="text-slate-600 text-sm mb-4 leading-relaxed">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded">
+                  Figma Frame 02 – 09
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Student Portal</h3>
+              <p className="text-slate-600 text-xs sm:text-sm mb-4 leading-relaxed">
                 Lodge complaints for hostel rooms, electricity, plumbing, Wi-Fi, or mess food. Track real-time progress until resolved.
               </p>
-              <ul className="text-xs text-slate-500 space-y-1.5 mb-6">
-                <li className="flex items-center gap-2">✔ Instant Ticket ID generation</li>
-                <li className="flex items-center gap-2">✔ Step-by-step progress tracking</li>
-                <li className="flex items-center gap-2">✔ Feedback &amp; resolution rating</li>
+              <ul className="text-xs text-slate-500 space-y-2 mb-6">
+                <li className="flex items-center gap-2">
+                  <span className="text-blue-500 font-bold">✔</span> Instant Ticket ID generation
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-blue-500 font-bold">✔</span> Live milestone timeline &amp; audit trail
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-blue-500 font-bold">✔</span> Feedback &amp; resolution rating
+                </li>
               </ul>
             </div>
             <Link
-              to="/login"
-              className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-colors shadow-sm"
+              to="/student"
+              className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all shadow-md group-hover:shadow-blue-500/25 active:scale-95"
             >
-              <span>Student Login / Register</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Enter Student Portal</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
-          </div>
+          </motion.div>
 
           {/* Card 2: Staff & Warden Portal */}
-          <div className="bg-white rounded-xl shadow-md border border-slate-200 p-6 flex flex-col justify-between hover:shadow-lg hover:border-blue-300 transition-all">
+          <motion.div 
+            variants={cardVariants}
+            whileHover={{ y: -8, transition: { duration: 0.2 } }}
+            className="bg-white rounded-2xl shadow-lg border border-slate-200/90 p-7 flex flex-col justify-between hover:shadow-2xl hover:border-indigo-300 transition-all group"
+          >
             <div>
-              <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-5 border border-indigo-100">
-                <Wrench className="w-6 h-6" />
+              <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-6 border border-indigo-100 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                <Wrench className="w-7 h-7" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-2">Staff &amp; Warden Desk</h3>
-              <p className="text-slate-600 text-sm mb-4 leading-relaxed">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded">
+                  Figma Frame 10 – 17
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Staff &amp; Warden Desk</h3>
+              <p className="text-slate-600 text-xs sm:text-sm mb-4 leading-relaxed">
                 View assigned work orders, update repair progress, add resolution notes, and monitor hostel-wide grievances.
               </p>
-              <ul className="text-xs text-slate-500 space-y-1.5 mb-6">
-                <li className="flex items-center gap-2">✔ Assigned complaint queue</li>
-                <li className="flex items-center gap-2">✔ Progress updates &amp; notes</li>
-                <li className="flex items-center gap-2">✔ Staff re-assignment by warden</li>
+              <ul className="text-xs text-slate-500 space-y-2 mb-6">
+                <li className="flex items-center gap-2">
+                  <span className="text-indigo-500 font-bold">✔</span> Assigned technician work orders
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-indigo-500 font-bold">✔</span> Progress updates &amp; resolution modal
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-indigo-500 font-bold">✔</span> Staff re-assignment by hostel warden
+                </li>
               </ul>
             </div>
             <Link
-              to="/staff-login"
-              className="w-full inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-colors shadow-sm"
+              to="/staff"
+              className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all shadow-md active:scale-95"
             >
-              <span>Staff / Warden Login</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Enter Staff Desk</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
-          </div>
+          </motion.div>
 
           {/* Card 3: Administration */}
-          <div className="bg-white rounded-xl shadow-md border border-slate-200 p-6 flex flex-col justify-between hover:shadow-lg hover:border-blue-300 transition-all">
+          <motion.div 
+            variants={cardVariants}
+            whileHover={{ y: -8, transition: { duration: 0.2 } }}
+            className="bg-white rounded-2xl shadow-lg border border-slate-200/90 p-7 flex flex-col justify-between hover:shadow-2xl hover:border-slate-400 transition-all group"
+          >
             <div>
-              <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center mb-5 border border-slate-200">
-                <Building2 className="w-6 h-6" />
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center mb-6 border border-slate-200 group-hover:scale-110 group-hover:bg-slate-800 group-hover:text-white transition-all duration-300 shadow-sm">
+                <Building2 className="w-7 h-7" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-2">Campus Administration</h3>
-              <p className="text-slate-600 text-sm mb-4 leading-relaxed">
-                Campus-wide complaint trends, department performance monitoring, average resolution times, and staff management.
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded">
+                  Figma Frame 18 – 21
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Campus Administration</h3>
+              <p className="text-slate-600 text-xs sm:text-sm mb-4 leading-relaxed">
+                Campus-wide complaint trends, department performance monitoring, average resolution times, and staff roster management.
               </p>
-              <ul className="text-xs text-slate-500 space-y-1.5 mb-6">
-                <li className="flex items-center gap-2">✔ Department-wise complaint counts</li>
-                <li className="flex items-center gap-2">✔ Average resolution time trends</li>
-                <li className="flex items-center gap-2">✔ Escalated issue alerts</li>
+              <ul className="text-xs text-slate-500 space-y-2 mb-6">
+                <li className="flex items-center gap-2">
+                  <span className="text-slate-600 font-bold">✔</span> Department-wise complaint counts
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-slate-600 font-bold">✔</span> SLA target editor &amp; escalation rule
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-slate-600 font-bold">✔</span> Real-time staff roster &amp; duty toggle
+                </li>
               </ul>
             </div>
             <Link
               to="/admin"
-              className="w-full inline-flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-800 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-colors shadow-sm"
+              className="w-full inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all shadow-md active:scale-95"
             >
-              <span>Admin Dashboard</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Enter Admin Dashboard</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
       </section>
 
       {/* Footer Info */}
       <footer className="mt-auto border-t border-slate-200 py-6 text-center text-xs text-slate-500">
-        <p className="font-medium text-slate-600 mb-1">
+        <p className="font-semibold text-slate-700 mb-1">
           Campus Complaint &amp; Grievance Tracker — DBMS Mini-Project
         </p>
         <p>Chirag Simepurushkar (24B-CO-015) • Raksham R. Dessai (24B-CO-019) • Aayushi Prabhu (24B-CO-001)</p>

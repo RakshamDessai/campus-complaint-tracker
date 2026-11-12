@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { 
@@ -59,43 +60,67 @@ export default function StudentDashboard() {
         </Link>
       </div>
 
-      {/* KPI Metric Cards */}
+      {/* KPI Metric Cards with Staggered Entrance & Interactive Lift */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         
-        <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+          whileHover={{ y: -4, scale: 1.02 }}
+          className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm hover:shadow-md transition-all cursor-pointer"
+        >
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
             Total Filed
           </div>
           <div className="text-2xl font-extrabold text-slate-900">{stats.total}</div>
           <span className="text-[11px] text-slate-400 mt-1 block">Lifetime registered</span>
-        </div>
+        </motion.div>
 
-        <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
-          <div className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1 flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5" />
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          whileHover={{ y: -4, scale: 1.02 }}
+          className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm hover:shadow-md transition-all cursor-pointer"
+        >
+          <div className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 animate-pulse" />
             Active Queue
           </div>
           <div className="text-2xl font-extrabold text-blue-600">{stats.active}</div>
           <span className="text-[11px] text-slate-400 mt-1 block">Open / In-Progress</span>
-        </div>
+        </motion.div>
 
-        <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
-          <div className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.15 }}
+          whileHover={{ y: -4, scale: 1.02 }}
+          className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm hover:shadow-md transition-all cursor-pointer"
+        >
+          <div className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mb-1 flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Resolved
           </div>
           <div className="text-2xl font-extrabold text-emerald-600">{stats.resolved}</div>
           <span className="text-[11px] text-slate-400 mt-1 block">Successfully fixed</span>
-        </div>
+        </motion.div>
 
-        <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
-          <div className="text-xs font-semibold text-rose-600 uppercase tracking-wider mb-1 flex items-center gap-1">
-            <AlertTriangle className="w-3.5 h-3.5" />
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          whileHover={{ y: -4, scale: 1.02 }}
+          className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm hover:shadow-md transition-all cursor-pointer"
+        >
+          <div className="text-xs font-semibold text-rose-600 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <AlertTriangle className="w-3.5 h-3.5 animate-bounce" />
             SLA Escalated
           </div>
           <div className="text-2xl font-extrabold text-rose-600">{stats.escalated}</div>
           <span className="text-[11px] text-slate-400 mt-1 block">Under warden review</span>
-        </div>
+        </motion.div>
 
       </div>
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { ShieldCheck, Bell, User, LogOut } from 'lucide-react';
 import { useComplaints } from '../../context/ComplaintContext';
 import NotificationsDrawer from './NotificationsDrawer';
@@ -43,9 +44,13 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
           
           {/* Brand & Title */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center border border-blue-400/30 group-hover:bg-blue-500 transition-colors shadow-sm">
+            <motion.div 
+              whileHover={{ rotate: 10, scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center border border-blue-400/30 group-hover:bg-blue-500 transition-colors shadow-sm"
+            >
               <ShieldCheck className="w-6 h-6 text-white" />
-            </div>
+            </motion.div>
             <div>
               <span className="font-bold tracking-tight text-sm sm:text-base text-white block leading-tight">
                 CAMPUS COMPLAINT &amp; GRIEVANCE TRACKER
@@ -61,12 +66,12 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
             <div className="flex items-center gap-3 sm:gap-4">
               
               {/* View As Switcher */}
-              <div className="flex items-center bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 text-xs gap-2">
+              <div className="flex items-center bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 text-xs gap-2">
                 <span className="text-slate-400 hidden md:inline">Portal:</span>
                 <select
                   value={activeRole}
                   onChange={handleRoleChange}
-                  className="bg-slate-900 text-blue-300 font-bold rounded px-2 py-0.5 border border-slate-600 focus:outline-none focus:border-blue-400 cursor-pointer text-xs"
+                  className="bg-slate-900 text-blue-300 font-bold rounded-lg px-2 py-0.5 border border-slate-600 focus:outline-none focus:border-blue-400 cursor-pointer text-xs"
                 >
                   <option value="Student">Student Portal</option>
                   <option value="Staff">Staff Desk</option>
@@ -75,15 +80,20 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
                 </select>
               </div>
 
-              {/* Notification Bell Button (Toggles Frame 22 Drawer) */}
-              <button 
+              {/* Animated Notification Bell Button (Toggles Frame 22 Drawer) */}
+              <motion.button 
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.92 }}
                 onClick={() => setIsDrawerOpen(true)}
-                className="relative p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                className="relative p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer border border-transparent hover:border-slate-700"
                 title="Open Campus Notifications (Frame 22)"
               >
                 <Bell className="w-5 h-5" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-              </button>
+                <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+                </span>
+              </motion.button>
 
               {/* User Profile Pill */}
               <div className="flex items-center gap-2 pl-2 border-l border-slate-700">
@@ -96,22 +106,26 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
               </div>
 
               {/* Exit to Home */}
-              <Link
-                to="/"
-                className="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors text-xs flex items-center gap-1"
-                title="Logout / Exit to Home"
-              >
-                <LogOut className="w-4 h-4" />
-              </Link>
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <Link
+                  to="/"
+                  className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors text-xs flex items-center gap-1"
+                  title="Logout / Exit to Home"
+                >
+                  <LogOut className="w-4 h-4" />
+                </Link>
+              </motion.div>
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link
-                to="/student"
-                className="text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1.5 rounded-lg transition-colors shadow-sm"
-              >
-                Open Student Portal &rarr;
-              </Link>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  to="/student"
+                  className="text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl transition-all shadow-md"
+                >
+                  Open Student Portal &rarr;
+                </Link>
+              </motion.div>
             </div>
           )}
 

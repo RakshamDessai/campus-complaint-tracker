@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { ComplaintProvider } from './context/ComplaintContext';
 import Navbar from './components/common/Navbar';
 import Sidebar from './components/common/Sidebar';
@@ -47,7 +48,12 @@ export default function App() {
             element={
               <div className="flex flex-1">
                 <Sidebar role="Student" />
-                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full">
+                <motion.main 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full"
+                >
                   <Routes>
                     <Route path="/" element={<StudentDashboard />} />
                     <Route path="/new" element={<FileComplaint />} />
@@ -57,7 +63,7 @@ export default function App() {
                     <Route path="/complaints/:id/timeline" element={<LiveStatusTimelinePage />} />
                     <Route path="*" element={<Navigate to="/student" replace />} />
                   </Routes>
-                </main>
+                </motion.main>
               </div>
             }
           />
@@ -68,14 +74,19 @@ export default function App() {
             element={
               <div className="flex flex-1">
                 <Sidebar role="Staff" />
-                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full">
+                <motion.main 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full"
+                >
                   <Routes>
                     <Route path="/" element={<StaffQueueDashboard />} />
                     <Route path="/ticket/:id" element={<StaffTicketAction />} />
                     <Route path="/history" element={<StaffHistory />} />
                     <Route path="*" element={<Navigate to="/staff" replace />} />
                   </Routes>
-                </main>
+                </motion.main>
               </div>
             }
           />
@@ -86,14 +97,19 @@ export default function App() {
             element={
               <div className="flex flex-1">
                 <Sidebar role="Warden" />
-                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full">
+                <motion.main 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full"
+                >
                   <Routes>
                     <Route path="/" element={<WardenHostelDashboard />} />
                     <Route path="/escalations" element={<WardenEscalations />} />
                     <Route path="/staff" element={<WardenStaffWorkload />} />
                     <Route path="*" element={<Navigate to="/warden" replace />} />
                   </Routes>
-                </main>
+                </motion.main>
               </div>
             }
           />
@@ -104,7 +120,12 @@ export default function App() {
             element={
               <div className="flex flex-1">
                 <Sidebar role="Admin" />
-                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full">
+                <motion.main 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full"
+                >
                   <Routes>
                     <Route path="/" element={<AdminDashboard />} />
                     <Route path="/sla" element={<AdminSlaConfig />} />
@@ -112,7 +133,7 @@ export default function App() {
                     <Route path="/analytics" element={<AdminAnalytics />} />
                     <Route path="*" element={<Navigate to="/admin" replace />} />
                   </Routes>
-                </main>
+                </motion.main>
               </div>
             }
           />

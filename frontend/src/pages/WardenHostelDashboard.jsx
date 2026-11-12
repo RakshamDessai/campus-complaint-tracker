@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { Building, Users, AlertTriangle, UserPlus, Clock, CheckCircle } from 'lucide-react';
@@ -176,49 +177,76 @@ export default function WardenHostelDashboard() {
         </div>
       </div>
 
-      {/* Staff Assignment Modal */}
-      {selectedTicket && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <h3 className="font-bold text-slate-900 text-base">Assign Maintenance Staff</h3>
-            <p className="text-xs text-slate-500">
-              Select technician to dispatch for <strong>{selectedTicket.Complaint_ID}</strong> ({selectedTicket.Category_Name} • {selectedTicket.Room_No}).
-            </p>
+      {/* Frame 15: Staff Assignment Modal with Spring Motion */}
+      <AnimatePresence>
+        {selectedTicket && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedTicket(null)}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.92, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 15 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 z-10"
+            >
+              <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                <div>
+                  <span className="text-[10px] font-bold text-indigo-600 uppercase">Figma Frame 15: Staff Assignment</span>
+                  <h3 className="font-bold text-slate-900 text-base">Assign Maintenance Staff</h3>
+                </div>
+                <button 
+                  onClick={() => setSelectedTicket(null)} 
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 font-bold transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Available Technicians</label>
-              <select
-                value={assignedStaffId}
-                onChange={e => setAssignedStaffId(e.target.value)}
-                className="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              >
-                <option value="">-- Choose Specialized Technician --</option>
-                {staffMembers.filter(s => s.Role === 'Staff').map(s => (
-                  <option key={s.Staff_ID} value={s.Staff_ID}>
-                    {s.First_Name} {s.Last_Name} — {s.Designation}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <p className="text-xs text-slate-500">
+                Select technician to dispatch for <strong>{selectedTicket.Complaint_ID}</strong> ({selectedTicket.Category_Name} • {selectedTicket.Room_No}).
+              </p>
 
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                onClick={() => setSelectedTicket(null)}
-                className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAssignSubmit}
-                disabled={!assignedStaffId}
-                className="px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50"
-              >
-                Dispatch Work Order
-              </button>
-            </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Available Technicians</label>
+                <select
+                  value={assignedStaffId}
+                  onChange={e => setAssignedStaffId(e.target.value)}
+                  className="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                >
+                  <option value="">-- Choose Specialized Technician --</option>
+                  {staffMembers.filter(s => s.Role === 'Staff').map(s => (
+                    <option key={s.Staff_ID} value={s.Staff_ID}>
+                      {s.First_Name} {s.Last_Name} — {s.Designation}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  onClick={() => setSelectedTicket(null)}
+                  className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAssignSubmit}
+                  disabled={!assignedStaffId}
+                  className="px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-all active:scale-95 shadow-sm"
+                >
+                  Dispatch Work Order
+                </button>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
     </div>
   );

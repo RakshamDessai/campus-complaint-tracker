@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { 
@@ -155,70 +156,90 @@ export default function StaffTicketAction() {
         </div>
       </div>
 
-      {/* Frame 12: Staff Resolution Modal with Animation */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-scale-in">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <div>
-                <span className="text-[10px] font-bold text-emerald-600 uppercase">Figma Frame 12: Resolution Modal</span>
-                <h3 className="text-base font-bold text-slate-900">Sign Off Work Order Completion</h3>
-              </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
-            </div>
-
-            <form onSubmit={handleCompleteResolution} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  1. Technician Repair Report
-                </label>
-                <textarea
-                  rows={3}
-                  required
-                  value={resolutionNote}
-                  onChange={(e) => setResolutionNote(e.target.value)}
-                  placeholder="Describe repair actions taken (e.g. Disassembled motor assembly, replaced burned 2.5uF capacitor, re-anchored safety pin)..."
-                  className="w-full text-xs p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  2. Replacement Parts / Inventory Utilized (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={partsUsed}
-                  onChange={(e) => setPartsUsed(e.target.value)}
-                  placeholder="e.g. 1x Capacitor 2.5uF, 2x M4 Screws"
-                  className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                />
-              </div>
-
-              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs text-emerald-900">
-                <p className="font-semibold mb-0.5">Verification Checklist:</p>
-                <p className="text-[11px] text-emerald-700">✓ Physical repair inspected and verified safe for student use.</p>
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-200"
+      {/* Frame 12: Staff Resolution Modal with Spring Animation */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsModalOpen(false)}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.92, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 15 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 z-10"
+            >
+              <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+                <div>
+                  <span className="text-[10px] font-bold text-emerald-600 uppercase">Figma Frame 12: Resolution Modal</span>
+                  <h3 className="text-base font-bold text-slate-900">Sign Off Work Order Completion</h3>
+                </div>
+                <button 
+                  onClick={() => setIsModalOpen(false)} 
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 font-bold transition-colors"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm"
-                >
-                  Submit &amp; Mark Resolved
+                  ✕
                 </button>
               </div>
-            </form>
+
+              <form onSubmit={handleCompleteResolution} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    1. Technician Repair Report
+                  </label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={resolutionNote}
+                    onChange={(e) => setResolutionNote(e.target.value)}
+                    placeholder="Describe repair actions taken (e.g. Disassembled motor assembly, replaced burned 2.5uF capacitor, re-anchored safety pin)..."
+                    className="w-full text-xs p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    2. Replacement Parts / Inventory Utilized (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={partsUsed}
+                    onChange={(e) => setPartsUsed(e.target.value)}
+                    placeholder="e.g. 1x Capacitor 2.5uF, 2x M4 Screws"
+                    className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  />
+                </div>
+
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs text-emerald-900">
+                  <p className="font-semibold mb-0.5">Verification Checklist:</p>
+                  <p className="text-[11px] text-emerald-700">✓ Physical repair inspected and verified safe for student use.</p>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all active:scale-95"
+                  >
+                    Submit &amp; Mark Resolved
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
     </div>
   );

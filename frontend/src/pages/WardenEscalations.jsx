@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { AlertTriangle, Clock, ArrowUpRight, CheckCircle, ShieldAlert, ArrowRight } from 'lucide-react';
@@ -121,49 +122,76 @@ export default function WardenEscalations() {
         )}
       </div>
 
-      {/* Reassign Modal */}
-      {selectedTicket && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <h3 className="font-bold text-slate-900 text-base">Reassign Complaint Technician</h3>
-            <p className="text-xs text-slate-500">
-              Select a specialized staff member to take over ticket <strong>{selectedTicket.Complaint_ID}</strong> ({selectedTicket.Category_Name}).
-            </p>
+      {/* Frame 17: Reassign Modal with Spring Animation */}
+      <AnimatePresence>
+        {selectedTicket && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedTicket(null)}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.92, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 15 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 z-10"
+            >
+              <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                <div>
+                  <span className="text-[10px] font-bold text-rose-600 uppercase">Figma Frame 17: Reassign Priority</span>
+                  <h3 className="font-bold text-slate-900 text-base">Reassign Complaint Technician</h3>
+                </div>
+                <button 
+                  onClick={() => setSelectedTicket(null)} 
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 font-bold transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Select Technician</label>
-              <select
-                value={reassignedStaffId}
-                onChange={e => setReassignedStaffId(e.target.value)}
-                className="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              >
-                <option value="">-- Choose Staff Member --</option>
-                {staffMembers.filter(s => s.Role === 'Staff').map(s => (
-                  <option key={s.Staff_ID} value={s.Staff_ID}>
-                    {s.First_Name} {s.Last_Name} ({s.Designation})
-                  </option>
-                ))}
-              </select>
-            </div>
+              <p className="text-xs text-slate-500">
+                Select a specialized staff member to take over ticket <strong>{selectedTicket.Complaint_ID}</strong> ({selectedTicket.Category_Name}).
+              </p>
 
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                onClick={() => setSelectedTicket(null)}
-                className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleReassign}
-                disabled={!reassignedStaffId}
-                className="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50"
-              >
-                Confirm Reassignment
-              </button>
-            </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Select Technician</label>
+                <select
+                  value={reassignedStaffId}
+                  onChange={e => setReassignedStaffId(e.target.value)}
+                  className="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                >
+                  <option value="">-- Choose Staff Member --</option>
+                  {staffMembers.filter(s => s.Role === 'Staff').map(s => (
+                    <option key={s.Staff_ID} value={s.Staff_ID}>
+                      {s.First_Name} {s.Last_Name} ({s.Designation})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  onClick={() => setSelectedTicket(null)}
+                  className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleReassign}
+                  disabled={!reassignedStaffId}
+                  className="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all active:scale-95 shadow-sm"
+                >
+                  Confirm Reassignment
+                </button>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
     </div>
   );

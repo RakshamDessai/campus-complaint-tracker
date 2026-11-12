@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { Wrench, CheckCircle2, Clock, AlertTriangle, Play, Check, ShieldAlert, ArrowRight } from 'lucide-react';
@@ -188,53 +189,73 @@ export default function StaffQueueDashboard() {
         )}
       </div>
 
-      {/* Frame 12: Resolution Modal with Smooth Animations */}
-      {selectedTicket && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-scale-in">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-              <div>
-                <span className="text-[10px] font-bold text-emerald-600 uppercase">Figma Frame 12: Resolution Modal</span>
-                <h3 className="font-bold text-slate-900 text-base">Complete Work Order Resolution</h3>
+      {/* Frame 12: Resolution Modal with Smooth Spring Entrance & Backdrop Blur */}
+      <AnimatePresence>
+        {selectedTicket && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedTicket(null)}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.92, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 15 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 z-10"
+            >
+              <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                <div>
+                  <span className="text-[10px] font-bold text-emerald-600 uppercase">Figma Frame 12: Resolution Modal</span>
+                  <h3 className="font-bold text-slate-900 text-base">Complete Work Order Resolution</h3>
+                </div>
+                <button 
+                  onClick={() => setSelectedTicket(null)} 
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 font-bold transition-colors"
+                >
+                  ✕
+                </button>
               </div>
-              <button onClick={() => setSelectedTicket(null)} className="text-slate-400 hover:text-slate-600 font-bold">✕</button>
-            </div>
-            
-            <p className="text-xs text-slate-500">
-              Provide official technician notes for ticket <strong>{selectedTicket.Complaint_ID}</strong> ({selectedTicket.Title}).
-            </p>
+              
+              <p className="text-xs text-slate-500">
+                Provide official technician notes for ticket <strong>{selectedTicket.Complaint_ID}</strong> ({selectedTicket.Title}).
+              </p>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Technician Work Report &amp; Actions Taken
-              </label>
-              <textarea
-                rows={3}
-                required
-                value={resolutionNote}
-                onChange={(e) => setResolutionNote(e.target.value)}
-                placeholder="e.g. Inspected circuit, replaced burned capacitor with new 2.5uF unit. Verified full speed operation."
-                className="w-full text-xs p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              />
-            </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Technician Work Report &amp; Actions Taken
+                </label>
+                <textarea
+                  rows={3}
+                  required
+                  value={resolutionNote}
+                  onChange={(e) => setResolutionNote(e.target.value)}
+                  placeholder="e.g. Inspected circuit, replaced burned capacitor with new 2.5uF unit. Verified full speed operation."
+                  className="w-full text-xs p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                />
+              </div>
 
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                onClick={() => setSelectedTicket(null)}
-                className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleResolve}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm"
-              >
-                Confirm Resolution
-              </button>
-            </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  onClick={() => setSelectedTicket(null)}
+                  className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleResolve}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all active:scale-95"
+                >
+                  Confirm Resolution
+                </button>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
     </div>
   );

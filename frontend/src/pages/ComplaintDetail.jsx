@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { ArrowLeft, Clock, ShieldCheck, User, Building, AlertTriangle, Star, CheckCircle, ArrowRight } from 'lucide-react';
@@ -72,6 +73,39 @@ export default function ComplaintDetail() {
           <div className="text-right text-xs">
             <span className="text-slate-400 block text-[11px]">Expected SLA Target</span>
             <span className="font-semibold text-slate-800 font-mono">{complaint.SLA_Due}</span>
+          </div>
+        </div>
+
+        {/* Animated Resolution Progress Tracker Bar */}
+        <div className="pt-1 pb-1">
+          <div className="flex justify-between items-center text-xs mb-1.5">
+            <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+              <span>Resolution Progress:</span>
+              <strong className="text-blue-600">
+                {complaint.Status === 'Resolved' ? '100% (Completed)' :
+                 complaint.Status === 'In-Progress' ? '65% (Active Diagnostics & Repair)' :
+                 complaint.Status === 'Assigned' ? '35% (Technician Dispatched)' :
+                 '10% (Queued for Assignment)'}
+              </strong>
+            </span>
+            <span className="text-[11px] text-slate-400 font-mono">Status: {complaint.Status}</span>
+          </div>
+          <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden p-0.5 border border-slate-200">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{
+                width: complaint.Status === 'Resolved' ? '100%' :
+                       complaint.Status === 'In-Progress' ? '65%' :
+                       complaint.Status === 'Assigned' ? '35%' : '10%'
+              }}
+              transition={{ duration: 0.85, ease: "easeOut" }}
+              className={`h-full rounded-full transition-all ${
+                complaint.Status === 'Resolved' ? 'bg-gradient-to-r from-emerald-500 to-teal-400' :
+                complaint.Status === 'In-Progress' ? 'bg-gradient-to-r from-blue-600 to-indigo-500' :
+                complaint.Status === 'Assigned' ? 'bg-gradient-to-r from-indigo-500 to-purple-500' :
+                'bg-gradient-to-r from-amber-500 to-yellow-400'
+              }`}
+            />
           </div>
         </div>
 
