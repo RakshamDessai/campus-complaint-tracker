@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Bell, User, LogOut, Sparkles } from 'lucide-react';
+import { Bell, User, LogOut } from 'lucide-react';
 import { useComplaints } from '../../context/ComplaintContext';
 import { useToast } from '../../context/ToastContext';
 import NotificationsDrawer from './NotificationsDrawer';
@@ -92,25 +92,6 @@ export default function Navbar({ currentRole = 'Student', onRoleChange }) {
                   <option value="Admin">Admin Portal</option>
                 </select>
               </div>
-
-              {/* Interactive Toaster Demo Trigger */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  const samples = [
-                    () => toast.success('Work order #CMP-2026-085 resolved by senior electrician. Resident satisfaction verified.', { title: 'Work Order Resolved', badge: 'Completed' }),
-                    () => toast.info('New Wi-Fi access point installed on 2nd floor Mandovi block. Telemetry online.', { title: 'Infrastructure Update', badge: 'IT Network' }),
-                    () => toast.warning('SLA threshold overrun detected in Mandovi Block B. Escalation trigger active.', { title: 'SLA Escalation Alert', badge: 'Critical' }),
-                  ];
-                  samples[Math.floor(Math.random() * samples.length)]();
-                }}
-                className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-300 hover:text-white border border-slate-700 text-[11px] font-semibold transition-colors cursor-pointer"
-                title="Click to trigger a sample toaster message"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-                <span>Toaster Demo</span>
-              </motion.button>
 
               {/* Animated Notification Bell Button (Toggles Frame 22 Drawer) */}
               <motion.button 
