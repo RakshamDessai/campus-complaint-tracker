@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useComplaints } from '../context/ComplaintContext';
 import StatusBadge from '../components/common/StatusBadge';
-import { ArrowLeft, Clock, ShieldCheck, User, Building, AlertTriangle, Star, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Clock, ShieldCheck, User, Building, AlertTriangle, Star, CheckCircle, ArrowRight } from 'lucide-react';
 
 export default function ComplaintDetail() {
   const { id } = useParams();
@@ -28,17 +28,33 @@ export default function ComplaintDetail() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 animate-fade-up">
       
-      {/* Back button */}
-      <div>
-        <Link to="/student/complaints" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors">
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to My Complaints
+      {/* Back button & Frame Indicator */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div>
+          <Link to="/student/complaints" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors">
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to My Complaints
+          </Link>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+              Figma Frame 08: Complaint Detail View
+            </span>
+          </div>
+        </div>
+
+        {/* Shortcut to Frame 09: Live Status Timeline */}
+        <Link
+          to={`/student/complaints/${complaint.Complaint_ID}/timeline`}
+          className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all card-hover"
+        >
+          <Clock className="w-3.5 h-3.5" />
+          <span>Open Full Timeline (Frame 09) &rarr;</span>
         </Link>
       </div>
 
       {/* Ticket Header Card */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
           <div>
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
@@ -55,32 +71,38 @@ export default function ComplaintDetail() {
           
           <div className="text-right text-xs">
             <span className="text-slate-400 block text-[11px]">Expected SLA Target</span>
-            <span className="font-semibold text-slate-800">{complaint.SLA_Due}</span>
+            <span className="font-semibold text-slate-800 font-mono">{complaint.SLA_Due}</span>
           </div>
         </div>
 
         {/* Metadata Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-xs">
-          <div>
-            <span className="text-slate-400 block text-[11px]">Category</span>
-            <span className="font-semibold text-slate-800">{complaint.Category_Name}</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2 text-xs">
+          <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Category</span>
+            <span className="font-bold text-slate-800 block mt-0.5">{complaint.Category_Name}</span>
           </div>
-          <div>
-            <span className="text-slate-400 block text-[11px]">Assigned Personnel</span>
-            <span className="font-semibold text-slate-800">{complaint.Assigned_Staff || 'Pending Assignment'}</span>
+          <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Assigned Staff</span>
+            <span className="font-bold text-slate-800 block mt-0.5">{complaint.Assigned_Staff || 'Pending Assignment'}</span>
           </div>
-          <div>
-            <span className="text-slate-400 block text-[11px]">Location</span>
-            <span className="font-semibold text-slate-800">{complaint.Room_No}</span>
+          <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Location</span>
+            <span className="font-bold text-slate-800 block mt-0.5">{complaint.Room_No}</span>
           </div>
-          <div>
-            <span className="text-slate-400 block text-[11px]">Priority</span>
-            <span className="font-semibold text-slate-800">{complaint.Priority}</span>
+          <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+            <span className="text-slate-400 block text-[10px] uppercase font-semibold">Priority</span>
+            <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold mt-0.5 ${
+              complaint.Priority === 'Critical' ? 'bg-rose-100 text-rose-800' :
+              complaint.Priority === 'High' ? 'bg-amber-100 text-amber-800' :
+              'bg-slate-100 text-slate-700'
+            }`}>
+              {complaint.Priority}
+            </span>
           </div>
         </div>
 
         {/* Description Body */}
-        <div className="mt-5 pt-4 border-t border-slate-100">
+        <div className="mt-4 pt-4 border-t border-slate-100">
           <span className="text-xs font-bold text-slate-700 block mb-1">Grievance Description</span>
           <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-lg border border-slate-200">
             {complaint.Description}
@@ -89,7 +111,7 @@ export default function ComplaintDetail() {
 
         {/* Official Resolution Note */}
         {complaint.Resolution_Note && (
-          <div className="mt-3 bg-emerald-50 border border-emerald-200 rounded-lg p-3.5 text-xs text-emerald-900">
+          <div className="mt-3 bg-emerald-50 border border-emerald-200 rounded-lg p-3.5 text-xs text-emerald-900 animate-fade-in">
             <span className="font-bold block mb-1 flex items-center gap-1.5">
               <CheckCircle className="w-4 h-4 text-emerald-600" />
               <span>Official Technician Resolution Note:</span>
@@ -101,7 +123,7 @@ export default function ComplaintDetail() {
 
       {/* Student Feedback Card (Visible when Resolved) */}
       {complaint.Status === 'Resolved' && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4 animate-scale-in">
           <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
             <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
             <span>Student Satisfaction &amp; Quality Rating</span>
@@ -124,14 +146,13 @@ export default function ComplaintDetail() {
                 Please rate your satisfaction with the repair work and turnaround time:
               </p>
               
-              {/* Star Selector */}
               <div className="flex items-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     type="button"
                     key={star}
                     onClick={() => setRating(star)}
-                    className="p-1 hover:scale-110 transition-transform"
+                    className="p-1 hover:scale-125 transition-transform"
                   >
                     <Star className={`w-6 h-6 ${star <= rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300'}`} />
                   </button>
@@ -160,55 +181,35 @@ export default function ComplaintDetail() {
         </div>
       )}
 
-      {/* Live Status Timeline */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-blue-600" />
-              <span>Live Status Timeline</span>
-            </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Real-time history of all updates recorded for this grievance.
-            </p>
-          </div>
-          <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full">
-            {existingTimeline.length} Updates Recorded
-          </span>
+      {/* Mini Timeline Preview with Link to Frame 09 */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-blue-600" />
+            <span>Recent Status Updates</span>
+          </h3>
+          <Link
+            to={`/student/complaints/${complaint.Complaint_ID}/timeline`}
+            className="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1"
+          >
+            <span>View Full Timeline (Frame 09) &rarr;</span>
+          </Link>
         </div>
 
-        {/* Timeline Items */}
-        <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
-          {existingTimeline.map((step, idx) => (
-            <div key={idx} className="relative">
-              {/* Dot */}
-              <div className="absolute -left-[27px] top-1.5 w-4 h-4 rounded-full bg-white border-2 border-blue-600 flex items-center justify-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
-              </div>
-
-              {/* Card */}
-              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs">
-                <div className="flex items-center justify-between mb-1.5">
-                  <div className="flex items-center gap-2">
-                    <StatusBadge status={step.status} />
-                    <span className="font-semibold text-slate-800">Update #{step.historyNum}</span>
-                  </div>
+        <div className="space-y-3">
+          {existingTimeline.slice(0, 3).map((step, idx) => (
+            <div key={idx} className="flex items-start gap-3 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100">
+              <div className="w-2 h-2 rounded-full bg-blue-600 mt-1.5 shrink-0"></div>
+              <div className="flex-1">
+                <div className="flex justify-between items-center mb-0.5">
+                  <span className="font-bold text-slate-800">{step.status}</span>
                   <span className="text-[11px] text-slate-400 font-mono">{step.timestamp}</span>
                 </div>
-                <p className="text-slate-600 leading-relaxed mb-1">{step.note}</p>
-                <span className="text-[11px] text-slate-400">Action recorded by: <strong>{step.user}</strong></span>
+                <p className="text-slate-600">{step.note}</p>
               </div>
             </div>
           ))}
         </div>
-
-        <div className="mt-6 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
-          <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span>
-            Grievance status lifecycle: Open → Assigned → In-Progress → Resolved.
-          </span>
-        </div>
-
       </div>
 
     </div>

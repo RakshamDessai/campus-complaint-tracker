@@ -4,24 +4,26 @@ import { ComplaintProvider } from './context/ComplaintContext';
 import Navbar from './components/common/Navbar';
 import Sidebar from './components/common/Sidebar';
 
-// Pages
-import WelcomeGateway from './pages/WelcomeGateway';
-import StudentAuth from './pages/StudentAuth';
-import StaffAdminAuth from './pages/StaffAdminAuth';
-import StudentDashboard from './pages/StudentDashboard';
-import FileComplaint from './pages/FileComplaint';
-import ComplaintSuccess from './pages/ComplaintSuccess';
-import MyComplaints from './pages/MyComplaints';
-import ComplaintDetail from './pages/ComplaintDetail';
-import StaffQueueDashboard from './pages/StaffQueueDashboard';
-import StaffHistory from './pages/StaffHistory';
-import WardenHostelDashboard from './pages/WardenHostelDashboard';
-import WardenEscalations from './pages/WardenEscalations';
-import WardenStaffWorkload from './pages/WardenStaffWorkload';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminSlaConfig from './pages/AdminSlaConfig';
-import AdminStaffRoster from './pages/AdminStaffRoster';
-import AdminAnalytics from './pages/AdminAnalytics';
+// Pages - All 22 Figma Frames Implemented
+import WelcomeGateway from './pages/WelcomeGateway';                 // Frame 01
+import StudentAuth from './pages/StudentAuth';                       // Frame 02
+import StaffAdminAuth from './pages/StaffAdminAuth';                 // Frame 03
+import StudentDashboard from './pages/StudentDashboard';             // Frame 04
+import FileComplaint from './pages/FileComplaint';                   // Frame 05
+import ComplaintSuccess from './pages/ComplaintSuccess';             // Frame 06
+import MyComplaints from './pages/MyComplaints';                     // Frame 07
+import ComplaintDetail from './pages/ComplaintDetail';               // Frame 08
+import LiveStatusTimelinePage from './pages/LiveStatusTimelinePage'; // Frame 09
+import StaffQueueDashboard from './pages/StaffQueueDashboard';       // Frame 10
+import StaffTicketAction from './pages/StaffTicketAction';           // Frame 11 & 12
+import StaffHistory from './pages/StaffHistory';                     // Frame 13
+import WardenHostelDashboard from './pages/WardenHostelDashboard';   // Frame 14 & 15
+import WardenEscalations from './pages/WardenEscalations';           // Frame 16 & 17
+import WardenStaffWorkload from './pages/WardenStaffWorkload';       // Staff Workload
+import AdminDashboard from './pages/AdminDashboard';                 // Frame 18
+import AdminSlaConfig from './pages/AdminSlaConfig';                 // Frame 19
+import AdminStaffRoster from './pages/AdminStaffRoster';             // Frame 20
+import AdminAnalytics from './pages/AdminAnalytics';                 // Frame 21
 
 export default function App() {
   const [currentRole, setCurrentRole] = useState('Student');
@@ -30,7 +32,7 @@ export default function App() {
     <ComplaintProvider>
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
         
-        {/* Top Header Navbar */}
+        {/* Top Header Navbar with Frame 22 Notifications Drawer */}
         <Navbar currentRole={currentRole} onRoleChange={setCurrentRole} />
 
         <Routes>
@@ -52,6 +54,7 @@ export default function App() {
                     <Route path="/success" element={<ComplaintSuccess />} />
                     <Route path="/complaints" element={<MyComplaints />} />
                     <Route path="/complaints/:id" element={<ComplaintDetail />} />
+                    <Route path="/complaints/:id/timeline" element={<LiveStatusTimelinePage />} />
                     <Route path="*" element={<Navigate to="/student" replace />} />
                   </Routes>
                 </main>
@@ -68,6 +71,7 @@ export default function App() {
                 <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full">
                   <Routes>
                     <Route path="/" element={<StaffQueueDashboard />} />
+                    <Route path="/ticket/:id" element={<StaffTicketAction />} />
                     <Route path="/history" element={<StaffHistory />} />
                     <Route path="*" element={<Navigate to="/staff" replace />} />
                   </Routes>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useComplaints } from '../context/ComplaintContext';
 import StatusBadge from '../components/common/StatusBadge';
-import { Wrench, CheckCircle2, Clock, AlertTriangle, Play, Check, ShieldAlert } from 'lucide-react';
+import { Wrench, CheckCircle2, Clock, AlertTriangle, Play, Check, ShieldAlert, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function StaffQueueDashboard() {
@@ -35,11 +35,14 @@ export default function StaffQueueDashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-up">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold mb-1">
+            <span>Figma Frame 10: Staff Queue Dashboard</span>
+          </div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
             <Wrench className="w-6 h-6 text-blue-600" />
             <span>Staff Maintenance Queue</span>
@@ -55,16 +58,16 @@ export default function StaffQueueDashboard() {
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI Cards with hover lift animation */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm card-hover">
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">
             Active Work Orders
           </span>
           <span className="text-2xl font-extrabold text-slate-900">{activeQueue.length}</span>
           <span className="text-[11px] text-slate-400 block mt-1">Pending maintenance action</span>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm card-hover">
           <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider block mb-1">
             In-Progress
           </span>
@@ -73,9 +76,9 @@ export default function StaffQueueDashboard() {
           </span>
           <span className="text-[11px] text-slate-400 block mt-1">Currently being serviced</span>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm card-hover">
           <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider block mb-1">
-            Resolution History
+            Resolution History (Frame 13)
           </span>
           <Link to="/staff/history" className="text-2xl font-extrabold text-emerald-600 hover:underline block">
             {complaints.filter(t => t.Status === 'Resolved').length}
@@ -112,7 +115,7 @@ export default function StaffQueueDashboard() {
           filteredQueue.map((ticket) => (
             <div
               key={ticket.Complaint_ID}
-              className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4 hover:border-blue-300 transition-all"
+              className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4 hover:border-blue-300 transition-all card-hover"
             >
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -147,13 +150,21 @@ export default function StaffQueueDashboard() {
               {/* Action Toolbar */}
               <div className="flex items-center justify-between pt-2 border-t border-slate-100 flex-wrap gap-2">
                 <div className="flex items-center gap-2">
+                  <Link
+                    to={`/staff/ticket/${ticket.Complaint_ID}`}
+                    className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-xs px-3.5 py-1.5 rounded-lg border border-blue-200 transition-colors shadow-sm"
+                  >
+                    <Wrench className="w-3.5 h-3.5" />
+                    <span>Work Order Console (Frame 11) &rarr;</span>
+                  </Link>
+
                   {ticket.Status !== 'In-Progress' && (
                     <button
                       onClick={() => handleStartWork(ticket.Complaint_ID)}
                       className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3.5 py-1.5 rounded-lg transition-colors shadow-sm"
                     >
                       <Play className="w-3.5 h-3.5" />
-                      <span>Start Work Order</span>
+                      <span>Start Work</span>
                     </button>
                   )}
                   <button
@@ -161,15 +172,15 @@ export default function StaffQueueDashboard() {
                     className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-3.5 py-1.5 rounded-lg transition-colors shadow-sm"
                   >
                     <Check className="w-3.5 h-3.5" />
-                    <span>Mark as Resolved</span>
+                    <span>Resolve (Frame 12 Modal)</span>
                   </button>
                 </div>
 
                 <Link
-                  to={`/student/complaints/${ticket.Complaint_ID}`}
-                  className="text-xs font-semibold text-blue-600 hover:underline"
+                  to={`/student/complaints/${ticket.Complaint_ID}/timeline`}
+                  className="text-xs font-semibold text-slate-500 hover:text-blue-600 hover:underline"
                 >
-                  View Details &amp; History &rarr;
+                  Live Timeline &rarr;
                 </Link>
               </div>
             </div>
@@ -177,11 +188,18 @@ export default function StaffQueueDashboard() {
         )}
       </div>
 
-      {/* Resolution Modal */}
+      {/* Frame 12: Resolution Modal with Smooth Animations */}
       {selectedTicket && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <h3 className="font-bold text-slate-900 text-base">Complete Work Order Resolution</h3>
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-scale-in">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+              <div>
+                <span className="text-[10px] font-bold text-emerald-600 uppercase">Figma Frame 12: Resolution Modal</span>
+                <h3 className="font-bold text-slate-900 text-base">Complete Work Order Resolution</h3>
+              </div>
+              <button onClick={() => setSelectedTicket(null)} className="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+            </div>
+            
             <p className="text-xs text-slate-500">
               Provide official technician notes for ticket <strong>{selectedTicket.Complaint_ID}</strong> ({selectedTicket.Title}).
             </p>
