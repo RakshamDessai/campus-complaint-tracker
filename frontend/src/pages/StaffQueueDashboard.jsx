@@ -144,7 +144,14 @@ export default function StaffQueueDashboard() {
           {['All', 'Critical', 'High', 'Medium', 'Low'].map(p => (
             <button
               key={p}
-              onClick={() => setFilterPriority(p)}
+              onClick={() => {
+                setFilterPriority(p);
+                const count = p === 'All' ? activeQueue.length : activeQueue.filter(t => t.Priority === p).length;
+                toast.info(`Filtered active queue for "${p}" priority tickets. Showing ${count} task(s).`, {
+                  title: `Queue Priority: ${p}`,
+                  badge: 'Filter'
+                });
+              }}
               className={`px-3 py-1 rounded-md transition-colors ${
                 filterPriority === p ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}

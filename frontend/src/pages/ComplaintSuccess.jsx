@@ -1,14 +1,26 @@
 import React from 'react';
 import { useLocation, Link, Navigate } from 'react-router-dom';
-import { CheckCircle, ArrowRight, Home, Clock, MapPin, Tag } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
+import { CheckCircle, ArrowRight, Home, Clock, MapPin, Tag, Copy } from 'lucide-react';
 
 export default function ComplaintSuccess() {
   const location = useLocation();
+  const { toast } = useToast();
   const ticketData = location.state || {
     ticketId: 'CMP-2026-104',
     title: 'Water Leakage in Bathroom',
     category: 'Plumbing',
     location: 'Hostel 1, Room 204'
+  };
+
+  const handleCopy = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(ticketData.ticketId);
+    }
+    toast.info(`Ticket reference #${ticketData.ticketId} copied to clipboard.`, {
+      title: 'Copied to Clipboard',
+      badge: 'Grievance Docket'
+    });
   };
 
   return (
@@ -24,9 +36,14 @@ export default function ComplaintSuccess() {
           <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest block mb-1">
             GRIEVANCE SUCCESSFULLY REGISTERED
           </span>
-          <h1 className="text-2xl font-extrabold text-slate-900 font-mono">
-            Ticket #{ticketData.ticketId}
-          </h1>
+          <button
+            onClick={handleCopy}
+            title="Click to copy Ticket ID"
+            className="text-2xl font-extrabold text-blue-600 hover:text-blue-800 font-mono inline-flex items-center gap-2 mx-auto cursor-pointer group"
+          >
+            <span>Ticket #{ticketData.ticketId}</span>
+            <Copy className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+          </button>
           <p className="text-xs text-slate-500 mt-2 max-w-sm mx-auto">
             Your grievance has been successfully submitted. You will receive real-time updates as your ticket is processed.
           </p>

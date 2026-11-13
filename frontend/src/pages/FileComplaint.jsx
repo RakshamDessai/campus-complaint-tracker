@@ -105,7 +105,15 @@ export default function FileComplaint() {
           </label>
           <select
             value={selectedCat}
-            onChange={(e) => setSelectedCat(e.target.value)}
+            onChange={(e) => {
+              const catId = e.target.value;
+              setSelectedCat(catId);
+              const found = categories.find(c => c.Category_ID === catId);
+              toast.info(`Selected category "${found?.Category_Name}". Expected SLA is ${found?.SLA_Days} business day(s).`, {
+                title: 'Category Selected',
+                badge: 'SLA Policy'
+              });
+            }}
             className="w-full text-xs font-medium px-3.5 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
           >
             {categories.map((cat) => (
@@ -132,7 +140,13 @@ export default function FileComplaint() {
               <button
                 type="button"
                 key={p}
-                onClick={() => setPriority(p)}
+                onClick={() => {
+                  setPriority(p);
+                  toast.info(`Urgency priority adjusted to "${p}". Escalation thresholds calibrated.`, {
+                    title: `Priority Tier: ${p}`,
+                    badge: 'Urgency'
+                  });
+                }}
                 className={`py-2 rounded-lg border text-center transition-all ${
                   priority === p
                     ? p === 'Critical' ? 'bg-rose-600 text-white border-rose-600 shadow-sm'

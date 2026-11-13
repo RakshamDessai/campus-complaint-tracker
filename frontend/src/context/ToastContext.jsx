@@ -109,10 +109,10 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={{ toast, removeToast }}>
       {children}
       
-      {/* Toast Notification Stack - Ergonomically positioned at top-right */}
+      {/* True Toaster Notification Stack - Ergonomically positioned at bottom-right, popping UP like a real toaster */}
       <div 
         aria-live="polite" 
-        className="fixed top-4 sm:top-5 right-4 sm:right-6 z-[9999] flex flex-col gap-3 max-w-sm sm:max-w-md w-full pointer-events-none"
+        className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-[99999] flex flex-col-reverse gap-3 max-w-sm sm:max-w-md w-full pointer-events-none px-3 sm:px-0"
       >
         <AnimatePresence mode="popLayout">
           {toasts.map(t => {
@@ -124,11 +124,11 @@ export function ToastProvider({ children }) {
               <motion.div
                 key={t.id}
                 layout
-                initial={{ opacity: 0, y: -20, scale: 0.92, filter: 'blur(4px)' }}
+                initial={{ opacity: 0, y: 40, scale: 0.9, filter: 'blur(4px)' }}
                 animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, y: -15, scale: 0.9, filter: 'blur(4px)', transition: { duration: 0.2 } }}
-                transition={{ type: 'spring', damping: 24, stiffness: 320 }}
-                className="pointer-events-auto group relative w-full bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-2xl shadow-slate-900/10 rounded-2xl p-4 overflow-hidden transition-all duration-200 hover:shadow-slate-900/15"
+                exit={{ opacity: 0, y: 25, scale: 0.88, filter: 'blur(4px)', transition: { duration: 0.2 } }}
+                transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                className="pointer-events-auto group relative w-full bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-2xl shadow-slate-900/15 rounded-2xl p-4 overflow-hidden transition-all duration-200 hover:shadow-slate-900/20 hover:scale-[1.01]"
               >
                 {/* Left Vibrant Accent Strip */}
                 <div 
