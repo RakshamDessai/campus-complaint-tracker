@@ -1,242 +1,168 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  complaints as initialComplaints, 
-  complaintTimelines as initialTimelines,
-  categories as initialCategories,
-  departments,
-  hostels,
-  staffMembers as initialStaff,
-  currentStudent
-} from '../data/mockData';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { useAuth } from './AuthContext';
+import { apiRequest } from '../lib/api';
+import {
+  getMyComplaints,
+  getAllComplaints,
+  getWardenComplaints,
+  getStaffQueue,
+  fileComplaint,
+  updateComplaintStatus,
+  assignStaff,
+  getCategories,
+  getDepartments,
+  getHostels,
+  getStaffMembers,
+  getStatusHistory,
+} from '../lib/db';
 
 const ComplaintContext = createContext();
 
 export function ComplaintProvider({ children }) {
-  // Complaints list
-  const [complaintList, setComplaintList] = useState(() => {
-    try {
-      const saved = localStorage.getItem('campus_complaints');
-      return saved ? JSON.parse(saved) : initialComplaints;
-    } catch {
-      return initialComplaints;
-    }
-  });
+  const { session, profile, role } = useAuth();
 
-  // Timelines dictionary
-  const [timelines, setTimelines] = useState(() => {
-    try {
-      const saved = localStorage.getItem('campus_timelines');
-      return saved ? JSON.parse(saved) : initialTimelines;
-    } catch {
-      return initialTimelines;
-    }
-  });
+  /* ─── State ─── */
+  const [complaints,   setComplaints]   = useState([]);
+  const [timelines,    setTimelines]    = useState({});
+  const [categories,   setCategories]   = useState([]);
+  const [departments,  setDepartments]  = useState([]);
+  const [hostels,      setHostels]      = useState([]);
+  const [staffMembers, setStaffMembers] = useState([]);
+  const [feedbacks,    setFeedbacks]    = useState({});
+  const [loading,      setLoading]      = useState(false);
+  const [error,        setError]        = useState(null);
 
-  // Categories with SLA
-  const [categoryList, setCategoryList] = useState(() => {
-    try {
-      const saved = localStorage.getItem('campus_categories');
-      return saved ? JSON.parse(saved) : initialCategories;
-    } catch {
-      return initialCategories;
-    }
-  });
+  const [currentUser, setCurrentUser] = useState(null);
+  const pollingRef = useRef(null);
 
-  // Staff members
-  const [staffList, setStaffList] = useState(() => {
-    try {
-      const saved = localStorage.getItem('campus_staff');
-      return saved ? JSON.parse(saved) : initialStaff;
-    } catch {
-      return initialStaff;
-    }
-  });
-
-  // Feedbacks
-  const [feedbacks, setFeedbacks] = useState(() => {
-    try {
-      const saved = localStorage.getItem('campus_feedbacks');
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  // Sync to localStorage
+  /* ─── Derived: build currentUser from auth profile ─── */
   useEffect(() => {
-    localStorage.setItem('campus_complaints', JSON.stringify(complaintList));
-  }, [complaintList]);
+    if (!profile || !role) { setCurrentUser(null); return; }
+    if (role === 'Student') {
+      setCurrentUser({
+        role: 'Student',
+        name: `${profile.first_name} ${profile.last_name}`,
+        rollNo: profile.student_id,
+        email: profile.email,
+        hostel: profile.hostel?.hostel_name ?? '',
+        room: profile.room_no,
+        studentId: profile.student_id,
+      });
+    } else {
+      setCurrentUser({
+        role,
+        name: `${profile.first_name} ${profile.last_name}`,
+        staffId: profile.staff_id,
+        email: profile.email,
+        designation: profile.designation,
+        department: profile.department?.dept_name ?? '',
+        deptId: profile.department?.dept_id ?? null,
+        hostelId: profile.hostel_id ?? null,
+        hostelName: profile.hostel_name ?? '',
+      });
+    }
+  }, [profile, role]);
 
-  useEffect(() => {
-    localStorage.setItem('campus_timelines', JSON.stringify(timelines));
-  }, [timelines]);
+  /* ─── Fetch lookup data via single /api/lookups call ─── */
+  const fetchLookups = useCallback(async () => {
+    try {
+      const data = await apiRequest('/lookups', 'GET');
+      if (data.categories)   setCategories(data.categories);
+      if (data.departments)  setDepartments(data.departments);
+      if (data.hostels)      setHostels(data.hostels);
+      if (data.staffMembers) setStaffMembers(data.staffMembers);
+    } catch (e) {
+      console.error('fetchLookups error:', e.message);
+    }
+  }, []);
 
-  useEffect(() => {
-    localStorage.setItem('campus_categories', JSON.stringify(categoryList));
-  }, [categoryList]);
-
-  useEffect(() => {
-    localStorage.setItem('campus_staff', JSON.stringify(staffList));
-  }, [staffList]);
-
-  useEffect(() => {
-    localStorage.setItem('campus_feedbacks', JSON.stringify(feedbacks));
-  }, [feedbacks]);
-
-  // Current active user / role
-  const [currentUser, setCurrentUser] = useState({
-    role: 'Student',
-    name: `${currentStudent.First_Name} ${currentStudent.Last_Name}`,
-    rollNo: currentStudent.Student_ID,
-    email: currentStudent.Email,
-    hostel: currentStudent.Hostel_Name,
-    room: currentStudent.Room_No
-  });
-
-  // Add a new complaint
-  const addComplaint = ({ categoryId, title, description, location, priority, attachmentUrl }) => {
-    const category = categoryList.find(c => c.Category_ID === categoryId) || categoryList[0];
-    const ticketNum = Math.floor(100 + Math.random() * 900);
-    const newId = `CMP-2026-${ticketNum}`;
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-    
-    // SLA due calculation
-    const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + (category.SLA_Days || 2));
-    const formattedDue = dueDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-    const newTicket = {
-      Complaint_ID: newId,
-      Title: title,
-      Description: description,
-      Category_ID: category.Category_ID,
-      Category_Name: category.Category_Name,
-      Dept_ID: category.Dept_ID,
-      Student_ID: currentUser.rollNo || currentStudent.Student_ID,
-      Student_Name: currentUser.name || `${currentStudent.First_Name} ${currentStudent.Last_Name}`,
-      Hostel_ID: currentStudent.Hostel_ID,
-      Room_No: location || currentStudent.Room_No,
-      Status: 'Open',
-      Priority: priority || 'Medium',
-      Created_At: formattedDate,
-      Updated_At: formattedDate,
-      SLA_Due: formattedDue,
-      Is_Escalated: false,
-      Assigned_Staff: 'Pending Assignment',
-      Assigned_Staff_ID: null,
-      Attachment_Url: attachmentUrl || null
-    };
-
-    setComplaintList(prev => [newTicket, ...prev]);
-
-    // Initial timeline
-    setTimelines(prev => ({
-      ...prev,
-      [newId]: [
-        {
-          historyNum: 1,
-          status: 'Open',
-          timestamp: formattedDate,
-          user: `${newTicket.Student_Name} (Student)`,
-          note: `Grievance registered under ${category.Category_Name}. Awaiting staff assignment.`
+  /* ─── Fetch complaints based on role ─── */
+  const refreshComplaints = useCallback(async () => {
+    if (!session || !profile || !role) return;
+    setLoading(true);
+    setError(null);
+    try {
+      let res;
+      if (role === 'Student') {
+        res = await getMyComplaints(profile.student_id);
+      } else if (role === 'Staff') {
+        res = await getStaffQueue(profile.staff_id);
+      } else if (role === 'Warden') {
+        const hostelId = profile.hostel_id ?? profile.hostel?.hostel_id;
+        if (hostelId) {
+          res = await getWardenComplaints(hostelId);
+        } else {
+          res = await getAllComplaints();
         }
-      ]
-    }));
-
-    return newTicket;
-  };
-
-  // Update status (e.g. from Staff action)
-  const updateStatus = (complaintId, newStatus, note, staffName = 'Staff Technician') => {
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-    setComplaintList(prev => prev.map(t => {
-      if (t.Complaint_ID === complaintId) {
-        return {
-          ...t,
-          Status: newStatus,
-          Updated_At: formattedDate,
-          Resolution_Note: newStatus === 'Resolved' ? (note || 'Issue inspected and fixed.') : t.Resolution_Note,
-          Is_Escalated: newStatus === 'Escalated' ? true : t.Is_Escalated
-        };
+      } else {
+        res = await getAllComplaints();
       }
-      return t;
-    }));
+      if (res.error) setError(res.error.message || String(res.error));
+      else setComplaints(res.data ?? []);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [session, profile, role]);
 
-    setTimelines(prev => {
-      const existing = prev[complaintId] || [];
-      return {
-        ...prev,
-        [complaintId]: [
-          ...existing,
-          {
-            historyNum: existing.length + 1,
-            status: newStatus,
-            timestamp: formattedDate,
-            user: staffName,
-            note: note || `Status transitioned to ${newStatus}.`
-          }
-        ]
-      };
-    });
-  };
+  /* ─── On mount: fetch lookups ─── */
+  useEffect(() => {
+    fetchLookups();
+  }, [fetchLookups]);
 
-  // Assign staff to ticket (from Warden action)
-  const assignStaffToTicket = (complaintId, staffId, wardenName = 'Warden Mahesh Bhandari') => {
-    const staff = staffList.find(s => s.Staff_ID === staffId);
-    if (!staff) return;
+  /* ─── On auth change: fetch complaints ─── */
+  useEffect(() => {
+    refreshComplaints();
+  }, [refreshComplaints]);
 
-    const staffDisplayName = `${staff.First_Name} ${staff.Last_Name} (${staff.Designation})`;
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  /* ─── Polling for real-time updates (every 30s) ─── */
+  useEffect(() => {
+    if (!session) {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+      return;
+    }
+    pollingRef.current = setInterval(() => {
+      refreshComplaints();
+    }, 30000); // 30 seconds
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+    };
+  }, [session, refreshComplaints]);
 
-    setComplaintList(prev => prev.map(t => {
-      if (t.Complaint_ID === complaintId) {
-        return {
-          ...t,
-          Status: 'Assigned',
-          Assigned_Staff: staffDisplayName,
-          Assigned_Staff_ID: staff.Staff_ID,
-          Updated_At: formattedDate
-        };
-      }
-      return t;
-    }));
+  /* ─── Actions ─── */
 
-    setTimelines(prev => {
-      const existing = prev[complaintId] || [];
-      return {
-        ...prev,
-        [complaintId]: [
-          ...existing,
-          {
-            historyNum: existing.length + 1,
-            status: 'Assigned',
-            timestamp: formattedDate,
-            user: wardenName,
-            note: `Work order dispatched to ${staffDisplayName}.`
-          }
-        ]
-      };
-    });
-  };
+  const addComplaint = useCallback(async ({ categoryId, description, studentId }) => {
+    setError(null);
+    const { data, error: err } = await fileComplaint({ description, studentId, categoryId });
+    if (err) { setError(err.message || String(err)); return null; }
+    await refreshComplaints();
+    return data;
+  }, [refreshComplaints]);
 
-  // Submit student feedback for a resolved ticket
-  const submitFeedback = (complaintId, rating, comments) => {
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const updateStatus = useCallback(async (complaintId, newStatus) => {
+    setError(null);
+    const { error: err } = await updateComplaintStatus(complaintId, newStatus);
+    if (err) { setError(err.message || String(err)); return; }
+    await refreshComplaints();
+  }, [refreshComplaints]);
 
-    setFeedbacks(prev => ({
-      ...prev,
-      [complaintId]: {
-        rating,
-        comments,
-        submittedAt: formattedDate
-      }
-    }));
+  const assignStaffToTicket = useCallback(async (complaintId, staffId) => {
+    setError(null);
+    const { error: err } = await assignStaff(staffId, complaintId);
+    if (err) { setError(err.message || String(err)); return; }
+    await refreshComplaints();
+  }, [refreshComplaints]);
 
+  /* ─── Feedback (stored in backend via /api/feedback) ─── */
+  const submitFeedback = useCallback(async (complaintId, rating, comments) => {
+    try {
+      await apiRequest('/feedback', 'POST', { complaintId, rating, comments });
+    } catch (e) {
+      console.error('Feedback error:', e.message);
+    }
+    const now = new Date().toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    setFeedbacks(prev => ({ ...prev, [complaintId]: { rating, comments, submittedAt: now } }));
     setTimelines(prev => {
       const existing = prev[complaintId] || [];
       return {
@@ -246,53 +172,62 @@ export function ComplaintProvider({ children }) {
           {
             historyNum: existing.length + 1,
             status: 'Resolved',
-            timestamp: formattedDate,
-            user: `${currentUser.name} (Student)`,
-            note: `Student submitted ${rating}-Star satisfaction rating: "${comments || 'No comment provided'}"`
-          }
-        ]
+            timestamp: now,
+            user: currentUser?.name ? `${currentUser.name} (Student)` : 'Student',
+            note: `Feedback: ${rating}★ — "${comments || 'No comment'}"`,
+          },
+        ],
       };
     });
-  };
+  }, [currentUser]);
 
-  // Update category SLA days (from Admin SLA Config)
-  const updateCategorySla = (categoryId, newDays) => {
-    setCategoryList(prev => prev.map(c => {
-      if (c.Category_ID === categoryId) {
-        return { ...c, SLA_Days: parseInt(newDays) || 1 };
-      }
-      return c;
-    }));
-  };
+  /* ─── SLA config update (calls backend PATCH /api/categories/:id/sla) ─── */
+  const updateCategorySla = useCallback(async (categoryId, newDays) => {
+    try {
+      await apiRequest(`/categories/${categoryId}/sla`, 'PATCH', { sla_days: newDays });
+    } catch (e) {
+      console.error('SLA update error:', e.message);
+    }
+    setCategories(prev => prev.map(c =>
+      c.category_id === categoryId ? { ...c, sla_days: parseInt(newDays) || 1 } : c
+    ));
+  }, []);
 
-  // Toggle staff availability
-  const toggleStaffAvailability = (staffId) => {
-    setStaffList(prev => prev.map(s => {
-      if (s.Staff_ID === staffId) {
-        return { ...s, isAvailable: s.isAvailable !== false ? false : true };
-      }
-      return s;
-    }));
-  };
+  const toggleStaffAvailability = useCallback((staffId) => {
+    setStaffMembers(prev => prev.map(s =>
+      s.staff_id === staffId ? { ...s, is_available: !s.is_available } : s
+    ));
+  }, []);
 
+  /* ─── Context value ─── */
   return (
-    <ComplaintContext.Provider value={{
-      complaints: complaintList,
-      timelines,
-      categories: categoryList,
-      departments,
-      hostels,
-      staffMembers: staffList,
-      feedbacks,
-      currentUser,
-      setCurrentUser,
-      addComplaint,
-      updateStatus,
-      assignStaffToTicket,
-      submitFeedback,
-      updateCategorySla,
-      toggleStaffAvailability
-    }}>
+    <ComplaintContext.Provider
+      value={{
+        // Data
+        complaints,
+        timelines,
+        categories,
+        departments,
+        hostels,
+        staffMembers,
+        feedbacks,
+        // User
+        currentUser,
+        setCurrentUser,
+        // Actions
+        addComplaint,
+        updateStatus,
+        assignStaffToTicket,
+        submitFeedback,
+        updateCategorySla,
+        toggleStaffAvailability,
+        // Extra
+        loading,
+        error,
+        refreshComplaints,
+        fetchLookups,
+      }}
+    >
       {children}
     </ComplaintContext.Provider>
   );
@@ -300,8 +235,8 @@ export function ComplaintProvider({ children }) {
 
 export function useComplaints() {
   const context = useContext(ComplaintContext);
-  if (!context) {
-    throw new Error('useComplaints must be used within a ComplaintProvider');
-  }
+  if (!context) throw new Error('useComplaints must be used within a ComplaintProvider');
   return context;
 }
+
+export default ComplaintContext;

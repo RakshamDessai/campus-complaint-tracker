@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useComplaints } from '../context/ComplaintContext';
+import React, { useState, useEffect } from 'react';
 import { useToast } from '../context/ToastContext';
+import { getAnalytics, getAllComplaints } from '../lib/db';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -31,53 +31,106 @@ import {
   Legend 
 } from 'recharts';
 
+// Fallback static data (shown until real data loads)
+const FALLBACK_MONTHLY = [
+  { month: 'Jul', filed: 24, resolved: 22, breached: 2 },
+  { month: 'Aug', filed: 68, resolved: 54, breached: 14 },
+  { month: 'Sep', filed: 52, resolved: 48, breached: 6 },
+  { month: 'Oct', filed: 45, resolved: 41, breached: 4 },
+  { month: 'Nov', filed: 59, resolved: 51, breached: 8 },
+  { month: 'Dec', filed: 38, resolved: 36, breached: 2 },
+];
+
+const FALLBACK_SLA = [
+  { name: 'Electrical', targetHours: 24, actualHours: 16, count: 28 },
+  { name: 'Plumbing', targetHours: 24, actualHours: 32, count: 34 },
+  { name: 'Wi-Fi / IT', targetHours: 48, actualHours: 54, count: 22 },
+  { name: 'Carpentry', targetHours: 72, actualHours: 42, count: 18 },
+  { name: 'Mess & Food', targetHours: 12, actualHours: 8, count: 25 },
+  { name: 'Cleanliness', targetHours: 24, actualHours: 14, count: 15 },
+];
+
+const FALLBACK_ZONE = [
+  { zone: 'Mandovi Hostel (H1)', complaints: 46, resolved: 38 },
+  { zone: 'Zuari Hostel (H2)', complaints: 39, resolved: 33 },
+  { zone: 'Dining & Mess', complaints: 26, resolved: 24 },
+  { zone: 'Academic Block', complaints: 18, resolved: 16 },
+  { zone: 'Sports Complex', complaints: 9, resolved: 8 },
+];
+
 export default function AdminAnalytics() {
-  const { complaints, departments, categories } = useComplaints();
   const { toast } = useToast();
   const [timeRange, setTimeRange] = useState('semester');
+  const [loading, setLoading] = useState(true);
 
-  const total = complaints.length;
-  const resolved = complaints.filter(c => c.Status === 'Resolved').length;
-  const inProgress = complaints.filter(c => c.Status === 'In-Progress').length;
-  const escalated = complaints.filter(c => c.Is_Escalated || c.Status === 'Escalated').length;
+  const [complaints, setComplaints] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const [analyticsData, complaintsData] = await Promise.all([
+          getAnalytics(),
+          getAllComplaints(),
+        ]);
+        setAnalytics(analyticsData);
+        setComplaints(Array.isArray(complaintsData) ? complaintsData : (complaintsData?.data || []));
+      } catch (err) {
+        toast.error('Failed to load analytics data.', { title: 'Analytics Error' });
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Computed totals from real complaints
+  const safeComplaints = Array.isArray(complaints) ? complaints : (complaints?.data || []);
+  const total = safeComplaints.length;
+  const resolved = safeComplaints.filter(c => (c.status || c.Status) === 'Resolved').length;
+  const inProgress = safeComplaints.filter(c => (c.status || c.Status) === 'In-Progress' || (c.status || c.Status) === 'In Progress').length;
+  const escalated = safeComplaints.filter(c => c.is_escalated || c.Is_Escalated || (c.status || c.Status) === 'Escalated').length;
   const resolutionRate = total > 0 ? Math.round((resolved / total) * 100) : 0;
 
-  // Chart 1: 6-Month Inflow vs. Resolution Trend Data
-  const monthlyTrendData = [
-    { month: 'Jul', filed: 24, resolved: 22, breached: 2 },
-    { month: 'Aug', filed: 68, resolved: 54, breached: 14 }, // Semester intake spike
-    { month: 'Sep', filed: 52, resolved: 48, breached: 6 },
-    { month: 'Oct', filed: 45, resolved: 41, breached: 4 },
-    { month: 'Nov', filed: 59, resolved: 51, breached: 8 },  // Midterm exam lab usage
-    { month: 'Dec', filed: 38, resolved: 36, breached: 2 },
-  ];
+  // Transform analytics data into chart format
+  // Chart 1: Monthly Trend
+  const monthlyTrendData = analytics?.monthlyTrend
+    ? analytics.monthlyTrend.map(row => ({
+        month: row.month,
+        filed: row.filed || row.total || 0,
+        resolved: row.resolved || 0,
+        breached: row.breached || row.escalated || 0,
+      }))
+    : FALLBACK_MONTHLY;
 
-  // Chart 2: Category SLA Comparison (Target vs Actual Turnaround Hours)
-  const categorySlaComparison = [
-    { name: 'Electrical', targetHours: 24, actualHours: 16, count: 28 },
-    { name: 'Plumbing', targetHours: 24, actualHours: 32, count: 34 },     // SLA Breached
-    { name: 'Wi-Fi / IT', targetHours: 48, actualHours: 54, count: 22 },   // SLA Breached
-    { name: 'Carpentry', targetHours: 72, actualHours: 42, count: 18 },
-    { name: 'Mess & Food', targetHours: 12, actualHours: 8, count: 25 },
-    { name: 'Cleanliness', targetHours: 24, actualHours: 14, count: 15 },
-  ];
+  // Chart 2: Category SLA (targetHours vs actualHours)
+  const categorySlaComparison = analytics?.slaCompliance
+    ? analytics.slaCompliance.map(row => ({
+        name: row.category_name || row.name,
+        targetHours: (row.sla_days || 1) * 24,
+        actualHours: Math.round((row.avg_resolution_hours || row.actual_hours || 0)),
+        count: row.total || row.count || 0,
+      }))
+    : FALLBACK_SLA;
 
   // Chart 3: Status Breakdown for Donut Chart
+  const openCount = complaints.filter(c => (c.status || c.Status) === 'Open').length;
   const statusPieData = [
     { name: 'Resolved', value: resolved || 65, color: '#10B981' },
     { name: 'In-Progress', value: inProgress || 22, color: '#3B82F6' },
-    { name: 'Open (Triage)', value: complaints.filter(c => c.Status === 'Open').length || 14, color: '#F59E0B' },
+    { name: 'Open (Triage)', value: openCount || 14, color: '#F59E0B' },
     { name: 'SLA Escalated', value: escalated || 7, color: '#EF4444' },
   ];
 
-  // Chart 4: Campus Zone Distribution Data
-  const zoneData = [
-    { zone: 'Mandovi Hostel (H1)', complaints: 46, resolved: 38 },
-    { zone: 'Zuari Hostel (H2)', complaints: 39, resolved: 33 },
-    { zone: 'Dining & Mess', complaints: 26, resolved: 24 },
-    { zone: 'Academic Block', complaints: 18, resolved: 16 },
-    { zone: 'Sports Complex', complaints: 9, resolved: 8 },
-  ];
+  // Chart 4: Campus Zone / Hostel distribution
+  const zoneData = analytics?.hostelDistribution
+    ? analytics.hostelDistribution.map(row => ({
+        zone: row.hostel_name || row.zone,
+        complaints: row.total || row.complaints || 0,
+        resolved: row.resolved || 0,
+      }))
+    : FALLBACK_ZONE;
 
   const handleExportReport = () => {
     toast.success(
@@ -88,6 +141,17 @@ export default function AdminAnalytics() {
       }
     );
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center space-y-3">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-slate-500 font-medium">Aggregating analytics data…</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-up">

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import { useToast } from '../context/ToastContext';
+import { getStatusHistory, getComplaintDetail } from '../lib/db';
 import StatusBadge from '../components/common/StatusBadge';
 import { ArrowLeft, Clock, ShieldCheck, User, Building, AlertTriangle, CheckCircle, Star, Printer, Share2, RefreshCw } from 'lucide-react';
 
@@ -11,13 +12,64 @@ export default function LiveStatusTimelinePage() {
   const { complaints, timelines, submitFeedback, feedbacks } = useComplaints();
   const { toast } = useToast();
 
+  const [dbComplaint, setDbComplaint] = useState(null);
+  const [dbHistory, setDbHistory] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const [rating, setRating] = useState(5);
   const [comments, setComments] = useState('');
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
-  const complaint = complaints.find(c => c.Complaint_ID === id) || complaints[0];
+  const fetchTimelineData = () => {
+    if (!id) return;
+    setLoading(true);
+    Promise.all([
+      getComplaintDetail(id),
+      getStatusHistory(id),
+    ]).then(([detailRes, historyRes]) => {
+      setLoading(false);
+      if (detailRes.data) setDbComplaint(detailRes.data);
+      const historyList = historyRes.data || detailRes.history;
+      if (historyList && historyList.length > 0) {
+        setDbHistory(historyList.map(h => ({
+          historyNum: h.history_num,
+          status: h.status,
+          timestamp: h.changed_at ? new Date(h.changed_at).toLocaleString() : '',
+          user: h.changed_by || 'Maintenance Authority',
+          note: h.note || `Status transition to ${h.status} logged.`
+        })));
+      }
+    }).catch(() => {
+      setLoading(false);
+    });
+  };
 
-  const existingTimeline = timelines[complaint.Complaint_ID] || [
+  useEffect(() => {
+    fetchTimelineData();
+  }, [id]);
+
+  const contextComplaint = complaints.find(c => String(c.Complaint_ID || c.complaint_id) === String(id));
+  const rawComplaint = dbComplaint || contextComplaint || complaints[0] || {};
+
+  const complaintId = rawComplaint.Complaint_ID || rawComplaint.complaint_id || id || 'CMP-001';
+  const complaint = {
+    Complaint_ID: complaintId,
+    Title: rawComplaint.Title || rawComplaint.title || rawComplaint.description?.slice(0, 60) || 'Campus Maintenance Issue',
+    Description: rawComplaint.Description || rawComplaint.description || '',
+    Category_Name: rawComplaint.Category_Name || rawComplaint.category_name || 'General',
+    Status: rawComplaint.Status || rawComplaint.status || 'Open',
+    Priority: rawComplaint.Priority || rawComplaint.priority || 'Medium',
+    Room_No: rawComplaint.Room_No || rawComplaint.room_no || 'Campus Facility',
+    Assigned_Staff: rawComplaint.Assigned_Staff || rawComplaint.assigned_staff || null,
+    Is_Escalated: rawComplaint.Is_Escalated || rawComplaint.is_overdue || rawComplaint.status === 'Escalated' || false,
+    SLA_Due: rawComplaint.SLA_Due || (rawComplaint.sla_due_at ? new Date(rawComplaint.sla_due_at).toLocaleDateString() : '2 Business Days'),
+    Resolution_Note: rawComplaint.Resolution_Note || rawComplaint.resolution_note || null,
+    Created_At: rawComplaint.Created_At || (rawComplaint.created_at ? new Date(rawComplaint.created_at).toLocaleString() : 'Recent'),
+    Updated_At: rawComplaint.Updated_At || (rawComplaint.updated_at ? new Date(rawComplaint.updated_at).toLocaleString() : 'Recent'),
+    Student_Name: rawComplaint.Student_Name || rawComplaint.student_name || 'Resident',
+  };
+
+  const existingTimeline = dbHistory || timelines[complaint.Complaint_ID] || [
     { historyNum: 1, status: 'Open', timestamp: complaint.Created_At, user: `${complaint.Student_Name} (Student)`, note: 'Grievance lodged in student portal.' },
     { historyNum: 2, status: complaint.Status, timestamp: complaint.Updated_At, user: complaint.Assigned_Staff || 'Staff', note: 'Active ticket status.' }
   ];
@@ -56,6 +108,7 @@ export default function LiveStatusTimelinePage() {
   };
 
   const handleRefresh = () => {
+    fetchTimelineData();
     toast.info(`Telemetry synchronized with campus DBMS event-bus. Status confirmed as "${complaint.Status}".`, {
       title: 'Audit Trail Synced',
       badge: 'Live Sync'
@@ -87,7 +140,7 @@ export default function LiveStatusTimelinePage() {
             className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors"
             title="Refresh Live Status"
           >
-            <RefreshCw className="w-3.5 h-3.5" /> Sync Status
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Sync Status
           </button>
           <button 
             onClick={handleShare}

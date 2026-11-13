@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { AlertTriangle, Clock, ArrowUpRight, CheckCircle, ShieldAlert, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function WardenEscalations() {
-  const { complaints, updateStatus, staffMembers, assignStaffToTicket } = useComplaints();
+  const { complaints, updateStatus, staffMembers, assignStaffToTicket, loading: contextLoading } = useComplaints();
+  const { profile, role, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  const urgentTickets = complaints.filter(
+
+  const isLoading = authLoading || contextLoading;
+
+  const wardenHostelId = profile?.hostel_id ?? null;
+
+  // Filter to escalated/critical tickets; if warden, further filter by hostel
+  const baseComplaints = (wardenHostelId && role === 'Warden')
+    ? complaints.filter(t => t.Hostel_ID === wardenHostelId || t.hostel_id === wardenHostelId)
+    : complaints;
+
+  const urgentTickets = baseComplaints.filter(
     t => t.Is_Escalated || t.Status === 'Escalated' || t.Priority === 'Critical' || (t.Priority === 'High' && t.Status !== 'Resolved')
   );
 
@@ -21,33 +33,55 @@ export default function WardenEscalations() {
     }
     return null;
   });
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleEscalatePriority = (ticketId) => {
-    updateStatus(ticketId, 'Escalated', 'Warden escalated priority due to SLA threshold breach.', 'Warden Desk');
-    toast.warning(
-      `Ticket #${ticketId} escalated to CRITICAL priority due to SLA turnaround overrun. Executive flag dispatched to Campus Administration console.`,
-      {
-        title: `Priority Escalated to Critical • #${ticketId}`,
-        badge: 'SLA Breach Alert'
-      }
-    );
+  const handleEscalatePriority = async (ticketId) => {
+    setIsUpdating(true);
+    try {
+      await updateStatus(ticketId, 'Escalated', 'Warden escalated priority due to SLA threshold breach.', 'Warden Desk');
+      toast.warning(
+        `Ticket #${ticketId} escalated to CRITICAL priority due to SLA turnaround overrun. Executive flag dispatched to Campus Administration console.`,
+        {
+          title: `Priority Escalated to Critical • #${ticketId}`,
+          badge: 'SLA Breach Alert'
+        }
+      );
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
-  const handleReassign = () => {
+  const handleReassign = async () => {
     if (!reassignedStaffId || !selectedTicket) return;
     const ticketId = selectedTicket.Complaint_ID;
-    const staff = staffMembers.find(s => s.Staff_ID === reassignedStaffId);
-    assignStaffToTicket(ticketId, reassignedStaffId, 'Hostel Warden (Emergency Reassignment)');
-    toast.info(
-      `Work order #${ticketId} emergency re-routed to ${staff?.First_Name || 'technician'} ${staff?.Last_Name || ''} (${staff?.Designation || 'Maintenance Lead'}). Work order queue updated.`,
-      {
-        title: `Emergency Reassignment Completed`,
-        badge: 'Workload Rebalance'
-      }
-    );
-    setSelectedTicket(null);
-    setReassignedStaffId('');
+    const staff = staffMembers.find(s => s.Staff_ID === reassignedStaffId || s.staff_id === reassignedStaffId);
+    setIsUpdating(true);
+    try {
+      await assignStaffToTicket(ticketId, reassignedStaffId, 'Hostel Warden (Emergency Reassignment)');
+      toast.info(
+        `Work order #${ticketId} emergency re-routed to ${staff?.First_Name || staff?.first_name || 'technician'} ${staff?.Last_Name || staff?.last_name || ''} (${staff?.Designation || staff?.designation || 'Maintenance Lead'}). Work order queue updated.`,
+        {
+          title: `Emergency Reassignment Completed`,
+          badge: 'Workload Rebalance'
+        }
+      );
+      setSelectedTicket(null);
+      setReassignedStaffId('');
+    } finally {
+      setIsUpdating(false);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-28 bg-rose-50 rounded-xl animate-pulse" />
+        {[1, 2, 3].map(i => (
+          <div key={i} className="h-32 bg-slate-100 rounded-xl animate-pulse" />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -115,7 +149,8 @@ export default function WardenEscalations() {
                   {ticket.Status !== 'Escalated' && (
                     <button
                       onClick={() => handleEscalatePriority(ticket.Complaint_ID)}
-                      className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm flex items-center gap-1"
+                      disabled={isUpdating}
+                      className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm flex items-center gap-1 disabled:opacity-60"
                     >
                       <ArrowUpRight className="w-3.5 h-3.5" />
                       <span>Trigger Priority Escalation</span>
@@ -183,11 +218,14 @@ export default function WardenEscalations() {
                   className="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 >
                   <option value="">-- Choose Staff Member --</option>
-                  {staffMembers.filter(s => s.Role === 'Staff').map(s => (
-                    <option key={s.Staff_ID} value={s.Staff_ID}>
-                      {s.First_Name} {s.Last_Name} ({s.Designation})
-                    </option>
-                  ))}
+                  {staffMembers
+                    .filter(s => s.Role === 'Staff' || s.role === 'Staff')
+                    .map(s => (
+                      <option key={s.Staff_ID || s.staff_id} value={s.Staff_ID || s.staff_id}>
+                        {s.First_Name || s.first_name} {s.Last_Name || s.last_name} ({s.Designation || s.designation})
+                      </option>
+                    ))
+                  }
                 </select>
               </div>
 
@@ -200,10 +238,10 @@ export default function WardenEscalations() {
                 </button>
                 <button
                   onClick={handleReassign}
-                  disabled={!reassignedStaffId}
+                  disabled={!reassignedStaffId || isUpdating}
                   className="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all active:scale-95 shadow-sm"
                 >
-                  Confirm Reassignment
+                  {isUpdating ? 'Reassigning...' : 'Confirm Reassignment'}
                 </button>
               </div>
             </motion.div>

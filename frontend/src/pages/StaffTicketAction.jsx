@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { 
@@ -20,49 +21,89 @@ import {
 export default function StaffTicketAction() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { complaints, updateStatus } = useComplaints();
+  const { complaints, updateStatus, loading: contextLoading } = useComplaints();
+  const { profile, loading: authLoading } = useAuth();
   const { toast } = useToast();
 
   const searchParams = new URLSearchParams(window.location.search);
   const [isModalOpen, setIsModalOpen] = useState(searchParams.get('modal') === 'resolve');
   const [resolutionNote, setResolutionNote] = useState('');
   const [partsUsed, setPartsUsed] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const ticket = complaints.find(c => c.Complaint_ID === id) || complaints[0];
+  const isLoading = authLoading || contextLoading;
 
-  const handleStartWork = () => {
-    updateStatus(ticket.Complaint_ID, 'In-Progress', 'Technician arrived on-site and initiated active diagnostics.', 'Vinod Sawant (Senior Electrician)');
-    toast.info(
-      `Technician logged at ${ticket.Room_No || 'site'}. Work order #${ticket.Complaint_ID} moved to In-Progress status.`,
-      {
-        title: `On-Site Diagnostics Started`,
-        badge: 'Diagnostic Active'
-      }
-    );
+  const staffDisplayName = profile
+    ? `${profile.first_name} ${profile.last_name} (${profile.designation})`
+    : 'Staff Technician';
+
+  const ticket = complaints.find(c => String(c.Complaint_ID) === String(id)) || complaints[0];
+
+  const handleStartWork = async () => {
+    setIsUpdating(true);
+    try {
+      await updateStatus(ticket.Complaint_ID, 'In-Progress', 'Technician arrived on-site and initiated active diagnostics.', staffDisplayName);
+      toast.info(
+        `Technician logged at ${ticket.Room_No || 'site'}. Work order #${ticket.Complaint_ID} moved to In-Progress status.`,
+        {
+          title: `On-Site Diagnostics Started`,
+          badge: 'Diagnostic Active'
+        }
+      );
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
-  const handleCompleteResolution = (e) => {
+  const handleCompleteResolution = async (e) => {
     e.preventDefault();
     const finalNote = partsUsed 
       ? `${resolutionNote.trim()} | Parts Replaced: ${partsUsed.trim()}`
       : resolutionNote.trim();
 
-    updateStatus(
-      ticket.Complaint_ID,
-      'Resolved',
-      finalNote || 'Issue repaired, tested, and verified according to standard maintenance checklist.',
-      'Vinod Sawant (Senior Electrician)'
-    );
-    toast.success(
-      `Work order #${ticket.Complaint_ID} signed off as Resolved.${partsUsed ? ` Inventory logged: ${partsUsed}.` : ''} Resident notified for feedback.`,
-      {
-        title: `Resolution Completed & Signed Off`,
-        badge: 'Work Order Closed'
-      }
-    );
-    setIsModalOpen(false);
-    navigate('/staff/history');
+    setIsUpdating(true);
+    try {
+      await updateStatus(
+        ticket.Complaint_ID,
+        'Resolved',
+        finalNote || 'Issue repaired, tested, and verified according to standard maintenance checklist.',
+        staffDisplayName
+      );
+      toast.success(
+        `Work order #${ticket.Complaint_ID} signed off as Resolved.${partsUsed ? ` Inventory logged: ${partsUsed}.` : ''} Resident notified for feedback.`,
+        {
+          title: `Resolution Completed & Signed Off`,
+          badge: 'Work Order Closed'
+        }
+      );
+      setIsModalOpen(false);
+      navigate('/staff/history');
+    } finally {
+      setIsUpdating(false);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6 animate-fade-up">
+        <div className="h-10 bg-slate-100 rounded-xl animate-pulse" />
+        <div className="h-64 bg-slate-100 rounded-xl animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!ticket) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6 animate-fade-up">
+        <Link to="/staff" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Staff Queue
+        </Link>
+        <div className="bg-white rounded-xl border border-slate-200 p-8 text-center text-slate-500 text-sm">
+          Ticket not found.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade-up">
@@ -121,7 +162,7 @@ export default function StaffTicketAction() {
           </div>
           <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
             <span className="text-slate-400 block text-[10px] font-semibold uppercase">Assigned Technician</span>
-            <span className="font-bold text-slate-800 mt-0.5 block">{ticket.Assigned_Staff || 'Self Assigned'}</span>
+            <span className="font-bold text-slate-800 mt-0.5 block">{ticket.Assigned_Staff || staffDisplayName}</span>
             <span className="text-slate-500 text-[11px]">Electrical &amp; Maintenance</span>
           </div>
           <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
@@ -145,17 +186,19 @@ export default function StaffTicketAction() {
             {ticket.Status !== 'In-Progress' && ticket.Status !== 'Resolved' && (
               <button
                 onClick={handleStartWork}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-sm transition-all card-hover"
+                disabled={isUpdating}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-sm transition-all card-hover disabled:opacity-60"
               >
                 <Play className="w-4 h-4" />
-                <span>Start Work Order (In-Progress)</span>
+                <span>{isUpdating ? 'Updating...' : 'Start Work Order (In-Progress)'}</span>
               </button>
             )}
 
             {ticket.Status !== 'Resolved' && (
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-sm transition-all card-hover"
+                disabled={isUpdating}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-sm transition-all card-hover disabled:opacity-60"
               >
                 <FileCheck className="w-4 h-4" />
                 <span>Complete Resolution</span>
@@ -246,9 +289,10 @@ export default function StaffTicketAction() {
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all active:scale-95"
+                    disabled={isUpdating}
+                    className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all active:scale-95 disabled:opacity-60"
                   >
-                    Submit &amp; Mark Resolved
+                    {isUpdating ? 'Submitting...' : 'Submit & Mark Resolved'}
                   </button>
                 </div>
               </form>

@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { Building, Users, AlertTriangle, UserPlus, Clock, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function WardenHostelDashboard() {
-  const { complaints, staffMembers, assignStaffToTicket } = useComplaints();
+  const { complaints, staffMembers, assignStaffToTicket, loading: contextLoading } = useComplaints();
+  const { profile, loading: authLoading } = useAuth();
   const { toast } = useToast();
+
+  const isLoading = authLoading || contextLoading;
+
+  // Warden's hostel_id comes from their staff profile (hostel_id column if present)
+  const wardenHostelId = profile?.hostel_id ?? null;
+  const wardenName = profile
+    ? `Hostel Warden ${profile.first_name} ${profile.last_name}`
+    : 'Hostel Warden';
+
   const searchParams = new URLSearchParams(window.location.search);
   const [selectedTicket, setSelectedTicket] = useState(() => {
     if (searchParams.get('modal') === 'assign') {
@@ -19,23 +30,27 @@ export default function WardenHostelDashboard() {
   const [assignedStaffId, setAssignedStaffId] = useState('');
   const [activeHostelFilter, setActiveHostelFilter] = useState('All');
 
-  // Filter complaints
-  const filteredComplaints = complaints.filter(t => {
-    if (activeHostelFilter === 'Mandovi') return t.Room_No.includes('Mandovi') || t.Hostel_ID === 'H1';
-    if (activeHostelFilter === 'Zuari') return t.Room_No.includes('Zuari') || t.Hostel_ID === 'H2';
+  // Filter complaints by warden's hostel if available, otherwise show all
+  const hostelComplaints = wardenHostelId
+    ? complaints.filter(t => t.Hostel_ID === wardenHostelId || t.hostel_id === wardenHostelId)
+    : complaints;
+
+  const filteredComplaints = hostelComplaints.filter(t => {
+    if (activeHostelFilter === 'Mandovi') return t.Room_No?.includes('Mandovi') || t.Hostel_ID === 'H1';
+    if (activeHostelFilter === 'Zuari') return t.Room_No?.includes('Zuari') || t.Hostel_ID === 'H2';
     return true;
   });
 
   const unassigned = filteredComplaints.filter(t => t.Status === 'Open');
   const escalations = filteredComplaints.filter(t => t.Is_Escalated || t.Status === 'Escalated');
 
-  const handleAssignSubmit = () => {
+  const handleAssignSubmit = async () => {
     if (!assignedStaffId || !selectedTicket) return;
     const ticketId = selectedTicket.Complaint_ID;
-    const staff = staffMembers.find(s => s.Staff_ID === assignedStaffId);
-    assignStaffToTicket(ticketId, assignedStaffId, 'Hostel Warden Mahesh Bhandari');
+    const staff = staffMembers.find(s => s.Staff_ID === assignedStaffId || s.staff_id === assignedStaffId);
+    await assignStaffToTicket(ticketId, assignedStaffId, wardenName);
     toast.success(
-      `Dispatched ${staff?.First_Name || 'technician'} ${staff?.Last_Name || ''} (${staff?.Designation || 'Maintenance'}) to ticket #${ticketId}. Priority dispatch registered on duty roster.`,
+      `Dispatched ${staff?.First_Name || staff?.first_name || 'technician'} ${staff?.Last_Name || staff?.last_name || ''} (${staff?.Designation || staff?.designation || 'Maintenance'}) to ticket #${ticketId}. Priority dispatch registered on duty roster.`,
       {
         title: `Technician Dispatched • #${ticketId}`,
         badge: 'Roster Dispatch'
@@ -44,6 +59,20 @@ export default function WardenHostelDashboard() {
     setSelectedTicket(null);
     setAssignedStaffId('');
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-28 bg-slate-100 rounded-xl animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-24 bg-slate-100 rounded-xl animate-pulse" />
+          ))}
+        </div>
+        <div className="h-64 bg-slate-100 rounded-xl animate-pulse" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -142,47 +171,55 @@ export default function WardenHostelDashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredComplaints.map(t => (
-                <tr key={t.Complaint_ID} className="hover:bg-slate-50/70 transition-colors">
-                  <td className="py-3.5 px-4 font-mono font-bold text-blue-600">
-                    {t.Complaint_ID}
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <span className="font-semibold text-slate-900 block">{t.Student_Name}</span>
-                    <span className="text-[11px] text-slate-400">{t.Room_No}</span>
-                  </td>
-                  <td className="py-3.5 px-4 text-slate-700 max-w-xs truncate font-medium">
-                    {t.Title}
-                  </td>
-                  <td className="py-3.5 px-4 text-slate-600">
-                    {t.Category_Name}
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <StatusBadge status={t.Status} />
-                  </td>
-                  <td className="py-3.5 px-4 text-slate-600">
-                    {t.Assigned_Staff || 'Unassigned'}
-                  </td>
-                  <td className="py-3.5 px-4 text-right">
-                    {t.Status === 'Open' ? (
-                      <button
-                        onClick={() => setSelectedTicket(t)}
-                        className="inline-flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-2.5 py-1 rounded text-xs transition-colors shadow-sm"
-                      >
-                        <UserPlus className="w-3.5 h-3.5" />
-                        <span>Assign Staff</span>
-                      </button>
-                    ) : (
-                      <Link
-                        to={`/student/complaints/${t.Complaint_ID}`}
-                        className="text-blue-600 font-semibold hover:underline"
-                      >
-                        Inspect &rarr;
-                      </Link>
-                    )}
+              {filteredComplaints.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-slate-500">
+                    No complaints found for the selected hostel filter.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredComplaints.map(t => (
+                  <tr key={t.Complaint_ID} className="hover:bg-slate-50/70 transition-colors">
+                    <td className="py-3.5 px-4 font-mono font-bold text-blue-600">
+                      {t.Complaint_ID}
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <span className="font-semibold text-slate-900 block">{t.Student_Name}</span>
+                      <span className="text-[11px] text-slate-400">{t.Room_No}</span>
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-700 max-w-xs truncate font-medium">
+                      {t.Title}
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-600">
+                      {t.Category_Name}
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <StatusBadge status={t.Status} />
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-600">
+                      {t.Assigned_Staff || 'Unassigned'}
+                    </td>
+                    <td className="py-3.5 px-4 text-right">
+                      {t.Status === 'Open' ? (
+                        <button
+                          onClick={() => setSelectedTicket(t)}
+                          className="inline-flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-2.5 py-1 rounded text-xs transition-colors shadow-sm"
+                        >
+                          <UserPlus className="w-3.5 h-3.5" />
+                          <span>Assign Staff</span>
+                        </button>
+                      ) : (
+                        <Link
+                          to={`/student/complaints/${t.Complaint_ID}`}
+                          className="text-blue-600 font-semibold hover:underline"
+                        >
+                          Inspect &rarr;
+                        </Link>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -231,11 +268,14 @@ export default function WardenHostelDashboard() {
                   className="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                 >
                   <option value="">-- Choose Specialized Technician --</option>
-                  {staffMembers.filter(s => s.Role === 'Staff').map(s => (
-                    <option key={s.Staff_ID} value={s.Staff_ID}>
-                      {s.First_Name} {s.Last_Name} — {s.Designation}
-                    </option>
-                  ))}
+                  {staffMembers
+                    .filter(s => s.Role === 'Staff' || s.role === 'Staff')
+                    .map(s => (
+                      <option key={s.Staff_ID || s.staff_id} value={s.Staff_ID || s.staff_id}>
+                        {s.First_Name || s.first_name} {s.Last_Name || s.last_name} — {s.Designation || s.designation}
+                      </option>
+                    ))
+                  }
                 </select>
               </div>
 

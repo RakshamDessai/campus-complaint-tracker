@@ -5,6 +5,8 @@ import { ComplaintProvider } from './context/ComplaintContext';
 import { ToastProvider } from './context/ToastContext';
 import Navbar from './components/common/Navbar';
 import Sidebar from './components/common/Sidebar';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import DevQueryViewer from './components/dev/DevQueryViewer';
 
 // Pages - All 22 Figma Frames Implemented
 import WelcomeGateway from './pages/WelcomeGateway';                 // Frame 01
@@ -28,15 +30,13 @@ import AdminStaffRoster from './pages/AdminStaffRoster';             // Frame 20
 import AdminAnalytics from './pages/AdminAnalytics';                 // Frame 21
 
 export default function App() {
-  const [currentRole, setCurrentRole] = useState('Student');
-
   return (
     <ToastProvider>
       <ComplaintProvider>
         <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
         
         {/* Top Header Navbar with Frame 22 Notifications Drawer */}
-        <Navbar currentRole={currentRole} onRoleChange={setCurrentRole} />
+        <Navbar />
 
         <Routes>
           {/* Public Welcome & Authentication */}
@@ -48,20 +48,22 @@ export default function App() {
           <Route
             path="/student/*"
             element={
-              <div className="flex flex-1">
-                <Sidebar role="Student" />
-                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
-                  <Routes>
-                    <Route path="/" element={<StudentDashboard />} />
-                    <Route path="/new" element={<FileComplaint />} />
-                    <Route path="/success" element={<ComplaintSuccess />} />
-                    <Route path="/complaints" element={<MyComplaints />} />
-                    <Route path="/complaints/:id" element={<ComplaintDetail />} />
-                    <Route path="/complaints/:id/timeline" element={<LiveStatusTimelinePage />} />
-                    <Route path="*" element={<Navigate to="/student" replace />} />
-                  </Routes>
-                </main>
-              </div>
+              <ProtectedRoute allowedRoles={['Student']}>
+                <div className="flex flex-1">
+                  <Sidebar role="Student" />
+                  <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
+                    <Routes>
+                      <Route path="/" element={<StudentDashboard />} />
+                      <Route path="/new" element={<FileComplaint />} />
+                      <Route path="/success" element={<ComplaintSuccess />} />
+                      <Route path="/complaints" element={<MyComplaints />} />
+                      <Route path="/complaints/:id" element={<ComplaintDetail />} />
+                      <Route path="/complaints/:id/timeline" element={<LiveStatusTimelinePage />} />
+                      <Route path="*" element={<Navigate to="/student" replace />} />
+                    </Routes>
+                  </main>
+                </div>
+              </ProtectedRoute>
             }
           />
 
@@ -69,17 +71,19 @@ export default function App() {
           <Route
             path="/staff/*"
             element={
-              <div className="flex flex-1">
-                <Sidebar role="Staff" />
-                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
-                  <Routes>
-                    <Route path="/" element={<StaffQueueDashboard />} />
-                    <Route path="/ticket/:id" element={<StaffTicketAction />} />
-                    <Route path="/history" element={<StaffHistory />} />
-                    <Route path="*" element={<Navigate to="/staff" replace />} />
-                  </Routes>
-                </main>
-              </div>
+              <ProtectedRoute allowedRoles={['Staff']}>
+                <div className="flex flex-1">
+                  <Sidebar role="Staff" />
+                  <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
+                    <Routes>
+                      <Route path="/" element={<StaffQueueDashboard />} />
+                      <Route path="/ticket/:id" element={<StaffTicketAction />} />
+                      <Route path="/history" element={<StaffHistory />} />
+                      <Route path="*" element={<Navigate to="/staff" replace />} />
+                    </Routes>
+                  </main>
+                </div>
+              </ProtectedRoute>
             }
           />
 
@@ -87,17 +91,19 @@ export default function App() {
           <Route
             path="/warden/*"
             element={
-              <div className="flex flex-1">
-                <Sidebar role="Warden" />
-                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
-                  <Routes>
-                    <Route path="/" element={<WardenHostelDashboard />} />
-                    <Route path="/escalations" element={<WardenEscalations />} />
-                    <Route path="/staff" element={<WardenStaffWorkload />} />
-                    <Route path="*" element={<Navigate to="/warden" replace />} />
-                  </Routes>
-                </main>
-              </div>
+              <ProtectedRoute allowedRoles={['Warden']}>
+                <div className="flex flex-1">
+                  <Sidebar role="Warden" />
+                  <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
+                    <Routes>
+                      <Route path="/" element={<WardenHostelDashboard />} />
+                      <Route path="/escalations" element={<WardenEscalations />} />
+                      <Route path="/staff" element={<WardenStaffWorkload />} />
+                      <Route path="*" element={<Navigate to="/warden" replace />} />
+                    </Routes>
+                  </main>
+                </div>
+              </ProtectedRoute>
             }
           />
 
@@ -105,24 +111,29 @@ export default function App() {
           <Route
             path="/admin/*"
             element={
-              <div className="flex flex-1">
-                <Sidebar role="Admin" />
-                <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
-                  <Routes>
-                    <Route path="/" element={<AdminDashboard />} />
-                    <Route path="/sla" element={<AdminSlaConfig />} />
-                    <Route path="/roster" element={<AdminStaffRoster />} />
-                    <Route path="/analytics" element={<AdminAnalytics />} />
-                    <Route path="*" element={<Navigate to="/admin" replace />} />
-                  </Routes>
-                </main>
-              </div>
+              <ProtectedRoute allowedRoles={['Admin']}>
+                <div className="flex flex-1">
+                  <Sidebar role="Admin" />
+                  <main className="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full animate-fade-up">
+                    <Routes>
+                      <Route path="/" element={<AdminDashboard />} />
+                      <Route path="/sla" element={<AdminSlaConfig />} />
+                      <Route path="/roster" element={<AdminStaffRoster />} />
+                      <Route path="/analytics" element={<AdminAnalytics />} />
+                      <Route path="*" element={<Navigate to="/admin" replace />} />
+                    </Routes>
+                  </main>
+                </div>
+              </ProtectedRoute>
             }
           />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+
+        {/* Developer DBMS Query Inspector (DEV only, Ctrl+Shift+D) */}
+        <DevQueryViewer />
 
         </div>
       </ComplaintProvider>

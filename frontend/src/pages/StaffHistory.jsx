@@ -1,14 +1,36 @@
 import React from 'react';
 import { useComplaints } from '../context/ComplaintContext';
+import { useAuth } from '../context/AuthContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { History, CheckCircle2, Clock, Calendar, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function StaffHistory() {
-  const { complaints, feedbacks } = useComplaints();
+  const { complaints, feedbacks, loading: contextLoading } = useComplaints();
+  const { profile, loading: authLoading } = useAuth();
 
-  // Show complaints resolved or closed
-  const resolvedTickets = complaints.filter(t => t.Status === 'Resolved');
+  const isLoading = authLoading || contextLoading;
+
+  const staffId = profile?.staff_id;
+
+  // Show resolved/closed complaints for this staff member
+  const resolvedTickets = complaints.filter(t => {
+    if (t.Status !== 'Resolved') return false;
+    // If authenticated staff, filter by assignment; otherwise show all resolved
+    if (staffId) return t.Assigned_Staff_ID === staffId || t.assigned_staff_id === staffId;
+    return true;
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-16 bg-slate-100 rounded-xl animate-pulse" />
+        {[1, 2, 3].map(i => (
+          <div key={i} className="h-32 bg-slate-100 rounded-xl animate-pulse" />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

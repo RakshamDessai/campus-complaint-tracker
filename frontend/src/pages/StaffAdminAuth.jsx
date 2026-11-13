@@ -1,28 +1,49 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { staffMembers } from '../data/mockData';
+import { staffSignIn } from '../lib/auth';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 import { Wrench, Lock, Mail, ArrowLeft, Shield } from 'lucide-react';
 
 export default function StaffAdminAuth() {
   const [role, setRole] = useState('Staff');
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { refreshAuth } = useAuth();
 
-  const handleLogin = (e) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const staffTitle = role === 'Warden' ? 'Chief Warden Mahesh Bhandari' :
-                       role === 'Admin' ? 'Chief Administrator Dr. Anita Roy' :
-                       'Senior Electrician Vinod Sawant';
+    setError('');
+    setLoading(true);
+
+    const result = await staffSignIn(email, password);
+    setLoading(false);
+
+    if (result.error) {
+      setError(result.error.message || 'Authentication failed. Please check your credentials.');
+      return;
+    }
+
+    await refreshAuth();
+
+    const { profile, role: derivedRole } = result;
+    const staffTitle = `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim() || 'Staff Member';
+
     toast.success(
-      `Credential authentication verified. Session initialized for ${staffTitle} with ${role} clearance.`,
+      `Credential authentication verified. Session initialized for ${staffTitle} with ${derivedRole} clearance.`,
       {
-        title: `Welcome to ${role} Portal`,
-        badge: `${role} Access`
+        title: `Welcome to ${derivedRole} Portal`,
+        badge: `${derivedRole} Access`
       }
     );
-    if (role === 'Warden') navigate('/warden');
-    else if (role === 'Admin') navigate('/admin');
+
+    if (derivedRole === 'Admin') navigate('/admin');
+    else if (derivedRole === 'Warden') navigate('/warden');
     else navigate('/staff');
   };
 
@@ -75,10 +96,9 @@ export default function StaffAdminAuth() {
               <input
                 type="text"
                 required
-                defaultValue={
-                  role === 'Staff' ? 'vinod.sawant@campus.edu' :
-                  role === 'Warden' ? 'warden.mandovi@campus.edu' : 'admin.director@campus.edu'
-                }
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="staff@campus.edu"
                 className="w-full text-xs pl-9 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
@@ -91,17 +111,26 @@ export default function StaffAdminAuth() {
               <input
                 type="password"
                 required
-                defaultValue="staffpass2026"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
                 className="w-full text-xs pl-9 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
           </div>
 
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg px-3 py-2">
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-campus-primary hover:bg-campus-dark text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-colors shadow-sm mt-2"
+            disabled={loading}
+            className="w-full bg-campus-primary hover:bg-campus-dark disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-colors shadow-sm mt-2"
           >
-            Launch {role} Console &rarr;
+            {loading ? 'Authenticating...' : `Launch ${role} Console \u2192`}
           </button>
         </form>
 

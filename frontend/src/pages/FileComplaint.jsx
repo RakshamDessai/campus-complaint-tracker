@@ -6,51 +6,68 @@ import { ArrowLeft, Clock, UploadCloud, CheckCircle2 } from 'lucide-react';
 
 export default function FileComplaint() {
   const navigate = useNavigate();
-  const { categories, addComplaint, currentUser } = useComplaints();
+  const { categories, addComplaint, currentUser, loading: contextLoading } = useComplaints();
   const { toast } = useToast();
   
-  const [selectedCat, setSelectedCat] = useState(categories[0] ? categories[0].Category_ID : 'CAT-01');
+  const [formData, setFormData] = useState({
+    categoryId: categories[0]?.Category_ID || categories[0]?.category_id || 'CAT-01',
+    description: '',
+  });
   const [priority, setPriority] = useState('High');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [location, setLocation] = useState(currentUser.room || 'Hostel Block B, Room 204');
+  const [location, setLocation] = useState(currentUser?.room_no || currentUser?.room || 'Hostel Block B, Room 204');
   const [fileName, setFileName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [selectedCat, setSelectedCat] = useState(categories[0]?.Category_ID || categories[0]?.category_id || 'CAT-01');
 
-  const activeCategory = categories.find(c => c.Category_ID === selectedCat) || categories[0];
+  const activeCategory = categories.find(c => (c.Category_ID || c.category_id) === selectedCat) || categories[0];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !description.trim()) {
       alert('Please provide a title and description for your grievance.');
       return;
     }
 
-    const createdTicket = addComplaint({
-      categoryId: selectedCat,
-      title: title.trim(),
-      description: description.trim(),
-      location: location.trim(),
-      priority,
-      attachmentUrl: fileName ? `uploads/${fileName}` : null
-    });
+    setLoading(true);
+    try {
+      const result = await addComplaint({
+        description: description.trim(),
+        categoryId: parseInt(selectedCat) || selectedCat,
+        studentId: currentUser?.id || currentUser?.student_id,
+        // legacy fields kept for mock-compat
+        title: title.trim(),
+        location: location.trim(),
+        priority,
+        attachmentUrl: fileName ? `uploads/${fileName}` : null
+      });
 
-    toast.success(
-      `Your complaint has been submitted to Estate Maintenance under a ${activeCategory?.SLA_Days || 2}-day resolution SLA. An automated tracking timeline has been initialized.`,
-      {
-        title: `Grievance #${createdTicket.Complaint_ID} Lodged`,
-        badge: 'Central Registry'
-      }
-    );
+      const createdTicket = result?.data || result;
+      const complaintId = createdTicket?.complaint_id || createdTicket?.Complaint_ID || 'N/A';
 
-    navigate('/student/success', { 
-      state: { 
-        ticketId: createdTicket.Complaint_ID, 
-        category: createdTicket.Category_Name,
-        title: createdTicket.Title,
-        slaDays: activeCategory ? activeCategory.SLA_Days : 2,
-        location: createdTicket.Room_No
-      } 
-    });
+      toast.success(
+        `Your complaint has been submitted to Estate Maintenance under a ${activeCategory?.SLA_Days || activeCategory?.sla_days || 2}-day resolution SLA. An automated tracking timeline has been initialized.`,
+        {
+          title: `Grievance #${complaintId} Lodged`,
+          badge: 'Central Registry'
+        }
+      );
+
+      navigate('/student/success', { 
+        state: { 
+          ticketId: complaintId,
+          category: createdTicket?.Category_Name || createdTicket?.category_name || activeCategory?.Category_Name,
+          title: createdTicket?.Title || title.trim(),
+          slaDays: activeCategory ? (activeCategory.SLA_Days || activeCategory.sla_days || 2) : 2,
+          location: createdTicket?.Room_No || location
+        } 
+      });
+    } catch (err) {
+      toast.error('Failed to submit complaint. Please try again.', { title: 'Submission Error' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -92,15 +109,15 @@ export default function FileComplaint() {
             className="w-full text-xs font-medium px-3.5 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
           >
             {categories.map((cat) => (
-              <option key={cat.Category_ID} value={cat.Category_ID}>
-                {cat.Category_Name} (Expected SLA: {cat.SLA_Days} {cat.SLA_Days === 1 ? 'day' : 'days'})
+              <option key={cat.Category_ID || cat.category_id} value={cat.Category_ID || cat.category_id}>
+                {cat.Category_Name || cat.category_name} (Expected SLA: {cat.SLA_Days || cat.sla_days || 2} {(cat.SLA_Days || cat.sla_days) === 1 ? 'day' : 'days'})
               </option>
             ))}
           </select>
           {activeCategory && (
             <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
               <Clock className="w-3.5 h-3.5 text-blue-500" />
-              <span>Standard resolution turnaround: <strong>{activeCategory.SLA_Days * 24} hours</strong></span>
+              <span>Standard resolution turnaround: <strong>{(activeCategory.SLA_Days || activeCategory.sla_days || 2) * 24} hours</strong></span>
             </div>
           )}
         </div>
@@ -194,10 +211,11 @@ export default function FileComplaint() {
         <div className="pt-2">
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg text-xs uppercase tracking-wider transition-colors shadow-sm flex items-center justify-center gap-2"
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg text-xs uppercase tracking-wider transition-colors shadow-sm flex items-center justify-center gap-2"
           >
             <CheckCircle2 className="w-4 h-4" />
-            <span>Submit Grievance to Department</span>
+            <span>{loading ? 'Submitting...' : 'Submit Grievance to Department'}</span>
           </button>
         </div>
 

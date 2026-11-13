@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
+import { getDashboardStats, getAllComplaints, runSlaEscalation } from '../lib/db';
 import { 
   Building2, 
   Settings, 
@@ -12,18 +13,78 @@ import {
   CheckCircle2, 
   Clock, 
   Layers,
-  ArrowRight
+  ArrowRight,
+  Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function AdminDashboard() {
-  const { departments, categories, staffMembers, complaints } = useComplaints();
+  const { departments } = useComplaints();
   const { toast } = useToast();
 
-  const total = complaints.length;
-  const inProgress = complaints.filter(c => c.Status === 'In-Progress').length;
-  const resolved = complaints.filter(c => c.Status === 'Resolved').length;
-  const escalated = complaints.filter(c => c.Is_Escalated || c.Status === 'Escalated').length;
+  const [complaints, setComplaints] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [escalating, setEscalating] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const [statsData, complaintsData] = await Promise.all([
+          getDashboardStats(),
+          getAllComplaints(),
+        ]);
+        setStats(statsData?.data || statsData);
+        const list = Array.isArray(complaintsData) ? complaintsData : (complaintsData?.data || []);
+        setComplaints(list);
+      } catch (err) {
+        toast.error('Failed to load dashboard data.', { title: 'Data Load Error' });
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Compute counts from real data safely
+  const safeComplaints = Array.isArray(complaints) ? complaints : (complaints?.data || []);
+  const total = safeComplaints.length;
+  const inProgress = safeComplaints.filter(c => c.status === 'In-Progress' || c.status === 'In Progress').length;
+  const resolved = safeComplaints.filter(c => c.status === 'Resolved').length;
+  const escalated = safeComplaints.filter(c => c.is_escalated || c.status === 'Escalated').length;
+  const open = safeComplaints.filter(c => c.status === 'Open').length;
+
+  const handleRunSlaEscalation = async () => {
+    setEscalating(true);
+    try {
+      const result = await runSlaEscalation();
+      const count = result?.count ?? 0;
+      toast.success(
+        `SLA escalation procedure executed. ${count} overdue complaint(s) automatically escalated by database trigger [TRG_SLA_AUTO_ESCALATE].`,
+        { title: 'SLA Escalation Complete', badge: 'Governance Action' }
+      );
+      // Refresh data
+      const [newStats, newComplaints] = await Promise.all([getDashboardStats(), getAllComplaints()]);
+      setStats(newStats?.data || newStats);
+      setComplaints(Array.isArray(newComplaints) ? newComplaints : (newComplaints?.data || []));
+    } catch (err) {
+      toast.error('SLA escalation failed. Check database connection.', { title: 'Escalation Error' });
+    } finally {
+      setEscalating(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center space-y-3">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-slate-500 font-medium">Loading executive dashboard…</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -52,6 +113,14 @@ export default function AdminDashboard() {
           <Link to="/admin/analytics" className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center gap-1.5">
             <BarChart3 className="w-3.5 h-3.5" /> Full Reports
           </Link>
+          <button
+            onClick={handleRunSlaEscalation}
+            disabled={escalating}
+            className="px-3 py-1.5 rounded-lg bg-rose-700 hover:bg-rose-600 text-white border border-rose-500 transition-colors flex items-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <Zap className="w-3.5 h-3.5" />
+            {escalating ? 'Running…' : 'Run SLA Escalation'}
+          </button>
         </div>
       </div>
 
@@ -121,19 +190,19 @@ export default function AdminDashboard() {
       {/* Department Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {departments.map((dept) => {
-          const deptComplaints = complaints.filter(c => c.Dept_ID === dept.Dept_ID);
-          const deptResolved = deptComplaints.filter(c => c.Status === 'Resolved');
-          const deptPending = deptComplaints.filter(c => c.Status !== 'Resolved');
+          const deptComplaints = complaints.filter(c => c.dept_id === dept.dept_id || c.Dept_ID === dept.Dept_ID);
+          const deptResolved = deptComplaints.filter(c => c.status === 'Resolved' || c.Status === 'Resolved');
+          const deptPending = deptComplaints.filter(c => c.status !== 'Resolved' && c.Status !== 'Resolved');
 
           return (
-            <div key={dept.Dept_ID} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+            <div key={dept.dept_id || dept.Dept_ID} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-bold text-slate-900 text-sm">{dept.Dept_Name}</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Head: {dept.Dept_Head}</p>
+                  <h3 className="font-bold text-slate-900 text-sm">{dept.dept_name || dept.Dept_Name}</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">Head: {dept.dept_head || dept.Dept_Head}</p>
                 </div>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-700">
-                  {dept.Dept_ID}
+                  {dept.dept_id || dept.Dept_ID}
                 </span>
               </div>
 
@@ -177,25 +246,25 @@ export default function AdminDashboard() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {complaints.slice(0, 6).map(t => (
-                <tr key={t.Complaint_ID} className="hover:bg-slate-50/70 transition-colors">
+                <tr key={t.complaint_id || t.Complaint_ID} className="hover:bg-slate-50/70 transition-colors">
                   <td className="py-3 px-4 font-mono font-bold text-blue-600">
-                    {t.Complaint_ID}
+                    {t.complaint_id || t.Complaint_ID}
                   </td>
                   <td className="py-3 px-4 text-slate-800 font-medium">
-                    {t.Student_Name}
+                    {t.student_name || t.Student_Name}
                   </td>
                   <td className="py-3 px-4 text-slate-600 max-w-xs truncate">
-                    {t.Title}
+                    {t.title || t.Title || t.description}
                   </td>
                   <td className="py-3 px-4">
-                    <StatusBadge status={t.Status} />
+                    <StatusBadge status={t.status || t.Status} />
                   </td>
                   <td className="py-3 px-4 text-slate-600">
-                    {t.Assigned_Staff || 'Unassigned'}
+                    {t.assigned_staff || t.Assigned_Staff || 'Unassigned'}
                   </td>
                   <td className="py-3 px-4 text-right">
                     <Link
-                      to={`/student/complaints/${t.Complaint_ID}`}
+                      to={`/student/complaints/${t.complaint_id || t.Complaint_ID}`}
                       className="text-blue-600 font-semibold hover:underline"
                     >
                       Audit &rarr;

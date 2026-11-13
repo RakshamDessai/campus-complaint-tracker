@@ -1,19 +1,24 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  PlusCircle, 
-  ListOrdered, 
-  History, 
-  ShieldCheck, 
-  Settings, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  PlusCircle,
+  ListOrdered,
+  History,
+  ShieldCheck,
+  Settings,
+  BarChart3,
   AlertTriangle,
   Building,
   Users
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
-export default function Sidebar({ role = 'Student' }) {
+export default function Sidebar({ role: roleProp = 'Student' }) {
+  // Prefer the real role from auth context; fall back to the prop
+  const { role: authRole } = useAuth();
+  const role = authRole ?? roleProp;
+
   const getNavItems = () => {
     switch (role) {
       case 'Staff':

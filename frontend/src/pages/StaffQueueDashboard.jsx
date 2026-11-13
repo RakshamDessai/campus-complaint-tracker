@@ -1,20 +1,34 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
 import { Wrench, CheckCircle2, Clock, AlertTriangle, Play, Check, ShieldAlert, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function StaffQueueDashboard() {
-  const { complaints, updateStatus } = useComplaints();
+  const { complaints, updateStatus, loading: contextLoading } = useComplaints();
+  const { profile, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [resolutionNote, setResolutionNote] = useState('');
   const [filterPriority, setFilterPriority] = useState('All');
 
-  // Staff queue: tickets that are Open, Assigned, or In-Progress
-  const activeQueue = complaints.filter(t => t.Status !== 'Resolved');
+  const isLoading = authLoading || contextLoading;
+
+  const staffId = profile?.staff_id;
+  const staffDisplayName = profile
+    ? `${profile.first_name} ${profile.last_name} (${profile.designation})`
+    : 'Vinod Sawant (Senior Electrician)';
+
+  // Staff queue: tickets assigned to this staff member with status not Resolved
+  const activeQueue = complaints.filter(t => {
+    const notResolved = t.Status !== 'Resolved';
+    // If we have a real staffId, filter by assignment; otherwise show all unresolved
+    if (staffId) return notResolved && (t.Assigned_Staff_ID === staffId || t.assigned_staff_id === staffId);
+    return notResolved;
+  });
 
   const filteredQueue = activeQueue.filter(t => {
     if (filterPriority === 'All') return true;
@@ -22,7 +36,7 @@ export default function StaffQueueDashboard() {
   });
 
   const handleStartWork = (ticketId) => {
-    updateStatus(ticketId, 'In-Progress', 'Technician arrived on site and initiated diagnostics.', 'Vinod Sawant (Senior Electrician)');
+    updateStatus(ticketId, 'In-Progress', 'Technician arrived on site and initiated diagnostics.', staffDisplayName);
     toast.info(
       `Work order #${ticketId} is now In-Progress. Diagnostic protocol initiated and resident notified via SMS timeline.`,
       {
@@ -39,7 +53,7 @@ export default function StaffQueueDashboard() {
       ticketId,
       'Resolved',
       resolutionNote.trim() || 'Work inspected and completed according to standard maintenance checklist.',
-      'Vinod Sawant (Senior Electrician)'
+      staffDisplayName
     );
     toast.success(
       `Work order #${ticketId} verified as Resolved. Audit record timestamped and resident prompted for satisfaction rating.`,
@@ -51,6 +65,24 @@ export default function StaffQueueDashboard() {
     setSelectedTicket(null);
     setResolutionNote('');
   };
+
+  // Loading skeleton
+  if (isLoading) {
+    return (
+      <div className="space-y-6 animate-fade-up">
+        <div className="h-16 bg-slate-100 rounded-xl animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-24 bg-slate-100 rounded-xl animate-pulse" />
+          ))}
+        </div>
+        <div className="h-10 bg-slate-100 rounded-xl animate-pulse" />
+        {[1, 2, 3].map(i => (
+          <div key={i} className="h-32 bg-slate-100 rounded-xl animate-pulse" />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-up">
@@ -71,7 +103,7 @@ export default function StaffQueueDashboard() {
         </div>
         <div className="flex items-center gap-2 text-xs font-semibold">
           <span className="bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200">
-            Logged in as: <strong>Vinod Sawant</strong> (Senior Electrician)
+            Logged in as: <strong>{staffDisplayName}</strong>
           </span>
         </div>
       </div>

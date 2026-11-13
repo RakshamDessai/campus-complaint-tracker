@@ -151,10 +151,10 @@ export default function WelcomeGateway() {
               </ul>
             </div>
             <Link
-              to="/student"
+              to="/login"
               className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all shadow-md group-hover:shadow-blue-500/25 active:scale-95"
             >
-              <span>Enter Student Portal</span>
+              <span>Student Login / Register</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
@@ -191,10 +191,10 @@ export default function WelcomeGateway() {
               </ul>
             </div>
             <Link
-              to="/staff"
+              to="/staff-login"
               className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all shadow-md active:scale-95"
             >
-              <span>Enter Staff Desk</span>
+              <span>Staff / Warden Login</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
@@ -231,10 +231,10 @@ export default function WelcomeGateway() {
               </ul>
             </div>
             <Link
-              to="/admin"
+              to="/staff-login"
               className="w-full inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all shadow-md active:scale-95"
             >
-              <span>Enter Admin Dashboard</span>
+              <span>Admin Portal Login</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>

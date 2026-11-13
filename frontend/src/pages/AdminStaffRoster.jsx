@@ -1,23 +1,75 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useComplaints } from '../context/ComplaintContext';
 import { useToast } from '../context/ToastContext';
+import { getStaffWorkload, getStaffMembers } from '../lib/db';
 import { Users, Mail, Phone, Building, CheckCircle2, ShieldCheck } from 'lucide-react';
 
 export default function AdminStaffRoster() {
-  const { staffMembers, departments, complaints, toggleStaffAvailability } = useComplaints();
+  const { departments, complaints, toggleStaffAvailability } = useComplaints();
   const { toast } = useToast();
 
+  const [staffMembers, setStaffMembers] = useState([]);
+  const [workloadMap, setWorkloadMap] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchStaff() {
+      setLoading(true);
+      try {
+        const [membersData, workloadData] = await Promise.all([
+          getStaffMembers(),
+          getStaffWorkload(),
+        ]);
+        const members = Array.isArray(membersData) ? membersData : (membersData?.data || []);
+        const workloads = Array.isArray(workloadData) ? workloadData : (workloadData?.data || []);
+        setStaffMembers(members);
+        // Build workload map keyed by staff_id
+        const wMap = {};
+        workloads.forEach(w => {
+          const id = w.staff_id || w.Staff_ID;
+          wMap[id] = w.active_assignments ?? w.Active_Assignments ?? 0;
+        });
+        setWorkloadMap(wMap);
+      } catch (err) {
+        toast.error('Failed to load staff roster.', { title: 'Data Load Error' });
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchStaff();
+  }, []);
+
   const handleToggle = (staff) => {
-    toggleStaffAvailability(staff.Staff_ID);
+    const staffId = staff.staff_id || staff.Staff_ID;
+    toggleStaffAvailability(staffId);
     const newStatus = staff.isAvailable === false ? 'ON-DUTY' : 'OFF-DUTY';
     toast.info(
-      `${staff.First_Name} ${staff.Last_Name} (${staff.Designation}) marked as ${newStatus}. Central automated dispatch algorithm synchronized.`,
+      `${staff.first_name || staff.First_Name} ${staff.last_name || staff.Last_Name} (${staff.designation || staff.Designation}) marked as ${newStatus}. Central automated dispatch algorithm synchronized.`,
       {
         title: `Roster Shift Updated: ${newStatus}`,
         badge: 'Staff Roster'
       }
     );
+    // Optimistic update
+    setStaffMembers(prev =>
+      prev.map(s =>
+        (s.staff_id || s.Staff_ID) === staffId
+          ? { ...s, isAvailable: !s.isAvailable }
+          : s
+      )
+    );
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center space-y-3">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-slate-500 font-medium">Loading staff roster…</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -55,26 +107,32 @@ export default function AdminStaffRoster() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {staffMembers.map(staff => {
-                const dept = departments.find(d => d.Dept_ID === staff.Dept_ID);
-                const activeCount = complaints.filter(
-                  c => c.Assigned_Staff_ID === staff.Staff_ID && (c.Status === 'Assigned' || c.Status === 'In-Progress')
-                ).length;
+                const staffId = staff.staff_id || staff.Staff_ID;
+                const deptId = staff.dept_id || staff.Dept_ID;
+                const role = staff.role || staff.Role;
+                const dept = departments.find(d => (d.dept_id || d.Dept_ID) === deptId);
+                // Use workload map first, fall back to counting from complaints
+                const activeCount = workloadMap[staffId] ??
+                  complaints.filter(
+                    c => (c.assigned_staff_id || c.Assigned_Staff_ID) === staffId &&
+                      ['Assigned', 'In-Progress'].includes(c.status || c.Status)
+                  ).length;
                 const isAvailable = staff.isAvailable !== false;
 
                 return (
-                  <tr key={staff.Staff_ID} className="hover:bg-slate-50/70 transition-colors">
+                  <tr key={staffId} className="hover:bg-slate-50/70 transition-colors">
                     <td className="py-3.5 px-4 font-mono font-bold text-blue-600">
-                      {staff.Staff_ID}
+                      {staffId}
                     </td>
                     <td className="py-3.5 px-4 font-semibold text-slate-900">
-                      {staff.First_Name} {staff.Last_Name}
+                      {staff.first_name || staff.First_Name} {staff.last_name || staff.Last_Name}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="font-medium text-slate-800 block">{staff.Designation}</span>
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold">{staff.Role}</span>
+                      <span className="font-medium text-slate-800 block">{staff.designation || staff.Designation}</span>
+                      <span className="text-[10px] text-slate-400 uppercase font-semibold">{role}</span>
                     </td>
                     <td className="py-3.5 px-4 text-slate-600">
-                      {dept ? dept.Dept_Name : 'General'}
+                      {dept ? (dept.dept_name || dept.Dept_Name) : 'General'}
                     </td>
                     <td className="py-3.5 px-4">
                       <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold ${
@@ -84,10 +142,10 @@ export default function AdminStaffRoster() {
                       </span>
                     </td>
                     <td className="py-3.5 px-4 text-slate-500">
-                      <div className="text-[11px]">{staff.Email}</div>
+                      <div className="text-[11px]">{staff.email || staff.Email}</div>
                     </td>
                     <td className="py-3.5 px-4 text-right">
-                      {staff.Role === 'Staff' ? (
+                      {role === 'Staff' ? (
                         <button
                           onClick={() => handleToggle(staff)}
                           className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all active:scale-95 shadow-sm ${

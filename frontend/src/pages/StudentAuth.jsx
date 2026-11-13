@@ -1,26 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { hostels } from '../data/mockData';
+import { studentSignIn, studentSignUp } from '../lib/auth';
+import { apiRequest } from '../lib/api';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 import { User, Lock, Mail, Phone, Home, ArrowLeft } from 'lucide-react';
 
 export default function StudentAuth() {
   const [isRegister, setIsRegister] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { refreshAuth } = useAuth();
 
-  const handleSubmit = (e) => {
+  // Form state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [roomNo, setRoomNo] = useState('');
+  const [hostelId, setHostelId] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [hostels, setHostels] = useState([]);
+
+  // Fetch hostels from API on mount
+  useEffect(() => {
+    apiRequest('/lookups', 'GET')
+      .then((data) => {
+        if (data && data.hostels) {
+          setHostels(data.hostels);
+          if (data.hostels.length > 0) setHostelId(String(data.hostels[0].hostel_id));
+        }
+      })
+      .catch((err) => console.error('Failed to load hostels:', err));
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success(
-      isRegister 
-        ? 'Resident registration verified and linked to Mandovi Hostel. Welcome aboard!' 
-        : 'Authenticated as resident Aarav Deshmukh (STU-2026-042). Active session initialized.',
-      {
-        title: isRegister ? 'Registration Completed' : 'Welcome Back, Aarav!',
-        badge: 'Resident Auth'
+    setError('');
+    setLoading(true);
+
+    if (isRegister) {
+      const result = await studentSignUp({
+        email,
+        password,
+        firstName,
+        lastName,
+        roomNo,
+        hostelId: parseInt(hostelId),
+      });
+      setLoading(false);
+      if (result.error) {
+        setError(result.error.message || 'Registration failed. Please try again.');
+        return;
       }
-    );
-    navigate('/student');
+      await refreshAuth();
+      toast.success(
+        'Resident registration verified and linked to hostel. Welcome aboard!',
+        { title: 'Registration Completed', badge: 'Resident Auth' }
+      );
+      navigate('/student');
+    } else {
+      const result = await studentSignIn(email, password);
+      setLoading(false);
+      if (result.error) {
+        setError(result.error.message || 'Invalid credentials. Please try again.');
+        return;
+      }
+      await refreshAuth();
+      toast.success(
+        `Authenticated as resident ${result.profile?.first_name || ''} ${result.profile?.last_name || ''}. Active session initialized.`,
+        { title: 'Welcome Back!', badge: 'Resident Auth' }
+      );
+      navigate('/student');
+    }
   };
 
   return (
@@ -66,7 +119,8 @@ export default function StudentAuth() {
                   <input
                     type="text"
                     required
-                    defaultValue="Aarav"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                 </div>
@@ -75,28 +129,23 @@ export default function StudentAuth() {
                   <input
                     type="text"
                     required
-                    defaultValue="Deshmukh"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Roll / Student ID</label>
-                <input
-                  type="text"
-                  required
-                  defaultValue="STU-2026-042"
-                  className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-              </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">Hostel Block</label>
-                  <select className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+                  <select
+                    value={hostelId}
+                    onChange={(e) => setHostelId(e.target.value)}
+                    className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
+                  >
                     {hostels.map(h => (
-                      <option key={h.Hostel_ID} value={h.Hostel_ID}>{h.Hostel_Name}</option>
+                      <option key={h.hostel_id} value={h.hostel_id}>{h.hostel_name}</option>
                     ))}
                   </select>
                 </div>
@@ -105,7 +154,9 @@ export default function StudentAuth() {
                   <input
                     type="text"
                     required
-                    defaultValue="B-204"
+                    value={roomNo}
+                    onChange={(e) => setRoomNo(e.target.value)}
+                    placeholder="e.g. B-204"
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   />
                 </div>
@@ -120,7 +171,9 @@ export default function StudentAuth() {
               <input
                 type="email"
                 required
-                defaultValue="aarav.deshmukh@campus.edu"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@campus.edu"
                 className="w-full text-xs pl-9 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
@@ -133,17 +186,28 @@ export default function StudentAuth() {
               <input
                 type="password"
                 required
-                defaultValue="password123"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
                 className="w-full text-xs pl-9 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
           </div>
 
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg px-3 py-2">
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-colors shadow-sm mt-2"
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-colors shadow-sm mt-2"
           >
-            {isRegister ? 'Create Account & Enter Portal' : 'Login to Student Portal'}
+            {loading
+              ? (isRegister ? 'Creating Account...' : 'Signing In...')
+              : (isRegister ? 'Create Account & Enter Portal' : 'Login to Student Portal')}
           </button>
         </form>
 
