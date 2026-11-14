@@ -16,7 +16,13 @@ app.use(express.json());
 // ─── Supabase Admin Client (uses service_role key or anon key) ───────────
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  }
 );
 
 // ─── SQL Logger for DBMS demo ─────────────────────────────────────────────
@@ -40,8 +46,20 @@ function authenticateToken(req, res, next) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 1. HEALTH CHECK
+// 0. ROOT ROUTE & 1. HEALTH CHECK
 // ─────────────────────────────────────────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'Campus Complaint Tracker Backend API is running',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      lookup: '/api/lookup'
+    }
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
