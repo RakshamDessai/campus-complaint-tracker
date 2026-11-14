@@ -13,10 +13,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'campus_complaint_jwt_super_secret_
 app.use(cors());
 app.use(express.json());
 
-// ─── Supabase Admin Client (uses service_role key to bypass RLS) ───────────
+// ─── Supabase Admin Client (uses service_role key or anon key) ───────────
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY
 );
 
 // ─── SQL Logger for DBMS demo ─────────────────────────────────────────────
