@@ -169,35 +169,21 @@ The system implements a classic **Three-Tier Architectural Model**, ensuring str
 
 ## 🗄️ Database Design
 
-### 7.1 ER Diagrams
+### 7.1 Entity-Relationship (ER) Diagram
 
-The project repository includes comprehensive visual models located in the `images/` directory:
+The complete conceptual and logical Entity-Relationship (ER) model for the Campus Complaint & Grievance Tracker system is shown below:
 
-- **`images/main_er_diagram.svg`** — Scalable vector diagram displaying both Chen Conceptual Notation and Crow's Foot Logical Notation.
-- **`images/er diagram.jpeg`** — High-resolution raster diagram for printed lab reports.
-- **`docs/Phase2_ER_Modeling.pdf`** — Formal Phase 2 academic report detailing cardinality ratios and participation constraints.
+<p align="center">
+  <img src="images/main_er_diagram.jpeg" alt="Campus Complaint & Grievance Tracker - Entity Relationship Diagram" width="100%" style="border-radius: 10px; border: 1px solid #334155; box-shadow: 0 4px 20px rgba(0,0,0,0.25);" />
+</p>
 
-```
-Chen ER Modeling Abstract Schema
-═══════════════════════════════════════════════════════════════════════
- DEPARTMENT ──< EMPLOYS >── STAFF ──< WARDENS >── HOSTEL
-      │                                               │
-   OWNS                                           RESIDES_IN
-      │                                               │
-   CATEGORY ──< CLASSIFIED_AS >── COMPLAINT ──< FILES >── STUDENT
-      │                              │                    │
-   SLA_Days                    ASSIGNED_TO (N:M)      HAS_PHONE
-                                     │                    │
-                              STAFF_ASSIGNMENT      STUDENT_PHONE
-                                     │
-                              LOGS (1:N weak)
-                                     │
-                              STATUS_HISTORY (Weak Entity)
-                                     │
-                             RECEIVES (1:1 optional)
-                                     │
-                                  FEEDBACK
-```
+<p align="center">
+  <em>Figure 7.1: Comprehensive ER Diagram showing all 9 entities, relationships (1:1, 1:N, N:M), identifying weak entity <code>status_history</code>, decomposed multivalued attribute <code>student_phone</code>, and foreign key integrity constraints.</em>
+</p>
+
+- 📐 **Vector SVG Diagram:** [`images/main_er_diagram.svg`](images/main_er_diagram.svg)
+- 🖼️ **High-Resolution Master Image:** [`images/main_er_diagram.jpeg`](images/main_er_diagram.jpeg) (and [`images/main er diagram.jpeg`](images/main%20er%20diagram.jpeg))
+- 📑 **Formal Modeling Report:** [`docs/Phase2_ER_Modeling.pdf`](docs/Phase2_ER_Modeling.pdf)
 
 ---
 
