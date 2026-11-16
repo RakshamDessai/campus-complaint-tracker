@@ -115,63 +115,76 @@ export default function WardenEscalations() {
             No active escalations! All hostel grievances are progressing on schedule.
           </div>
         ) : (
-          urgentTickets.map(ticket => (
-            <div key={ticket.Complaint_ID} className="bg-white rounded-xl border-l-4 border-l-rose-500 border border-slate-200 p-5 shadow-sm space-y-3">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-mono text-xs font-bold text-blue-600">{ticket.Complaint_ID}</span>
-                  <StatusBadge status={ticket.Status} />
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800">
-                    PRIORITY: {ticket.Priority}
-                  </span>
-                  <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-medium">
-                    {ticket.Category_Name}
-                  </span>
-                </div>
-                <div className="text-xs text-slate-500 font-mono flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5 text-rose-500" />
-                  <span>SLA Due: <strong>{ticket.SLA_Due}</strong></span>
-                </div>
-              </div>
+          urgentTickets.map(ticket => {
+            const id = ticket.complaint_id || ticket.Complaint_ID;
+            const status = ticket.status || ticket.Status || 'Escalated';
+            const priority = ticket.priority || ticket.Priority || 'Critical';
+            const catName = ticket.category_name || ticket.Category_Name || 'General';
+            const slaDue = ticket.sla_due_at ? new Date(ticket.sla_due_at).toLocaleDateString() : (ticket.SLA_Due || 'Overdue');
+            const title = ticket.description || ticket.Title || 'Hostel Grievance';
+            const desc = ticket.description || ticket.Description || '';
+            const student = ticket.student_name || ticket.Student_Name || 'Resident';
+            const room = ticket.room_no || ticket.Room_No || 'Hostel Room';
+            const assigned = ticket.assigned_staff || ticket.Assigned_Staff || 'Unassigned';
 
-              <div>
-                <h3 className="font-bold text-slate-900 text-sm">{ticket.Title}</h3>
-                <p className="text-xs text-slate-600 mt-1">{ticket.Description}</p>
-                <div className="text-xs text-slate-500 mt-2 flex flex-wrap gap-4">
-                  <span>Student: <strong>{ticket.Student_Name}</strong> ({ticket.Room_No})</span>
-                  <span>Assigned: <strong>{ticket.Assigned_Staff}</strong></span>
+            return (
+              <div key={id} className="bg-white rounded-xl border-l-4 border-l-rose-500 border border-slate-200 p-5 shadow-sm space-y-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-mono text-xs font-bold text-blue-600">#{id}</span>
+                    <StatusBadge status={status} />
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800">
+                      PRIORITY: {priority}
+                    </span>
+                    <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-medium">
+                      {catName}
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-500 font-mono flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-rose-500" />
+                    <span>SLA Due: <strong>{slaDue}</strong></span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Action Toolbar */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100 flex-wrap gap-2">
-                <div className="flex gap-2">
-                  {ticket.Status !== 'Escalated' && (
+                <div>
+                  <h3 className="font-bold text-slate-900 text-sm">{title}</h3>
+                  {desc && <p className="text-xs text-slate-600 mt-1">{desc}</p>}
+                  <div className="text-xs text-slate-500 mt-2 flex flex-wrap gap-4">
+                    <span>Student: <strong>{student}</strong> ({room})</span>
+                    <span>Assigned: <strong>{assigned}</strong></span>
+                  </div>
+                </div>
+
+                {/* Action Toolbar */}
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 flex-wrap gap-2">
+                  <div className="flex gap-2">
+                    {status !== 'Escalated' && (
+                      <button
+                        onClick={() => handleEscalatePriority(id)}
+                        disabled={isUpdating}
+                        className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm flex items-center gap-1 disabled:opacity-60"
+                      >
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                        <span>Trigger Priority Escalation</span>
+                      </button>
+                    )}
                     <button
-                      onClick={() => handleEscalatePriority(ticket.Complaint_ID)}
-                      disabled={isUpdating}
-                      className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm flex items-center gap-1 disabled:opacity-60"
+                      onClick={() => setSelectedTicket(ticket)}
+                      className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg border border-indigo-200 transition-colors"
                     >
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                      <span>Trigger Priority Escalation</span>
+                      Reassign Technician
                     </button>
-                  )}
-                  <button
-                    onClick={() => setSelectedTicket(ticket)}
-                    className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg border border-indigo-200 transition-colors"
+                  </div>
+                  <Link
+                    to={`/student/complaints/${id}`}
+                    className="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1"
                   >
-                    Reassign Technician
-                  </button>
+                    Inspect Live Audit Timeline &rarr;
+                  </Link>
                 </div>
-                <Link
-                  to={`/student/complaints/${ticket.Complaint_ID}`}
-                  className="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1"
-                >
-                  Inspect Live Audit Timeline &rarr;
-                </Link>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 

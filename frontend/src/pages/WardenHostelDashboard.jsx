@@ -36,13 +36,20 @@ export default function WardenHostelDashboard() {
     : complaints;
 
   const filteredComplaints = hostelComplaints.filter(t => {
-    if (activeHostelFilter === 'Mandovi') return t.Room_No?.includes('Mandovi') || t.Hostel_ID === 'H1';
-    if (activeHostelFilter === 'Zuari') return t.Room_No?.includes('Zuari') || t.Hostel_ID === 'H2';
+    const room = t.room_no || t.Room_No || '';
+    const hostel = t.hostel_name || t.Hostel_Name || '';
+    const hId = t.hostel_id || t.Hostel_ID;
+    if (activeHostelFilter === 'Mandovi') return room.includes('Mandovi') || hostel.includes('Mandovi') || hId === 1 || hId === 'H1';
+    if (activeHostelFilter === 'Zuari') return room.includes('Zuari') || hostel.includes('Zuari') || hId === 2 || hId === 'H2';
     return true;
   });
 
-  const unassigned = filteredComplaints.filter(t => t.Status === 'Open');
-  const escalations = filteredComplaints.filter(t => t.Is_Escalated || t.Status === 'Escalated');
+  const unassigned = filteredComplaints.filter(t => (
+    t.status === 'Open' || t.Status === 'Open' || 
+    t.status === 'Logged' || t.Status === 'Logged' || 
+    (!t.assigned_staff && !t.Assigned_Staff)
+  ));
+  const escalations = filteredComplaints.filter(t => t.is_escalated || t.Is_Escalated || t.status === 'Escalated' || t.Status === 'Escalated');
 
   const handleAssignSubmit = async () => {
     if (!assignedStaffId || !selectedTicket) return;
@@ -117,7 +124,10 @@ export default function WardenHostelDashboard() {
             In-Progress Work Orders
           </span>
           <span className="text-2xl font-extrabold text-blue-600">
-            {filteredComplaints.filter(t => t.Status === 'In-Progress').length}
+            {filteredComplaints.filter(t => {
+              const s = t.status || t.Status;
+              return s === 'In-Progress' || s === 'In Progress' || s === 'Assigned';
+            }).length}
           </span>
           <span className="text-[11px] text-slate-400 block mt-1">Technicians actively on-site</span>
         </div>
@@ -126,7 +136,10 @@ export default function WardenHostelDashboard() {
             Resolved Hostel Tickets
           </span>
           <span className="text-2xl font-extrabold text-emerald-600">
-            {filteredComplaints.filter(t => t.Status === 'Resolved').length}
+            {filteredComplaints.filter(t => {
+              const s = t.status || t.Status;
+              return s === 'Resolved' || s === 'Closed';
+            }).length}
           </span>
           <span className="text-[11px] text-slate-400 block mt-1">Closed successfully</span>
         </div>
@@ -185,47 +198,58 @@ export default function WardenHostelDashboard() {
                   </td>
                 </tr>
               ) : (
-                filteredComplaints.map(t => (
-                  <tr key={t.Complaint_ID} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-blue-600">
-                      {t.Complaint_ID}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span className="font-semibold text-slate-900 block">{t.Student_Name}</span>
-                      <span className="text-[11px] text-slate-400">{t.Room_No}</span>
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-700 max-w-xs truncate font-medium">
-                      {t.Title}
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-600">
-                      {t.Category_Name}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <StatusBadge status={t.Status} />
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-600">
-                      {t.Assigned_Staff || 'Unassigned'}
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      {t.Status === 'Open' ? (
-                        <button
-                          onClick={() => setSelectedTicket(t)}
-                          className="inline-flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-2.5 py-1 rounded text-xs transition-colors shadow-sm"
-                        >
-                          <UserPlus className="w-3.5 h-3.5" />
-                          <span>Assign Staff</span>
-                        </button>
-                      ) : (
-                        <Link
-                          to={`/student/complaints/${t.Complaint_ID}`}
-                          className="text-blue-600 font-semibold hover:underline"
-                        >
-                          Inspect &rarr;
-                        </Link>
-                      )}
-                    </td>
-                  </tr>
-                ))
+                filteredComplaints.map(t => {
+                  const id = t.complaint_id || t.Complaint_ID;
+                  const resident = t.student_name || t.Student_Name || 'Resident';
+                  const room = t.room_no || t.Room_No || 'Hostel Room';
+                  const subject = t.description || t.Title || t.Subject || 'Complaint description';
+                  const category = t.category_name || t.Category_Name || 'General';
+                  const status = t.status || t.Status || 'Open';
+                  const assigned = t.assigned_staff || t.Assigned_Staff || 'Unassigned';
+                  const isOpen = status === 'Open' || status === 'Logged' || assigned === 'Unassigned';
+
+                  return (
+                    <tr key={id} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-3.5 px-4 font-mono font-bold text-blue-600">
+                        #{id}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="font-semibold text-slate-900 block">{resident}</span>
+                        <span className="text-[11px] text-slate-400">{room}</span>
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-700 max-w-xs truncate font-medium" title={subject}>
+                        {subject}
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-600">
+                        {category}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <StatusBadge status={status} />
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-600">
+                        {assigned}
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        {isOpen ? (
+                          <button
+                            onClick={() => setSelectedTicket(t)}
+                            className="inline-flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-2.5 py-1 rounded text-xs transition-colors shadow-sm"
+                          >
+                            <UserPlus className="w-3.5 h-3.5" />
+                            <span>Assign Staff</span>
+                          </button>
+                        ) : (
+                          <Link
+                            to={`/student/complaints/${id}`}
+                            className="text-blue-600 font-semibold hover:underline"
+                          >
+                            Inspect &rarr;
+                          </Link>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

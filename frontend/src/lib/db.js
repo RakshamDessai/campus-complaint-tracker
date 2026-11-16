@@ -30,6 +30,70 @@ function wrapObject(obj, err = null) {
   return result;
 }
 
+/**
+ * Normalize complaint object so both DB lowercase and legacy PascalCase keys exist.
+ */
+export function normalizeComplaint(c) {
+  if (!c || typeof c !== 'object') return c;
+  const id = c.complaint_id ?? c.Complaint_ID;
+  const desc = c.description ?? c.Title ?? c.subject ?? '';
+  let status = c.status ?? c.Status ?? 'Open';
+  if (status === 'Logged') status = 'Open';
+  const studentName = c.student_name ?? c.Student_Name ?? (c.student ? `${c.student.first_name} ${c.student.last_name}` : '');
+  const studentEmail = c.student_email ?? c.Student_Email ?? c.student?.email ?? '';
+  const roomNo = c.room_no ?? c.Room_No ?? c.student?.room_no ?? '';
+  const hostelId = c.hostel_id ?? c.Hostel_ID ?? c.student?.hostel_id;
+  const hostelName = c.hostel_name ?? c.Hostel_Name ?? c.student?.hostel?.hostel_name ?? '';
+  const categoryName = c.category_name ?? c.Category_Name ?? c.category?.category_name ?? '';
+  const assignedStaff = c.assigned_staff ?? c.Assigned_Staff ?? (c.assignments?.[0]?.staff ? `${c.assignments[0].staff.first_name} ${c.assignments[0].staff.last_name}` : '');
+  const isEscalated = Boolean(c.is_escalated ?? c.Is_Escalated ?? (status === 'Escalated' || c.is_overdue));
+  const priority = c.priority ?? c.Priority ?? (isEscalated ? 'Critical' : (c.sla_days <= 1 ? 'High' : 'Medium'));
+  const slaDue = c.sla_due_at ? new Date(c.sla_due_at).toLocaleDateString() : (c.SLA_Due ?? '2 Business Days');
+
+  const createdAt = c.created_at ? new Date(c.created_at).toLocaleString() : (c.Created_At ?? 'Recent');
+  const updatedAt = c.updated_at ? new Date(c.updated_at).toLocaleString() : (c.Updated_At ?? 'Recent');
+  const resNote = c.resolution_note ?? c.Resolution_Note ?? null;
+
+  return {
+    ...c,
+    complaint_id: id,
+    description: desc,
+    status: status,
+    student_name: studentName,
+    student_email: studentEmail,
+    room_no: roomNo,
+    hostel_id: hostelId,
+    hostel_name: hostelName,
+    category_name: categoryName,
+    assigned_staff: assignedStaff,
+    is_escalated: isEscalated,
+    priority: priority,
+    sla_due_at: slaDue,
+    created_at: c.created_at || createdAt,
+    updated_at: c.updated_at || updatedAt,
+    resolution_note: resNote,
+
+    Complaint_ID: id,
+    Title: desc,
+    Subject: desc,
+    Description: desc,
+    Status: status,
+    Student_Name: studentName,
+    Student_Email: studentEmail,
+    Room_No: roomNo,
+    Hostel_ID: hostelId,
+    Hostel_Name: hostelName,
+    Category_Name: categoryName,
+    Assigned_Staff: assignedStaff,
+    Is_Escalated: isEscalated,
+    Priority: priority,
+    SLA_Due: slaDue,
+    Created_At: createdAt,
+    Updated_At: updatedAt,
+    Resolution_Note: resNote,
+  };
+}
+
 /* ───────────────────────────────────────────────
    STUDENT FUNCTIONS
 ─────────────────────────────────────────────── */
@@ -41,7 +105,7 @@ function wrapObject(obj, err = null) {
 export async function getMyComplaints(studentId) {
   try {
     const data = await apiRequest('/complaints', 'GET');
-    return wrapArray(data.complaints || []);
+    return wrapArray((data.complaints || []).map(normalizeComplaint));
   } catch (err) {
     return wrapArray([], err);
   }
@@ -54,7 +118,7 @@ export async function getMyComplaints(studentId) {
 export async function fileComplaint({ description, studentId, categoryId }) {
   try {
     const data = await apiRequest('/complaints', 'POST', { description, categoryId });
-    return wrapObject(data.complaint);
+    return wrapObject(normalizeComplaint(data.complaint));
   } catch (err) {
     return wrapObject(null, err);
   }
@@ -68,9 +132,10 @@ export async function fileComplaint({ description, studentId, categoryId }) {
 export async function getComplaintDetail(complaintId) {
   try {
     const data = await apiRequest(`/complaints/${complaintId}`, 'GET');
+    const norm = normalizeComplaint(data.detail);
     const result = {
-      ...(data.detail || {}),
-      data: data.detail,
+      ...(norm || {}),
+      data: norm,
       history: data.history || [],
       assignments: data.assignments || [],
       error: null,
@@ -105,7 +170,7 @@ export async function getStatusHistory(complaintId) {
 export async function getStaffQueue(staffId) {
   try {
     const data = await apiRequest(`/staff/${staffId}/queue`, 'GET');
-    return wrapArray(data.queue || []);
+    return wrapArray((data.queue || []).map(normalizeComplaint));
   } catch (err) {
     return wrapArray([], err);
   }
@@ -118,7 +183,7 @@ export async function getStaffQueue(staffId) {
 export async function updateComplaintStatus(complaintId, newStatus) {
   try {
     const data = await apiRequest(`/complaints/${complaintId}/status`, 'PATCH', { status: newStatus });
-    return wrapObject(data.complaint);
+    return wrapObject(normalizeComplaint(data.complaint));
   } catch (err) {
     return wrapObject(null, err);
   }
@@ -142,7 +207,7 @@ export async function resolveComplaint(complaintId) {
 export async function getWardenComplaints(hostelId) {
   try {
     const data = await apiRequest(`/warden/${hostelId}/complaints`, 'GET');
-    return wrapArray(data.complaints || []);
+    return wrapArray((data.complaints || []).map(normalizeComplaint));
   } catch (err) {
     return wrapArray([], err);
   }
@@ -185,7 +250,7 @@ export async function unassignStaff(staffId, complaintId) {
 export async function getAllComplaints() {
   try {
     const data = await apiRequest('/complaints', 'GET');
-    return wrapArray(data.complaints || []);
+    return wrapArray((data.complaints || []).map(normalizeComplaint));
   } catch (err) {
     return wrapArray([], err);
   }
