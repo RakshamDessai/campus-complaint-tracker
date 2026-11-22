@@ -184,39 +184,46 @@ app.get('/api/staff', authenticateToken, async (req, res) => {
 app.post('/api/auth/student/register', async (req, res) => {
   const { firstName, lastName, email, roomNo, hostelId, password } = req.body;
 
-  if (!email || !firstName || !lastName || !roomNo || !hostelId || !password) {
+  const cleanEmail = email ? email.trim() : '';
+  const cleanPassword = password ? password.trim() : '';
+  const cleanFirst = firstName ? firstName.trim() : '';
+  const cleanLast = lastName ? lastName.trim() : '';
+  const cleanRoom = roomNo ? roomNo.trim() : '';
+  const validHostelId = parseInt(hostelId, 10);
+
+  if (!cleanEmail || !cleanFirst || !cleanLast || !cleanRoom || isNaN(validHostelId) || !cleanPassword) {
     return res.status(400).json({ error: 'All fields are required (name, email, room, hostel, password)' });
   }
-  if (password.length < 6) {
+  if (cleanPassword.length < 6) {
     return res.status(400).json({ error: 'Password must be at least 6 characters' });
   }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  if (!emailRegex.test(cleanEmail)) {
     return res.status(400).json({ error: 'Invalid email address format' });
   }
 
   try {
     // Check duplicate
     const checkSql = `SELECT student_id FROM student WHERE LOWER(email) = LOWER($1);`;
-    logQuery('CHECK_STUDENT_EXISTS', checkSql, [email]);
+    logQuery('CHECK_STUDENT_EXISTS', checkSql, [cleanEmail]);
     const { data: existing } = await supabase.from('student')
-      .select('student_id').ilike('email', email).maybeSingle();
+      .select('student_id').ilike('email', cleanEmail).maybeSingle();
     if (existing) {
       return res.status(400).json({ error: 'This email is already registered. Please sign in.' });
     }
 
     // Hash password
-    const password_hash = await bcrypt.hash(password, 10);
+    const password_hash = await bcrypt.hash(cleanPassword, 10);
 
     const insertSql = `
       INSERT INTO student (first_name, last_name, email, room_no, hostel_id, password_hash)
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING student_id, first_name, last_name, email, room_no, hostel_id;
     `;
-    logQuery('REGISTER_STUDENT', insertSql, [firstName, lastName, email, roomNo, hostelId, '[HASHED]']);
+    logQuery('REGISTER_STUDENT', insertSql, [cleanFirst, cleanLast, cleanEmail, cleanRoom, validHostelId, '[HASHED]']);
 
     const { data: student, error: insertErr } = await supabase.from('student')
-      .insert({ first_name: firstName, last_name: lastName, email, room_no: roomNo, hostel_id: parseInt(hostelId), password_hash })
+      .insert({ first_name: cleanFirst, last_name: cleanLast, email: cleanEmail, room_no: cleanRoom, hostel_id: validHostelId, password_hash })
       .select('student_id, first_name, last_name, email, room_no, hostel_id, hostel:hostel_id(hostel_id, hostel_name)')
       .single();
 
@@ -239,7 +246,9 @@ app.post('/api/auth/student/register', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 app.post('/api/auth/student/login', async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) {
+  const cleanEmail = email ? email.trim() : '';
+  const cleanPassword = password ? password.trim() : '';
+  if (!cleanEmail || !cleanPassword) {
     return res.status(400).json({ error: 'Email and password are required' });
   }
 
@@ -249,12 +258,12 @@ app.post('/api/auth/student/login', async (req, res) => {
     JOIN hostel h ON h.hostel_id = s.hostel_id
     WHERE LOWER(s.email) = LOWER($1);
   `;
-  logQuery('STUDENT_LOGIN', loginSql, [email]);
+  logQuery('STUDENT_LOGIN', loginSql, [cleanEmail]);
 
   try {
     const { data: student, error } = await supabase.from('student')
       .select('*, hostel:hostel_id(hostel_id, hostel_name)')
-      .ilike('email', email)
+      .ilike('email', cleanEmail)
       .maybeSingle();
 
     if (error || !student) {
@@ -263,7 +272,7 @@ app.post('/api/auth/student/login', async (req, res) => {
 
     // Password check
     if (student.password_hash) {
-      const valid = await bcrypt.compare(password, student.password_hash);
+      const valid = await bcrypt.compare(cleanPassword, student.password_hash);
       if (!valid) return res.status(401).json({ error: 'Invalid email or password' });
     }
     // If no password_hash set yet (old seed data), allow login (for demo/migration)
@@ -288,7 +297,9 @@ app.post('/api/auth/student/login', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 app.post('/api/auth/staff/login', async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) {
+  const cleanEmail = email ? email.trim() : '';
+  const cleanPassword = password ? password.trim() : '';
+  if (!cleanEmail || !cleanPassword) {
     return res.status(400).json({ error: 'Email and password are required' });
   }
 
@@ -299,12 +310,12 @@ app.post('/api/auth/staff/login', async (req, res) => {
     LEFT JOIN hostel h ON h.warden_id = st.staff_id
     WHERE LOWER(st.email) = LOWER($1);
   `;
-  logQuery('STAFF_LOGIN', staffSql, [email]);
+  logQuery('STAFF_LOGIN', staffSql, [cleanEmail]);
 
   try {
     const { data: staff, error } = await supabase.from('staff')
       .select('*, department:dept_id(dept_id, dept_name)')
-      .ilike('email', email)
+      .ilike('email', cleanEmail)
       .maybeSingle();
 
     if (error || !staff) {
@@ -313,7 +324,7 @@ app.post('/api/auth/staff/login', async (req, res) => {
 
     // Password check (if hash exists)
     if (staff.password_hash) {
-      const valid = await bcrypt.compare(password, staff.password_hash);
+      const valid = await bcrypt.compare(cleanPassword, staff.password_hash);
       if (!valid) return res.status(401).json({ error: 'Invalid email or password' });
     }
     // No hash = demo mode (seed staff have no password, default is any password accepted)

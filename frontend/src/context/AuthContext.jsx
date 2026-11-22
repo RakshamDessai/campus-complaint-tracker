@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getSession } from '../lib/auth';
+import { getSession, signOut } from '../lib/auth';
 
 const AuthContext = createContext(null);
 
@@ -12,19 +12,51 @@ export function AuthProvider({ children }) {
 
   async function checkAuth() {
     setLoading(true);
-    const result = await getSession();
-    if (result && result.session) {
-      setSession(result.session);
-      setUser(result.user);
-      setProfile(result.user);
-      setRole(result.role);
-    } else {
+    try {
+      const result = await getSession();
+      if (result && result.session) {
+        setSession(result.session);
+        setUser(result.user);
+        setProfile(result.user);
+        setRole(result.role);
+      } else {
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        setRole(null);
+      }
+    } catch (e) {
+      console.error('checkAuth error:', e);
       setSession(null);
       setUser(null);
       setProfile(null);
       setRole(null);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  function loginUser(token, userProfile, userRole) {
+    const sess = { token, user: userProfile };
+    setSession(sess);
+    setUser(userProfile);
+    setProfile(userProfile);
+    setRole(userRole);
     setLoading(false);
+  }
+
+  async function logout() {
+    try {
+      await signOut();
+    } catch (e) {
+      console.error('Logout error:', e);
+    } finally {
+      setSession(null);
+      setUser(null);
+      setProfile(null);
+      setRole(null);
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -32,7 +64,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ session, user, profile, role, loading, setSession, setProfile, setRole, refreshAuth: checkAuth }}>
+    <AuthContext.Provider value={{ session, user, profile, role, loading, setSession, setProfile, setRole, refreshAuth: checkAuth, loginUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -21,7 +21,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const { session, profile, role } = useAuth();
+  const { session, profile, role, logout } = useAuth();
   const searchParams = new URLSearchParams(location.search);
   const [isDrawerOpen, setIsDrawerOpen] = useState(searchParams.get('notifications') === 'open');
 
@@ -50,7 +50,11 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      if (logout) {
+        await logout();
+      } else {
+        await signOut();
+      }
       toast.info('Session ended. Securely signed out of the workspace.', {
         title: 'Signed Out',
         badge: 'Session',
