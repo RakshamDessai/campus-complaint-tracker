@@ -180,12 +180,25 @@ export async function getStaffQueue(staffId) {
  * Update complaint status.
  * Backend SQL: UPDATE complaint SET status = $2, updated_at = now() WHERE complaint_id = $1
  */
-export async function updateComplaintStatus(complaintId, newStatus) {
+export async function updateComplaintStatus(complaintId, newStatus, remarks = '') {
   try {
-    const data = await apiRequest(`/complaints/${complaintId}/status`, 'PATCH', { status: newStatus });
+    const data = await apiRequest(`/complaints/${complaintId}/status`, 'PATCH', { status: newStatus, remarks });
     return wrapObject(normalizeComplaint(data.complaint));
   } catch (err) {
     return wrapObject(null, err);
+  }
+}
+
+/**
+ * Get resolved/closed complaint history for a staff member.
+ * Backend SQL: SELECT vcd.* FROM v_complaint_details vcd JOIN staff_assignment sa ON sa.complaint_id = vcd.complaint_id WHERE sa.staff_id = $1 AND vcd.status IN ('Resolved', 'Closed')
+ */
+export async function getStaffHistory(staffId) {
+  try {
+    const data = await apiRequest(`/staff/${staffId}/history`, 'GET');
+    return wrapArray((data.history || []).map(normalizeComplaint));
+  } catch (err) {
+    return wrapArray([], err);
   }
 }
 

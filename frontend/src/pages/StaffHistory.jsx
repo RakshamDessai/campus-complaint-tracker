@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useComplaints } from '../context/ComplaintContext';
 import { useAuth } from '../context/AuthContext';
+import { getStaffHistory } from '../lib/db';
 import StatusBadge from '../components/common/StatusBadge';
 import { History, CheckCircle2, Clock, Calendar, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -9,17 +10,37 @@ export default function StaffHistory() {
   const { complaints, feedbacks, loading: contextLoading } = useComplaints();
   const { profile, loading: authLoading } = useAuth();
 
-  const isLoading = authLoading || contextLoading;
+  const [historyList, setHistoryList] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   const staffId = profile?.staff_id;
 
-  // Show resolved/closed complaints for this staff member
-  const resolvedTickets = complaints.filter(t => {
-    if (t.Status !== 'Resolved') return false;
-    // If authenticated staff, filter by assignment; otherwise show all resolved
-    if (staffId) return t.Assigned_Staff_ID === staffId || t.assigned_staff_id === staffId;
-    return true;
-  });
+  useEffect(() => {
+    let isMounted = true;
+    if (staffId) {
+      setHistoryLoading(true);
+      getStaffHistory(staffId).then(res => {
+        if (!isMounted) return;
+        const list = Array.isArray(res) ? res : (res?.data || []);
+        setHistoryList(list);
+      }).catch(err => {
+        console.error('Error fetching staff history:', err);
+      }).finally(() => {
+        if (isMounted) setHistoryLoading(false);
+      });
+    }
+    return () => { isMounted = false; };
+  }, [staffId]);
+
+  const isLoading = authLoading || (staffId ? historyLoading : contextLoading);
+
+  // Show resolved/closed complaints from backend API; fallback to complaints context
+  const resolvedTickets = historyList.length > 0
+    ? historyList
+    : complaints.filter(t => {
+        const s = t.status || t.Status;
+        return s === 'Resolved' || s === 'Closed';
+      });
 
   if (isLoading) {
     return (
@@ -60,31 +81,32 @@ export default function StaffHistory() {
           </div>
         ) : (
           resolvedTickets.map(ticket => {
-            const feedback = feedbacks[ticket.Complaint_ID];
+            const ticketId = ticket.complaint_id || ticket.Complaint_ID;
+            const feedback = feedbacks[ticketId] || feedbacks[ticket.Complaint_ID];
             return (
-              <div key={ticket.Complaint_ID} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4 hover:border-slate-300 transition-all">
+              <div key={ticketId} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4 hover:border-slate-300 transition-all">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono text-xs font-bold text-blue-600">{ticket.Complaint_ID}</span>
-                    <StatusBadge status={ticket.Status} />
+                    <span className="font-mono text-xs font-bold text-blue-600">#{ticketId}</span>
+                    <StatusBadge status={ticket.status || ticket.Status} />
                     <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
-                      {ticket.Category_Name}
+                      {ticket.category_name || ticket.Category_Name}
                     </span>
                   </div>
                   <span className="text-[11px] text-slate-400 flex items-center gap-1 font-mono">
-                    <Calendar className="w-3.5 h-3.5" /> Resolved: {ticket.Updated_At}
+                    <Calendar className="w-3.5 h-3.5" /> Resolved: {ticket.updated_at || ticket.Updated_At}
                   </span>
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-slate-900 text-sm mb-1">{ticket.Title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed mb-3">{ticket.Description}</p>
+                  <h3 className="font-bold text-slate-900 text-sm mb-1">{ticket.title || ticket.Title}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed mb-3">{ticket.description || ticket.Description}</p>
                   
                   {/* Resolution Note */}
                   <div className="bg-emerald-50/70 border border-emerald-200 rounded-lg p-3 text-xs text-emerald-900">
                     <span className="font-semibold block mb-0.5">Technician Resolution Report:</span>
-                    <p>{ticket.Resolution_Note || 'Issue inspected, repaired, and confirmed functional.'}</p>
-                    <span className="text-[11px] text-emerald-700 mt-1 block">Completed by: {ticket.Assigned_Staff}</span>
+                    <p>{ticket.resolution_note || ticket.Resolution_Note || 'Issue inspected, repaired, and confirmed functional.'}</p>
+                    <span className="text-[11px] text-emerald-700 mt-1 block">Completed by: {ticket.assigned_staff || ticket.Assigned_Staff || 'Staff Technician'}</span>
                   </div>
                 </div>
 
@@ -103,8 +125,8 @@ export default function StaffHistory() {
                 )}
 
                 <div className="flex items-center justify-between pt-1 text-xs text-slate-500 border-t border-slate-100">
-                  <span>Location: <strong>{ticket.Room_No}</strong></span>
-                  <Link to={`/student/complaints/${ticket.Complaint_ID}`} className="text-blue-600 font-semibold hover:underline">
+                  <span>Location: <strong>{ticket.room_no || ticket.Room_No}</strong></span>
+                  <Link to={`/student/complaints/${ticketId}`} className="text-blue-600 font-semibold hover:underline">
                     View Complete Audit Trail &rarr;
                   </Link>
                 </div>

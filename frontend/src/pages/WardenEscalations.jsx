@@ -53,7 +53,7 @@ export default function WardenEscalations() {
 
   const handleReassign = async () => {
     if (!reassignedStaffId || !selectedTicket) return;
-    const ticketId = selectedTicket.Complaint_ID;
+    const ticketId = selectedTicket.Complaint_ID || selectedTicket.complaint_id;
     const staff = staffMembers.find(s => s.Staff_ID === reassignedStaffId || s.staff_id === reassignedStaffId);
     setIsUpdating(true);
     try {

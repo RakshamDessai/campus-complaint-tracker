@@ -24,15 +24,18 @@ export default function StaffQueueDashboard() {
 
   // Staff queue: tickets assigned to this staff member with status not Resolved
   const activeQueue = complaints.filter(t => {
-    const notResolved = t.Status !== 'Resolved';
-    // If we have a real staffId, filter by assignment; otherwise show all unresolved
-    if (staffId) return notResolved && (t.Assigned_Staff_ID === staffId || t.assigned_staff_id === staffId);
+    const s = t.status || t.Status;
+    const notResolved = s !== 'Resolved' && s !== 'Closed';
+    // If we have a real staffId and assigned_staff_id is set, filter by assignment; otherwise show all unresolved
+    if (staffId && (t.Assigned_Staff_ID || t.assigned_staff_id)) {
+      return notResolved && ((t.Assigned_Staff_ID === staffId) || (t.assigned_staff_id === staffId));
+    }
     return notResolved;
   });
 
   const filteredQueue = activeQueue.filter(t => {
     if (filterPriority === 'All') return true;
-    return t.Priority === filterPriority;
+    return (t.Priority || t.priority) === filterPriority;
   });
 
   const handleStartWork = (ticketId) => {
@@ -48,7 +51,7 @@ export default function StaffQueueDashboard() {
 
   const handleResolve = () => {
     if (!selectedTicket) return;
-    const ticketId = selectedTicket.Complaint_ID;
+    const ticketId = selectedTicket.Complaint_ID || selectedTicket.complaint_id;
     updateStatus(
       ticketId,
       'Resolved',

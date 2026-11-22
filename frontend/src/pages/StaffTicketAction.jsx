@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useComplaints } from '../context/ComplaintContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { getComplaintDetail } from '../lib/db';
 import StatusBadge from '../components/common/StatusBadge';
 import { 
   ArrowLeft, 
@@ -37,14 +38,31 @@ export default function StaffTicketAction() {
     ? `${profile.first_name} ${profile.last_name} (${profile.designation})`
     : 'Staff Technician';
 
-  const ticket = complaints.find(c => String(c.Complaint_ID) === String(id)) || complaints[0];
+  const [localTicket, setLocalTicket] = useState(null);
+
+  useEffect(() => {
+    const found = complaints.find(c => String(c.Complaint_ID || c.complaint_id) === String(id));
+    if (found) {
+      setLocalTicket(found);
+    } else if (id) {
+      getComplaintDetail(id).then(res => {
+        if (res && (res.complaint_id || res.Complaint_ID)) {
+          setLocalTicket(res);
+        }
+      }).catch(console.error);
+    }
+  }, [id, complaints]);
+
+  const ticket = localTicket || complaints.find(c => String(c.Complaint_ID || c.complaint_id) === String(id)) || complaints[0];
+  const ticketId = ticket?.Complaint_ID || ticket?.complaint_id;
 
   const handleStartWork = async () => {
+    if (!ticketId) return;
     setIsUpdating(true);
     try {
-      await updateStatus(ticket.Complaint_ID, 'In-Progress', 'Technician arrived on-site and initiated active diagnostics.', staffDisplayName);
+      await updateStatus(ticketId, 'In-Progress', 'Technician arrived on-site and initiated active diagnostics.', staffDisplayName);
       toast.info(
-        `Technician logged at ${ticket.Room_No || 'site'}. Work order #${ticket.Complaint_ID} moved to In-Progress status.`,
+        `Technician logged at ${ticket.Room_No || ticket.room_no || 'site'}. Work order #${ticketId} moved to In-Progress status.`,
         {
           title: `On-Site Diagnostics Started`,
           badge: 'Diagnostic Active'
@@ -57,6 +75,7 @@ export default function StaffTicketAction() {
 
   const handleCompleteResolution = async (e) => {
     e.preventDefault();
+    if (!ticketId) return;
     const finalNote = partsUsed 
       ? `${resolutionNote.trim()} | Parts Replaced: ${partsUsed.trim()}`
       : resolutionNote.trim();
@@ -64,13 +83,13 @@ export default function StaffTicketAction() {
     setIsUpdating(true);
     try {
       await updateStatus(
-        ticket.Complaint_ID,
+        ticketId,
         'Resolved',
         finalNote || 'Issue repaired, tested, and verified according to standard maintenance checklist.',
         staffDisplayName
       );
       toast.success(
-        `Work order #${ticket.Complaint_ID} signed off as Resolved.${partsUsed ? ` Inventory logged: ${partsUsed}.` : ''} Resident notified for feedback.`,
+        `Work order #${ticketId} signed off as Resolved.${partsUsed ? ` Inventory logged: ${partsUsed}.` : ''} Resident notified for feedback.`,
         {
           title: `Resolution Completed & Signed Off`,
           badge: 'Work Order Closed'

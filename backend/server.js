@@ -83,11 +83,23 @@ app.get('/api/lookups', async (req, res) => {
       supabase.from('department').select('*').order('dept_name'),
       supabase.from('staff').select('staff_id, first_name, last_name, designation, email, department:dept_id(dept_id, dept_name)').order('last_name'),
     ]);
+
+    const enrichedStaff = (staffRes.data || []).map(s => {
+      const role = (s.designation === 'Admin') ? 'Admin' : (s.designation && s.designation.toLowerCase().includes('warden')) ? 'Warden' : 'Staff';
+      return {
+        ...s,
+        role,
+        Role: role,
+        is_available: true,
+        isAvailable: true,
+      };
+    });
+
     res.json({
       hostels: hostelsRes.data || [],
       categories: categoriesRes.data || [],
       departments: departmentsRes.data || [],
-      staffMembers: staffRes.data || [],
+      staffMembers: enrichedStaff,
       sql,
     });
   } catch (err) {
@@ -148,7 +160,19 @@ app.get('/api/staff', authenticateToken, async (req, res) => {
       .select('staff_id, first_name, last_name, designation, email, department:dept_id(dept_id, dept_name)')
       .order('last_name');
     if (error) throw error;
-    res.json({ staff: data || [], sql });
+
+    const enriched = (data || []).map(s => {
+      const role = (s.designation === 'Admin') ? 'Admin' : (s.designation && s.designation.toLowerCase().includes('warden')) ? 'Warden' : 'Staff';
+      return {
+        ...s,
+        role,
+        Role: role,
+        is_available: true,
+        isAvailable: true,
+      };
+    });
+
+    res.json({ staff: enriched, sql });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -498,6 +522,27 @@ app.patch('/api/complaints/:id/status', authenticateToken, async (req, res) => {
       .eq('complaint_id', complaintId)
       .select().single();
     if (error) throw error;
+
+    // Update the latest status_history row with specific technician remarks & actor
+    if (remarks || req.user) {
+      const { data: latestHist } = await supabase.from('status_history')
+        .select('history_num')
+        .eq('complaint_id', complaintId)
+        .order('history_num', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (latestHist) {
+        await supabase.from('status_history')
+          .update({
+            changed_by: req.user?.email || 'Staff Technician',
+            note: remarks || `Status transitioned to ${status}`
+          })
+          .eq('complaint_id', complaintId)
+          .eq('history_num', latestHist.history_num);
+      }
+    }
+
     res.json({ message: 'Status updated', complaint: data, sql: updateSql });
   } catch (err) {
     console.error('Update status error:', err);
@@ -530,6 +575,31 @@ app.post('/api/complaints/:id/assign', authenticateToken, async (req, res) => {
     await supabase.from('complaint')
       .update({ status: 'Assigned', updated_at: new Date().toISOString() })
       .eq('complaint_id', complaintId);
+
+    // Fetch assigned staff name for audit note
+    const { data: staffMember } = await supabase.from('staff')
+      .select('first_name, last_name, designation')
+      .eq('staff_id', staffId)
+      .maybeSingle();
+
+    const techName = staffMember ? `${staffMember.first_name} ${staffMember.last_name} (${staffMember.designation})` : `Staff #${staffId}`;
+
+    const { data: latestHist } = await supabase.from('status_history')
+      .select('history_num')
+      .eq('complaint_id', complaintId)
+      .order('history_num', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (latestHist) {
+      await supabase.from('status_history')
+        .update({
+          changed_by: req.user?.email || 'Hostel Warden',
+          note: `Assigned to technician: ${techName}`
+        })
+        .eq('complaint_id', complaintId)
+        .eq('history_num', latestHist.history_num);
+    }
 
     res.json({ message: 'Staff assigned successfully', sql: assignSql });
   } catch (err) {
@@ -601,7 +671,13 @@ app.get('/api/staff/:staffId/queue', authenticateToken, async (req, res) => {
       .select('*').in('complaint_id', ids).order('created_at', { ascending: false });
     if (error) throw error;
 
-    res.json({ queue: complaints || [], sql });
+    const enrichedQueue = (complaints || []).map(c => ({
+      ...c,
+      assigned_staff_id: parseInt(staffId),
+      Assigned_Staff_ID: parseInt(staffId),
+    }));
+
+    res.json({ queue: enrichedQueue, sql });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -969,15 +1045,32 @@ app.patch('/api/notifications/read', authenticateToken, async (req, res) => {
 app.post('/api/feedback', authenticateToken, async (req, res) => {
   const { complaintId, rating, comments } = req.body;
   const sql = `
-    -- Feedback stored in status_history as a note
-    INSERT INTO status_history (complaint_id, status, changed_by, note)
-    VALUES (${complaintId}, 'Resolved', 'Student', 'Rating: ${rating}/5 - ${comments}')
+    -- 1. Insert/update student feedback
+    INSERT INTO feedback (complaint_id, student_id, rating, comments, submitted_at)
+    VALUES (${complaintId}, ${req.user.id}, ${rating}, '${comments || ''}', now())
+    ON CONFLICT (complaint_id) DO UPDATE SET rating = EXCLUDED.rating, comments = EXCLUDED.comments, submitted_at = now();
+
+    -- 2. Audit record in status_history
+    INSERT INTO status_history (complaint_id, history_num, status, changed_by, note)
+    VALUES (${complaintId}, (SELECT COALESCE(MAX(history_num),0)+1 FROM status_history WHERE complaint_id = ${complaintId}), 'Resolved', '${req.user.email}', 'Rating: ${rating}/5 - ${comments || 'No comment'}')
     RETURNING *;
   `;
   logQuery('SUBMIT_FEEDBACK', sql);
 
   try {
-    // Store feedback as a status_history note
+    // 1. Insert into feedback table if user is a student
+    const studentId = (req.user.role === 'Student') ? req.user.id : null;
+    if (studentId) {
+      await supabase.from('feedback').upsert({
+        complaint_id: parseInt(complaintId),
+        student_id: parseInt(studentId),
+        rating: parseInt(rating),
+        comments: comments || null,
+        submitted_at: new Date().toISOString()
+      }, { onConflict: 'complaint_id' });
+    }
+
+    // 2. Store feedback as a status_history note
     const { data: lastHistory } = await supabase.from('status_history')
       .select('history_num').eq('complaint_id', complaintId)
       .order('history_num', { ascending: false }).limit(1).maybeSingle();

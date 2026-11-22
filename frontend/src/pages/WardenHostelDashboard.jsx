@@ -53,7 +53,7 @@ export default function WardenHostelDashboard() {
 
   const handleAssignSubmit = async () => {
     if (!assignedStaffId || !selectedTicket) return;
-    const ticketId = selectedTicket.Complaint_ID;
+    const ticketId = selectedTicket.Complaint_ID || selectedTicket.complaint_id;
     const staff = staffMembers.find(s => s.Staff_ID === assignedStaffId || s.staff_id === assignedStaffId);
     await assignStaffToTicket(ticketId, assignedStaffId, wardenName);
     toast.success(
@@ -288,7 +288,7 @@ export default function WardenHostelDashboard() {
               </div>
 
               <p className="text-xs text-slate-500">
-                Select technician to dispatch for <strong>{selectedTicket.Complaint_ID}</strong> ({selectedTicket.Category_Name} • {selectedTicket.Room_No}).
+                Select technician to dispatch for <strong>#{selectedTicket.Complaint_ID || selectedTicket.complaint_id}</strong> ({selectedTicket.Category_Name || selectedTicket.category_name} • {selectedTicket.Room_No || selectedTicket.room_no}).
               </p>
 
               <div>

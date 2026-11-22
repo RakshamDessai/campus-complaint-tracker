@@ -140,9 +140,9 @@ export function ComplaintProvider({ children }) {
     return data;
   }, [refreshComplaints]);
 
-  const updateStatus = useCallback(async (complaintId, newStatus) => {
+  const updateStatus = useCallback(async (complaintId, newStatus, remarks) => {
     setError(null);
-    const { error: err } = await updateComplaintStatus(complaintId, newStatus);
+    const { error: err } = await updateComplaintStatus(complaintId, newStatus, remarks);
     if (err) { setError(err.message || String(err)); return; }
     await refreshComplaints();
   }, [refreshComplaints]);

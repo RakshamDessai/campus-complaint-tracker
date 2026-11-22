@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useComplaints } from '../context/ComplaintContext';
 import { useToast } from '../context/ToastContext';
@@ -10,7 +10,7 @@ export default function FileComplaint() {
   const { toast } = useToast();
   
   const [formData, setFormData] = useState({
-    categoryId: categories[0]?.Category_ID || categories[0]?.category_id || 'CAT-01',
+    categoryId: categories[0]?.Category_ID || categories[0]?.category_id || 1,
     description: '',
   });
   const [priority, setPriority] = useState('High');
@@ -19,7 +19,16 @@ export default function FileComplaint() {
   const [location, setLocation] = useState(currentUser?.room_no || currentUser?.room || 'Hostel Block B, Room 204');
   const [fileName, setFileName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [selectedCat, setSelectedCat] = useState(categories[0]?.Category_ID || categories[0]?.category_id || 'CAT-01');
+  const [selectedCat, setSelectedCat] = useState(categories[0]?.Category_ID || categories[0]?.category_id || 1);
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      const firstId = categories[0].category_id || categories[0].Category_ID;
+      if (!selectedCat || selectedCat === 'CAT-01' || isNaN(Number(selectedCat))) {
+        setSelectedCat(firstId);
+      }
+    }
+  }, [categories, selectedCat]);
 
   const activeCategory = categories.find(c => (c.Category_ID || c.category_id) === selectedCat) || categories[0];
 
@@ -32,9 +41,10 @@ export default function FileComplaint() {
 
     setLoading(true);
     try {
+      const validCatId = parseInt(selectedCat) || (categories[0]?.category_id || categories[0]?.Category_ID || 1);
       const result = await addComplaint({
         description: description.trim(),
-        categoryId: parseInt(selectedCat) || selectedCat,
+        categoryId: validCatId,
         studentId: currentUser?.id || currentUser?.student_id,
         // legacy fields kept for mock-compat
         title: title.trim(),
