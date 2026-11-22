@@ -1,5 +1,5 @@
 // Frontend API Client connecting to Node.js Backend Server
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_BACKEND_URL || 'https://campus-complaint-backend-1ndy.onrender.com/api';
 
 // Helper for storing / retrieving JWT token
 export const getToken = () => localStorage.getItem('campus_auth_token');

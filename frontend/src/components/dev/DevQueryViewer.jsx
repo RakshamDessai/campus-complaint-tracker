@@ -200,6 +200,66 @@ const TAG_COLORS = {
   'Group By': 'bg-fuchsia-900 text-fuchsia-200 border-fuchsia-700',
 };
 
+/* ─── Showcase Credentials & Dummy Data for Evaluation ─── */
+const DUMMY_SHOWCASE_USERS = [
+  {
+    role: 'Student',
+    name: 'Raksham Dessai',
+    email: 'raksham.dessai@campus.edu',
+    pass: 'password123',
+    meta: 'Mandovi Boys Hostel, Room A-204 (Student ID #1)',
+    badge: 'bg-blue-900 text-blue-200 border-blue-700'
+  },
+  {
+    role: 'Student',
+    name: 'Chirag Simepurushkar',
+    email: 'simepurushkarchirag84@gmail.com',
+    pass: 'password123',
+    meta: 'Mandovi Boys Hostel, Room A-21 (Student ID #11)',
+    badge: 'bg-blue-900 text-blue-200 border-blue-700'
+  },
+  {
+    role: 'Hostel Warden',
+    name: 'Sunita Borkar',
+    email: 'sunita.borkar@campus.edu',
+    pass: 'admin123',
+    meta: 'Warden • Mandovi Boys Hostel (Staff ID #2)',
+    badge: 'bg-violet-900 text-violet-200 border-violet-700'
+  },
+  {
+    role: 'Hostel Warden',
+    name: 'Prakash Fernandes',
+    email: 'prakash.fernandes@campus.edu',
+    pass: 'admin123',
+    meta: 'Warden • Zuari Boys Hostel (Staff ID #3)',
+    badge: 'bg-violet-900 text-violet-200 border-violet-700'
+  },
+  {
+    role: 'Staff Technician',
+    name: 'Anil Pai',
+    email: 'anil.pai@campus.edu',
+    pass: 'admin123',
+    meta: 'Senior Electrician • Estate & Maintenance (Staff #5)',
+    badge: 'bg-emerald-900 text-emerald-200 border-emerald-700'
+  },
+  {
+    role: 'Staff Technician',
+    name: 'Joseph Dias',
+    email: 'joseph.dias@campus.edu',
+    pass: 'admin123',
+    meta: 'Plumbing Specialist • Estate & Maintenance (Staff #6)',
+    badge: 'bg-emerald-900 text-emerald-200 border-emerald-700'
+  },
+  {
+    role: 'Campus Admin',
+    name: 'Rajesh Gawas',
+    email: 'rajesh.gawas@campus.edu',
+    pass: 'admin123',
+    meta: 'System Administrator • Campus Governance (Staff #1)',
+    badge: 'bg-rose-900 text-rose-200 border-rose-700'
+  },
+];
+
 /* ─── SQL Syntax Highlighter ─── */
 const SQL_KEYWORDS = /\b(SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AND|OR|NOT|IN|IS|NULL|AS|ORDER|BY|GROUP|HAVING|LIMIT|OFFSET|INTO|VALUES|SET|RETURNING|CREATE|OR\s+REPLACE|FUNCTION|VIEW|TABLE|TRIGGER|AFTER|BEFORE|FOR|EACH|ROW|BEGIN|END|DECLARE|RETURNS|LANGUAGE|SECURITY|DEFINER|EXISTS|WITH|COALESCE|COUNT|ROUND|FILTER|INTERVAL|USING|INTEGER|BOOLEAN|TEXT|NOW)\b/gi;
 
@@ -411,6 +471,78 @@ export default function DevQueryViewer() {
     } catch {}
   };
 
+  const [copiedKey, setCopiedKey] = useState('');
+
+  const handleCopyText = async (text, key) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(''), 1800);
+    } catch {}
+  };
+
+  const handleLoadSampleQueries = () => {
+    const samples = [
+      {
+        id: 'sample-4',
+        timestamp: new Date().toLocaleTimeString(),
+        method: 'GET',
+        endpoint: '/api/analytics/dashboard-stats',
+        status: 200,
+        durationMs: 42,
+        sql: `SELECT
+  COUNT(*)                                             AS total,
+  COUNT(*) FILTER (WHERE status = 'Open')             AS open_count,
+  COUNT(*) FILTER (WHERE status = 'Assigned')         AS assigned_count,
+  COUNT(*) FILTER (WHERE status = 'In-Progress')      AS in_progress,
+  COUNT(*) FILTER (WHERE status = 'Resolved')         AS resolved,
+  COUNT(*) FILTER (WHERE status = 'Escalated')        AS escalated
+FROM complaint;`
+      },
+      {
+        id: 'sample-3',
+        timestamp: new Date(Date.now() - 30000).toLocaleTimeString(),
+        method: 'POST',
+        endpoint: '/api/complaints/1/assign',
+        status: 200,
+        durationMs: 78,
+        sql: `INSERT INTO staff_assignment (staff_id, complaint_id, assigned_at)
+VALUES (5, 1, now())
+RETURNING *;
+-- Trigger trg_assignment_sets_status sets complaint.status = 'Assigned'`
+      },
+      {
+        id: 'sample-2',
+        timestamp: new Date(Date.now() - 60000).toLocaleTimeString(),
+        method: 'POST',
+        endpoint: '/api/complaints',
+        status: 201,
+        durationMs: 95,
+        sql: `INSERT INTO complaint (description, student_id, category_id, status)
+VALUES ('Ceiling fan sparking in Room A-204', 1, 1, 'Open')
+RETURNING *;
+-- Trigger trg_complaint_status_log auto-inserted initial weak-entity row in status_history`
+      },
+      {
+        id: 'sample-1',
+        timestamp: new Date(Date.now() - 90000).toLocaleTimeString(),
+        method: 'POST',
+        endpoint: '/api/auth/student/login',
+        status: 200,
+        durationMs: 64,
+        sql: `SELECT s.*, h.hostel_name
+FROM student s
+JOIN hostel h ON h.hostel_id = s.hostel_id
+WHERE LOWER(s.email) = LOWER('raksham.dessai@campus.edu');
+-- Bcrypt password verification succeeded; JWT 7-day signed token issued.`
+      }
+    ];
+    setLiveQueries(samples);
+    try {
+      sessionStorage.setItem('campus_dbms_queries', JSON.stringify(samples));
+    } catch {}
+  };
+
   const handleRunTestQuery = async () => {
     try {
       await apiRequest('/lookups', 'GET');
@@ -455,14 +587,14 @@ export default function DevQueryViewer() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="w-[580px] max-w-[calc(100vw-32px)] max-h-[75vh] flex flex-col bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+            className="w-[620px] max-w-[calc(100vw-32px)] max-h-[80vh] flex flex-col bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800 shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-sm font-bold text-white font-mono">Live DBMS Query Inspector</span>
-                <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded font-mono">
                   PostgreSQL / MySQL
                 </span>
               </div>
@@ -479,20 +611,30 @@ export default function DevQueryViewer() {
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex border-b border-slate-800 bg-slate-900/50 shrink-0 text-xs font-medium">
+            <div className="flex border-b border-slate-800 bg-slate-900/50 shrink-0 text-xs font-medium overflow-x-auto">
               <button
                 onClick={() => setTab('live')}
-                className={`flex-1 py-2 text-center transition-all border-b-2 font-mono ${
+                className={`py-2 px-3 text-center transition-all border-b-2 font-mono whitespace-nowrap ${
                   tab === 'live'
                     ? 'border-emerald-500 text-emerald-400 bg-emerald-950/20'
                     : 'border-transparent text-slate-400 hover:text-slate-200'
                 }`}
               >
-                ● Live Executed ({liveQueries.length})
+                ● Live ({liveQueries.length})
+              </button>
+              <button
+                onClick={() => setTab('demo')}
+                className={`py-2 px-3 text-center transition-all border-b-2 font-mono whitespace-nowrap ${
+                  tab === 'demo'
+                    ? 'border-amber-500 text-amber-400 bg-amber-950/20'
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                🎭 Showcase &amp; Dummy Details
               </button>
               <button
                 onClick={() => setTab('catalog')}
-                className={`flex-1 py-2 text-center transition-all border-b-2 font-mono ${
+                className={`py-2 px-3 text-center transition-all border-b-2 font-mono whitespace-nowrap ${
                   tab === 'catalog'
                     ? 'border-sky-500 text-sky-400 bg-sky-950/20'
                     : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -502,54 +644,68 @@ export default function DevQueryViewer() {
               </button>
               <button
                 onClick={() => setTab('schema')}
-                className={`flex-1 py-2 text-center transition-all border-b-2 font-mono ${
+                className={`py-2 px-3 text-center transition-all border-b-2 font-mono whitespace-nowrap ${
                   tab === 'schema'
                     ? 'border-purple-500 text-purple-400 bg-purple-950/20'
                     : 'border-transparent text-slate-400 hover:text-slate-200'
                 }`}
               >
-                🗄️ Tables &amp; Views
+                🗄️ Schema (9 Tables)
               </button>
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-1">
+            <div className="flex-1 overflow-y-auto p-3 space-y-2">
               {/* Tab 1: Live Executed Queries */}
               {tab === 'live' && (
                 <>
                   <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 text-[11px] text-slate-400">
                     <span>Queries executed in current session:</span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       <button
                         onClick={handleRunTestQuery}
                         className="text-sky-400 hover:text-sky-300 text-[10px] font-mono px-2 py-0.5 rounded bg-sky-950/50 border border-sky-800 transition-colors"
                       >
-                        ▶ Test /lookups
+                        ▶ Run /lookups
+                      </button>
+                      <button
+                        onClick={handleLoadSampleQueries}
+                        className="text-amber-300 hover:text-amber-200 text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/50 border border-amber-800 transition-colors"
+                      >
+                        ⚡ Load Sample Telemetry
                       </button>
                       {liveQueries.length > 0 && (
                         <button
                           onClick={handleClear}
                           className="text-rose-400 hover:text-rose-300 text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/50 border border-rose-800 transition-colors"
                         >
-                          Clear Log
+                          Clear
                         </button>
                       )}
                     </div>
                   </div>
 
                   {liveQueries.length === 0 ? (
-                    <div className="text-center py-12 px-4 space-y-3">
+                    <div className="text-center py-10 px-4 space-y-3">
                       <div className="text-2xl">⚡</div>
                       <p className="text-xs text-slate-300 font-medium">No live queries recorded yet.</p>
                       <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
-                        Any action on the site (logging in, viewing complaints, updating status, clicking tabs) will stream the actual executed SQL query here in real time.
+                        Any action on the site (signing in, lodging complaints, dispatching staff, updating status) will stream the live SQL query right here.
                       </p>
-                      <button
-                        onClick={handleRunTestQuery}
-                        className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition-colors"
-                      >
-                        Run Live Test Query Now
-                      </button>
+                      <div className="flex justify-center gap-2 pt-2">
+                        <button
+                          onClick={handleRunTestQuery}
+                          className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition-colors"
+                        >
+                          Run Live Test Query
+                        </button>
+                        <button
+                          onClick={handleLoadSampleQueries}
+                          className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium transition-colors"
+                        >
+                          ⚡ Load Sample Telemetry Stream
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     liveQueries.map(q => (
@@ -559,7 +715,116 @@ export default function DevQueryViewer() {
                 </>
               )}
 
-              {/* Tab 2: Catalog of Core Queries */}
+              {/* Tab 2: Showcase & Dummy Details (NEW) */}
+              {tab === 'demo' && (
+                <div className="space-y-3 text-xs">
+                  {/* Banner */}
+                  <div className="bg-amber-950/30 border border-amber-500/30 rounded-xl p-3 text-amber-200">
+                    <div className="font-bold text-sm flex items-center gap-1.5 mb-1 text-amber-300 font-mono">
+                      <span>🎓</span> Academic Defense &amp; Professor Showcase Cheat-Sheet
+                    </div>
+                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                      Use these verified dummy credentials and step-by-step scenario cards during evaluation. Click any credential to copy directly.
+                    </p>
+                  </div>
+
+                  {/* Dummy Accounts Grid */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 space-y-2">
+                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                      <span className="font-bold text-slate-200 font-mono text-[11px] uppercase tracking-wider">
+                        Verified Dummy Accounts Matrix
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-mono">Click button to copy</span>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      {DUMMY_SHOWCASE_USERS.map((u, i) => (
+                        <div key={i} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-2 rounded-lg bg-slate-950 border border-slate-800/80 gap-2 hover:border-slate-700 transition-colors">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase font-mono ${u.badge}`}>
+                                {u.role}
+                              </span>
+                              <span className="font-semibold text-slate-200 text-xs">{u.name}</span>
+                            </div>
+                            <div className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">{u.meta}</div>
+                            <div className="text-[11px] text-sky-400 font-mono">{u.email}</div>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => handleCopyText(u.email, `email-${i}`)}
+                              className="text-[10px] font-mono px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+                            >
+                              {copiedKey === `email-${i}` ? '✓ Copied' : '⎘ Copy Email'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleCopyText(u.pass, `pass-${i}`)}
+                              className="text-[10px] font-mono px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition-colors"
+                            >
+                              {copiedKey === `pass-${i}` ? '✓ Copied' : '⎘ ' + u.pass}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 4-Step Professor Demonstration Flow */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 space-y-2">
+                    <span className="font-bold text-slate-200 font-mono text-[11px] uppercase tracking-wider block border-b border-slate-800 pb-1.5">
+                      Recommended 4-Step Presentation Walkthrough
+                    </span>
+                    <div className="space-y-2 text-[11px] leading-relaxed">
+                      <div className="p-2 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                        <strong className="text-blue-400 font-mono block mb-0.5">1. Student Lodges Grievance:</strong>
+                        Sign in as <code className="text-sky-300 font-mono">raksham.dessai@campus.edu</code>. Click "File New Complaint". Select category (e.g., <em>Electrical</em>) and write issue. Show professor that <code className="text-amber-400 font-mono">trg_complaint_status_log</code> fires immediately to create Weak Entity history row #1.
+                      </div>
+                      <div className="p-2 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                        <strong className="text-violet-400 font-mono block mb-0.5">2. Warden Dispatches Technician:</strong>
+                        Sign in as <code className="text-violet-300 font-mono">sunita.borkar@campus.edu</code>. Open Hostel Complaints Register. Select ticket, click "Assign Staff", choose <em>Anil Pai (Electrician)</em>. Show <code className="text-amber-400 font-mono">staff_assignment</code> junction insert and trigger updating status to <em>Assigned</em>.
+                      </div>
+                      <div className="p-2 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                        <strong className="text-emerald-400 font-mono block mb-0.5">3. Technician Diagnoses &amp; Resolves:</strong>
+                        Sign in as <code className="text-emerald-300 font-mono">anil.pai@campus.edu</code>. In Staff Queue, click "Start Work" (status moves to <em>In-Progress</em>). Then click "Resolve", enter resolution notes &amp; parts replaced. Audit history timestamps with technician email.
+                      </div>
+                      <div className="p-2 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                        <strong className="text-rose-400 font-mono block mb-0.5">4. Admin Analytics &amp; Stored Procedure:</strong>
+                        Sign in as <code className="text-rose-300 font-mono">rajesh.gawas@campus.edu</code>. Show live SLA Compliance %, Department workload view (<code className="text-emerald-400 font-mono">v_staff_workload</code>), and trigger the SLA Escalation Stored Procedure (<code className="text-amber-400 font-mono">escalate_overdue_complaints()</code>).
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sample Grievances */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 space-y-1.5">
+                    <span className="font-bold text-slate-200 font-mono text-[11px] uppercase tracking-wider block">
+                      Sample Grievances for Live Testing
+                    </span>
+                    <div className="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                      <div className="p-2 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                        <span className="text-amber-400 font-bold block">⚡ Electrical (2 Days SLA)</span>
+                        "Ceiling fan sparking and vibrating loudly in Room A-204"
+                      </div>
+                      <div className="p-2 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                        <span className="text-amber-400 font-bold block">🚰 Plumbing (2 Days SLA)</span>
+                        "Water geyser tap dripping continuously causing floor flooding"
+                      </div>
+                      <div className="p-2 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                        <span className="text-amber-400 font-bold block">🌐 Wi-Fi (1 Day SLA)</span>
+                        "Access point corridor 2 dropping connections during study hours"
+                      </div>
+                      <div className="p-2 rounded bg-slate-950 border border-slate-800 text-slate-300">
+                        <span className="text-amber-400 font-bold block">🍽️ Mess (3 Days SLA)</span>
+                        "Water cooler filter in dining hall needs replacement and cleaning"
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Tab 3: Catalog of Core Queries */}
               {tab === 'catalog' && (
                 <>
                   <div className="text-[11px] text-slate-400 pb-2 mb-2 border-b border-slate-800">
@@ -571,7 +836,7 @@ export default function DevQueryViewer() {
                 </>
               )}
 
-              {/* Tab 3: Schema & Architecture */}
+              {/* Tab 4: Schema & Architecture */}
               {tab === 'schema' && (
                 <div className="space-y-3 text-xs">
                   <div className="bg-slate-900 p-3 rounded-lg border border-slate-800">
